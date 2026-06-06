@@ -12,3 +12,4 @@
 
     <button type="submit">Entrar</button>
 </form>
+<a href="/register/aluno">Não estou logado</a>
