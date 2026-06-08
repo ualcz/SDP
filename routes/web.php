@@ -98,3 +98,11 @@ Route::view(
     '/representante/dashboard',
     'representante.dashboard'
 );
+
+// ========================================
+// Calendário
+// ========================================
+Route::view(
+    '/calendario/principal',
+    'calendario.principal'
+);
