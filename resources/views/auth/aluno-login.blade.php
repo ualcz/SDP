@@ -1,7 +1,7 @@
 //exemplo
 <h2>Login Aluno</h2>
 
-<form method="POST" action="/login">
+<form method="POST" action="/login/aluno">
     @csrf
 
     <input type="hidden" name="role" value="aluno">

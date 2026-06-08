@@ -2,7 +2,7 @@
 
 <h2>Login Professor</h2>
 
-<form method="POST" action="/login">
+<form method="POST" action="/login/professor">
     @csrf
 
     <input type="hidden" name="role" value="professor">
