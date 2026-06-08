@@ -12,14 +12,14 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('usuario_id')
-                  ->constrained('usuarios')
-                  ->onDelete('cascade');
+                ->constrained('usuarios')
+                ->cascadeOnDelete();
 
             $table->string('matricula')->unique();
 
             $table->foreignId('turma_id')
-                  ->constrained('turmas')
-                  ->onDelete('cascade');
+                ->constrained('turmas')
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });

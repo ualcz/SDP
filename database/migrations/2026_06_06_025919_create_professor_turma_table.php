@@ -12,12 +12,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('professor_id')
-                  ->constrained('professores')
-                  ->onDelete('cascade');
+                ->constrained('professores')
+                ->cascadeOnDelete();
 
             $table->foreignId('turma_id')
-                  ->constrained('turmas')
-                  ->onDelete('cascade');
+                ->constrained('turmas')
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });

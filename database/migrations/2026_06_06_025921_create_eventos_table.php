@@ -38,17 +38,15 @@ return new class extends Migration
             $table->boolean('recorrente')->default(false);
 
             $table->foreignId('professor_id')
-                  ->nullable()
-                  ->constrained('professores')
-                  ->nullOnDelete();
+                ->constrained('professores')
+                ->cascadeOnDelete();
 
             $table->foreignId('turma_id')
-                  ->nullable()
-                  ->constrained('turmas')
-                  ->nullOnDelete();
+                ->constrained('turmas')
+                ->cascadeOnDelete();
 
             $table->boolean('criado_por_representante')
-                  ->default(false);
+                ->default(false);
 
             $table->timestamps();
         });

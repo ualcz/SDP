@@ -12,12 +12,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('evento_id')
-                  ->constrained('eventos')
-                  ->onDelete('cascade');
+                ->constrained('eventos')
+                ->cascadeOnDelete();
 
             $table->foreignId('aluno_id')
-                  ->constrained('alunos')
-                  ->onDelete('cascade');
+                ->constrained('alunos')
+                ->cascadeOnDelete();
 
             $table->enum('status', [
                 'solicitado',
