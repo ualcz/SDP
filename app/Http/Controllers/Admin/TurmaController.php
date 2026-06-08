@@ -7,6 +7,12 @@ use App\Models\Turma;
 
 class TurmaController extends Controller
 {
+    public function listar()
+{
+    $turmas = Turma::all();
+
+    return view('admin.turmas.listar', compact('turmas'));
+}
     public function create()
     {
         return view('admin.turmas.create');
@@ -23,7 +29,7 @@ class TurmaController extends Controller
             'codigo_acesso' => strtoupper(uniqid())
         ]);
 
-        return redirect('/admin/dashboard');
+        return back()->with('success', 'Turma criada com sucesso!');
     }
 }
 ?>
