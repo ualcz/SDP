@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterAlunoController;
+use App\Http\Controllers\Admin\AlunoController;
+use App\Http\Controllers\Admin\ProfessorController;
+use App\Http\Controllers\Admin\TurmaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,8 +85,23 @@ Route::middleware(['auth', 'role:professor'])->group(function () {
     Route::get('/professor/dashboard', fn () => view('professor.dashboard'));
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', fn () => view('admin.dashboard'));
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->group(function () {
+
+    Route::get('/dashboard', fn () => view('admin.dashboard'));
+
+    // TURMAS
+    Route::get('/turmas/create', [TurmaController::class, 'create']);
+    Route::post('/turmas', [TurmaController::class, 'store']);
+
+    // PROFESSORES
+    Route::get('/professores/create', [ProfessorController::class, 'create']);
+    Route::post('/professores', [ProfessorController::class, 'store']);
+
+    // PROMOVER ALUNO
+    Route::get('/alunos/promover', [AlunoController::class, 'createPromocao']);
+    Route::post('/alunos/promover', [AlunoController::class, 'storePromocao']);
 });
 
 Route::middleware(['auth', 'role:representante'])->group(function () {
