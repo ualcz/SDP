@@ -5,96 +5,87 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterAlunoController;
 
-// ========================================
-// TELA INICIAL
-// ========================================
-
+/*
+|--------------------------------------------------------------------------
+| TELA INICIAL
+|--------------------------------------------------------------------------
+| Aqui o usuário escolhe qual tipo de login ele quer acessar
+*/
 Route::view('/', 'auth.select-role');
 
 
-// ========================================
-// LOGIN ALUNO
-// ========================================
-
+/*
+|--------------------------------------------------------------------------
+| LOGIN ALUNO
+|--------------------------------------------------------------------------
+| Exibe tela de login e processa autenticação do aluno
+*/
 Route::view('/login/aluno', 'auth.aluno-login');
 
-Route::post(
-    '/login/aluno',
-    [LoginController::class, 'loginAluno']
-);
+Route::post('/login/aluno', [LoginController::class, 'loginAluno']);
 
 
-// ========================================
-// LOGIN PROFESSOR
-// ========================================
-
+/*
+|--------------------------------------------------------------------------
+| LOGIN PROFESSOR
+|--------------------------------------------------------------------------
+*/
 Route::view('/login/professor', 'auth.professor-login');
 
-Route::post(
-    '/login/professor',
-    [LoginController::class, 'loginProfessor']
-);
+Route::post('/login/professor', [LoginController::class, 'loginProfessor']);
 
 
-// ========================================
-// LOGIN ADMIN
-// ========================================
-
+/*
+|--------------------------------------------------------------------------
+| LOGIN ADMIN
+|--------------------------------------------------------------------------
+*/
 Route::view('/login/admin', 'auth.admin-login');
 
-Route::post(
-    '/login/admin',
-    [LoginController::class, 'loginAdmin']
-);
+Route::post('/login/admin', [LoginController::class, 'loginAdmin']);
 
 
-// ========================================
-// LOGIN REPRESENTANTE
-// ========================================
-
+/*
+|--------------------------------------------------------------------------
+| LOGIN REPRESENTANTE
+|--------------------------------------------------------------------------
+*/
 Route::view('/login/representante', 'auth.representante-login');
 
-Route::post(
-    '/login/representante',
-    [LoginController::class, 'loginRepresentante']
-);
+Route::post('/login/representante', [LoginController::class, 'loginRepresentante']);
 
 
-// ========================================
-// CADASTRO ALUNO
-// ========================================
+/*
+|--------------------------------------------------------------------------
+| CADASTRO ALUNO
+|--------------------------------------------------------------------------
+| Apenas aluno se cadastra sozinho no sistema
+*/
+Route::view('/register/aluno', 'auth.aluno-register');
 
-Route::view(
-    '/register/aluno',
-    'auth.aluno-register'
-);
-
-Route::post(
-    '/register/aluno',
-    [RegisterAlunoController::class, 'register']
-);
+Route::post('/register/aluno', [RegisterAlunoController::class, 'register']);
 
 
-// ========================================
-// DASHBOARDS
-// ========================================
+/*
+|--------------------------------------------------------------------------
+| DASHBOARDS (PROTEGIDOS POR AUTH + ROLE)
+|--------------------------------------------------------------------------
+| Aqui está a parte correta: apenas usuários autenticados
+| com role correspondente podem acessar
+*/
 
-Route::view(
-    '/aluno/dashboard',
-    'aluno.dashboard'
-);
+Route::middleware(['auth', 'role:aluno'])->group(function () {
+    Route::get('/aluno/dashboard', fn () => view('aluno.dashboard'));
+});
 
-Route::view(
-    '/professor/dashboard',
-    'professor.dashboard'
-);
+Route::middleware(['auth', 'role:professor'])->group(function () {
+    Route::get('/professor/dashboard', fn () => view('professor.dashboard'));
+});
 
-Route::view(
-    '/admin/dashboard',
-    'admin.dashboard'
-);
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', fn () => view('admin.dashboard'));
+});
 
-Route::view(
-    '/representante/dashboard',
-    'representante.dashboard'
-);
+Route::middleware(['auth', 'role:representante'])->group(function () {
+    Route::get('/representante/dashboard', fn () => view('representante.dashboard'));
+});
