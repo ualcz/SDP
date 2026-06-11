@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterAlunoController;
 use App\Http\Controllers\Admin\AlunoController;
 use App\Http\Controllers\Admin\ProfessorController;
 use App\Http\Controllers\Admin\TurmaController;
+use App\Http\Controllers\CalendarioController;
 
 
 /*
@@ -138,6 +139,21 @@ Route::view(
     'calendario.principal'
 );
 
+/*
+|--------------------------------------------------------------------------
+| CALENDÁRIO
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/calendario', [CalendarioController::class, 'index']);
+
+Route::get('/eventos', [CalendarioController::class, 'eventos']);
+
+Route::post('/eventos', [CalendarioController::class, 'store']);
+
+Route::put('/eventos/{evento}', [CalendarioController::class, 'update']);
+
+Route::delete('/eventos/{evento}', [CalendarioController::class, 'destroy']);
 
 /*
 |--------------------------------------------------------------------------

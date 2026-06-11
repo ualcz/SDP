@@ -1,149 +1,324 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
+
 <head>
-<meta charset='utf-8' />
-<script src="{{ asset('assets/fullcalendar-6.1.20/FullCallendar/dist/index.global.js') }}"></script>
-<script>
+    <meta charset="UTF-8">
 
-  document.addEventListener('DOMContentLoaded', function() {
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    /* initialize the external events
-    -----------------------------------------------------------------*/
+    <title>Calendário Acadêmico</title>
 
-    var containerEl = document.getElementById('external-events-list');
-    new FullCalendar.Draggable(containerEl, {
-      itemSelector: '.fc-event',
-      eventData: function(eventEl) {
-        return {
-          title: eventEl.innerText.trim()
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            background: #F8FAFC;
         }
-      }
-    });
 
-    //// the individual way to do it
-    // var containerEl = document.getElementById('external-events-list');
-    // var eventEls = Array.prototype.slice.call(
-    //   containerEl.querySelectorAll('.fc-event')
-    // );
-    // eventEls.forEach(function(eventEl) {
-    //   new FullCalendar.Draggable(eventEl, {
-    //     eventData: {
-    //       title: eventEl.innerText.trim(),
-    //     }
-    //   });
-    // });
-
-    /* initialize the calendar
-    -----------------------------------------------------------------*/
-
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-      },
-      editable: true,
-      droppable: true, // this allows things to be dropped onto the calendar
-      drop: function(arg) {
-        // is the "remove after drop" checkbox checked?
-        if (document.getElementById('drop-remove').checked) {
-          // if so, remove the element from the "Draggable Events" list
-          arg.draggedEl.parentNode.removeChild(arg.draggedEl);
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
         }
-      }
-    });
-    calendar.render();
 
-  });
+        h1 {
+            color: #334155;
+        }
 
-</script>
-<style>
+        #calendar {
+            min-height: 700px;
+        }
 
-  body {
-    margin-top: 40px;
-    font-size: 14px;
-    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  }
+        /* Modal */
+        .modal {
+    display: none;
 
-  #external-events {
     position: fixed;
-    left: 20px;
-    top: 20px;
-    width: 150px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    background: #eee;
-    text-align: left;
-  }
 
-  #external-events h4 {
-    font-size: 16px;
-    margin-top: 0;
-    padding-top: 1em;
-  }
+    inset: 0;
 
-  #external-events .fc-event {
-    margin: 3px 0;
-    cursor: move;
-  }
+    background: rgba(0, 0, 0, .4);
 
-  #external-events p {
-    margin: 1.5em 0;
-    font-size: 11px;
-    color: #666;
-  }
+    justify-content: center;
 
-  #external-events p input {
-    margin: 0;
-    vertical-align: middle;
-  }
+    align-items: center;
 
-  #calendar-wrap {
-    margin-left: 200px;
-  }
+    z-index: 9999;
+}
 
-  #calendar {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+.modal-content {
+    background: white;
 
-</style>
+    width: 450px;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    position: relative;
+}
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 90px;
+        }
+
+        .botoes-modal {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #btnExcluir {
+            background: #FCA5A5;
+        }
+    </style>
 </head>
+
 <body>
-  <div id='wrap'>
 
-    <div id='external-events'>
-      <h4>Draggable Events</h4>
+    <div class="container">
 
-      <div id='external-events-list'>
-        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div class='fc-event-main'>My Event 1</div>
-        </div>
-        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div class='fc-event-main'>My Event 2</div>
-        </div>
-        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div class='fc-event-main'>My Event 3</div>
-        </div>
-        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div class='fc-event-main'>My Event 4</div>
-        </div>
-        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-          <div class='fc-event-main'>My Event 5</div>
-        </div>
-      </div>
+        <h1>Calendário Acadêmico</h1>
 
-      <p>
-        <input type='checkbox' id='drop-remove' />
-        <label for='drop-remove'>remove after drop</label>
-      </p>
+        <div id="calendar"></div>
+
     </div>
 
-    <div id='calendar-wrap'>
-      <div id='calendar'></div>
-    </div>
+    @include('calendario.modal-evento')
 
-  </div>
+    <script>
+        let calendar;
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            calendar = new FullCalendar.Calendar(
+                document.getElementById('calendar'), {
+                    locale: 'pt-br',
+
+                    initialView: 'dayGridMonth',
+
+                    editable: true,
+
+                    selectable: true,
+
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,listMonth'
+                    },
+
+                    buttonText: {
+                        today: 'Hoje',
+                        month: 'Mês',
+                        week: 'Semana',
+                        list: 'Lista'
+                    },
+
+                    events: '/eventos',
+
+                    dateClick: function(info) {
+                        novoEvento(info.dateStr);
+                    },
+
+                    eventClick: function(info) {
+                        editarEvento(info.event);
+                    },
+
+                    eventDrop: async function(info){
+
+await fetch('/eventos/' + info.event.id, {
+
+    method: 'PUT',
+
+    headers: {
+        'Content-Type': 'application/json',
+
+        'X-CSRF-TOKEN':
+            document
+            .querySelector('meta[name="csrf-token"]')
+            .content
+    },
+
+    body: JSON.stringify({
+
+        titulo: info.event.title,
+
+        tipo: info.event.extendedProps.tipo,
+
+        data_inicio: info.event.startStr,
+
+        hora_inicio: info.event.extendedProps.hora_inicio,
+
+        hora_fim: info.event.extendedProps.hora_fim,
+
+        descricao: info.event.extendedProps.descricao
+
+    })
+
+});
+
+}
+                }
+            );
+
+            console.log("Calendário iniciado");
+
+            calendar.render();
+
+        });
+
+        function abrirModal() {
+            document.getElementById('modalEvento').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalEvento').style.display = 'none';
+        }
+
+        function novoEvento(data) {
+
+            document.getElementById('tituloModal').innerText = 'Novo Evento';
+
+            document.getElementById('formEvento').reset();
+
+            document.getElementById('evento_id').value = '';
+
+            document.getElementById('data_inicio').value = data;
+
+            document.getElementById('btnExcluir').style.display = 'none';
+
+            abrirModal();
+        }
+
+        function editarEvento(evento) {
+
+            document.getElementById('tituloModal').innerText = 'Editar Evento';
+
+            document.getElementById('evento_id').value = evento.id;
+
+            document.getElementById('titulo').value = evento.title;
+
+            document.getElementById('tipo').value = evento.extendedProps.tipo;
+
+            document.getElementById('data_inicio').value = evento.startStr;
+
+            document.getElementById('hora_inicio').value =
+                evento.extendedProps.hora_inicio ?? '';
+
+            document.getElementById('hora_fim').value =
+                evento.extendedProps.hora_fim ?? '';
+
+            document.getElementById('descricao').value =
+                evento.extendedProps.descricao ?? '';
+
+            document.getElementById('btnExcluir').style.display = 'inline';
+
+            abrirModal();
+        }
+
+        document.getElementById('formEvento')
+            .addEventListener('submit', async function(e) {
+
+                e.preventDefault();
+
+                let id = document.getElementById('evento_id').value;
+
+                let url = '/eventos';
+
+                let metodo = 'POST';
+
+                if (id) {
+                    url = '/eventos/' + id;
+                    metodo = 'PUT';
+                }
+
+                await fetch(url, {
+                    method: metodo,
+
+                    headers: {
+                        'Content-Type': 'application/json',
+
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .content
+                    },
+
+                    body: JSON.stringify({
+
+                        titulo: document.getElementById('titulo').value,
+
+                        tipo: document.getElementById('tipo').value,
+
+                        data_inicio: document.getElementById('data_inicio').value,
+
+                        hora_inicio: document.getElementById('hora_inicio').value,
+
+                        hora_fim: document.getElementById('hora_fim').value,
+
+                        descricao: document.getElementById('descricao').value
+                    })
+                });
+
+                fecharModal();
+
+                calendar.refetchEvents();
+
+            });
+
+        document.getElementById('btnExcluir')
+            .addEventListener('click', async function() {
+
+                if (!confirm('Excluir evento?')) {
+                    return;
+                }
+
+                let id = document.getElementById('evento_id').value;
+
+                await fetch('/eventos/' + id, {
+
+                    method: 'DELETE',
+
+                    headers: {
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .content
+                    }
+
+                });
+
+                fecharModal();
+
+                calendar.refetchEvents();
+
+            });
+    </script>
+
 </body>
+
 </html>
