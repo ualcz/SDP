@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\ProfessorController;
 use App\Http\Controllers\Admin\TurmaController;
 use App\Http\Controllers\CalendarioController;
 
+use App\Http\Controllers\SuapExplorerController;
+
 /*
 |--------------------------------------------------------------------------
 | REDIRECIONAMENTO INICIAL
@@ -163,4 +165,20 @@ Route::put('/eventos/{evento}', [CalendarioController::class, 'update']);
 
 Route::delete('/eventos/{evento}', [CalendarioController::class, 'destroy']);
 
+
+Route::middleware(['auth','role:admin'])
+    ->prefix('admin')
+    ->group(function () {
+
+        Route::get(
+            '/suap/explorador',
+            [SuapExplorerController::class,'index']
+        );
+
+        Route::post(
+            '/suap/explorador',
+            [SuapExplorerController::class,'consultar']
+        );
+
+});
 ?>
