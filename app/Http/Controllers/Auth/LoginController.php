@@ -5,71 +5,168 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Usuario;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\Usuario;
+use App\Services\SuapService;
 
 class LoginController extends Controller
 {
-    // falar com o banco de dados sobre o ALUNO
+    /*
+    |--------------------------------------------------------------------------
+    | Login único
+    |--------------------------------------------------------------------------
+    | Admin: email + senha local
+    | Aluno/Professor: matrícula + senha SUAP
+    */
+    public function login(Request $request, SuapService $suap)
+    {
+        $request->validate([
+            'login' => 'required',
+            'password' => 'required',
+        ]);
 
-public function loginAluno(Request $request)
-{
-    
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return back()->withErrors(['login' => 'Email ou senha inválidos.']);
+        $login = $request->login;
+        $password = $request->password;
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN LOCAL
+        |--------------------------------------------------------------------------
+        */
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+
+            if (!Auth::attempt([
+                'email' => $login,
+                'password' => $password,
+            ])) {
+
+                return back()->withErrors([
+                    'login' => 'Email ou senha inválidos.',
+                ]);
+            }
+
+            return redirect('/admin/dashboard');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUAP
+        |--------------------------------------------------------------------------
+        */
+        $jwt = $suap->autenticar($login, $password);
+
+        if (!$jwt) {
+
+            return back()->withErrors([
+                'login' => 'Matrícula ou senha inválidos.',
+            ]);
+        }
+
+        $dados = $suap->meusDados($jwt);
+
+        if (!$dados) {
+
+            return back()->withErrors([
+                'login' => 'Não foi possível obter dados do SUAP.',
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAPEL DO USUÁRIO
+        |--------------------------------------------------------------------------
+        */
+        $role = 'aluno';
+
+        if (($dados['tipo_vinculo'] ?? '') === 'Servidor') {
+            $role = 'professor';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | EMAIL
+        |--------------------------------------------------------------------------
+        | Alguns usuários do SUAP vêm com email vazio.
+        | Nesse caso, usamos um email técnico baseado na matrícula.
+        */
+        $email = !empty($dados['email'])
+            ? $dados['email']
+            : $dados['matricula'] . '@ifba.edu.br';
+
+        /*
+        |--------------------------------------------------------------------------
+        | USUÁRIO LOCAL
+        |--------------------------------------------------------------------------
+        */
+        $usuario = Usuario::updateOrCreate(
+
+            [
+                'matricula' => $dados['matricula'],
+            ],
+
+            [
+                'nome' => $dados['nome_usual']
+                    ?? $dados['vinculo']['nome']
+                    ?? 'Usuário SUAP',
+
+                'email' => $email,
+
+                /*
+                |--------------------------------------------------------------
+                | A senha local não é usada para login SUAP.
+                | Ela é atualizada apenas para manter consistência.
+                |--------------------------------------------------------------
+                */
+                'password' => Hash::make($password),
+
+                'role' => $role,
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN NO LARAVEL
+        |--------------------------------------------------------------------------
+        */
+        Auth::login($usuario);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SALVA JWT NA SESSÃO
+        |--------------------------------------------------------------------------
+        | Permitirá futuras integrações com o SUAP
+        | sem pedir a senha novamente.
+        */
+        session([
+            'suap_jwt' => $jwt,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECIONAMENTO
+        |--------------------------------------------------------------------------
+        */
+        if ($usuario->isProfessor()) {
+
+            return redirect('/professor/dashboard');
+        }
+
+        return redirect('/aluno/dashboard');
     }
 
-    if (Auth::user()->role !== 'aluno') {
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
+    public function logout()
+    {
         Auth::logout();
-        return back()->withErrors(['login' => 'Este usuário não é aluno.']);
-    }
 
-    return redirect('/aluno/dashboard');
+        session()->forget('suap_jwt');
+
+        return redirect('/login');
+    }
 }
-
-// falar com o banco de dados sobre o PROFESSOR
-public function loginProfessor(Request $request)
-{
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return back()->withErrors(['login' => 'Email ou senha inválidos.']);
-    }
-
-    if (Auth::user()->role !== 'professor') {
-        Auth::logout();
-        return back()->withErrors(['login' => 'Este usuário não é professor.']);
-    }
-
-    return redirect('/professor/dashboard');
-}
-
-// falar com o banco de dados sobre o ADMIN
-public function loginAdmin(Request $request)
-{
-    
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return back()->withErrors(['login' => 'Email ou senha inválidos.']);
-    }
-
-    if (Auth::user()->role !== 'admin') {
-        Auth::logout();
-        return back()->withErrors(['login' => 'Este usuário não é admin.']);
-    }
-
-    return redirect('/admin/dashboard');
-}
-
-// falar com o banco de dados sobre o REPRESENTANTE
-public function loginRepresentante(Request $request)
-{
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return back()->withErrors(['login' => 'Email ou senha inválidos.']);
-    }
-
-    if (Auth::user()->role !== 'representante') {
-        Auth::logout();
-        return back()->withErrors(['login' => 'Este usuário não é representante.']);
-    }
-
-    return redirect('/representante/dashboard');
-}
-}
+?>

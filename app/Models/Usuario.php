@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     protected $table = 'usuarios';
 
     protected $fillable = [
+        'matricula',
         'nome',
         'email',
         'password',
@@ -24,13 +24,48 @@ class Usuario extends Authenticatable
         'remember_token'
     ];
 
-    public function aluno()
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONAMENTOS
+    |--------------------------------------------------------------------------
+    */
+
+    public function representantes()
     {
-        return $this->hasOne(Aluno::class);
+        return $this->hasMany(Representante::class);
     }
 
-    public function professor()
+    /*
+    |--------------------------------------------------------------------------
+    | MÉTODOS DE PAPEL
+    |--------------------------------------------------------------------------
+    */
+
+    public function isAdmin()
     {
-        return $this->hasOne(Professor::class);
+        return $this->role === 'admin';
+    }
+
+    public function isAluno()
+    {
+        return $this->role === 'aluno';
+    }
+
+    public function isProfessor()
+    {
+        return $this->role === 'professor';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | REPRESENTANTE
+    |--------------------------------------------------------------------------
+    */
+
+    public function representanteAtivo()
+    {
+        return $this->representantes()
+            ->where('ativo', true)
+            ->exists();
     }
 }

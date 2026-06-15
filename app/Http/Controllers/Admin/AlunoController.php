@@ -37,10 +37,11 @@ class AlunoController extends Controller
             ]);
         }
 
-        $usuario->role = 'representante';
-        $usuario->save();
-
-        return back()->with('success', 'Aluno promovido com sucesso!');
+        Representante::create([
+            'usuario_id' => $usuario->id,
+            'turma_id' => $request->turma_id,
+            'ativo' => true,
+        ]);
     }
 }
 ?>
