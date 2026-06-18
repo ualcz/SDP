@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\AlunoController;
 use App\Http\Controllers\Admin\ProfessorController;
 use App\Http\Controllers\Admin\TurmaController;
 use App\Http\Controllers\CalendarioController;
-
+use App\Http\Controllers\SuapCrawlerController;
 use App\Http\Controllers\SuapExplorerController;
 
 /*
@@ -181,4 +181,9 @@ Route::middleware(['auth','role:admin'])
         );
 
 });
+
+Route::get(
+    '/teste/scraper',
+    [SuapCrawlerController::class, 'testar']
+);
 ?>

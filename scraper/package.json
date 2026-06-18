@@ -1,0 +1,17 @@
+{
+  "name": "scaae-scraper",
+  "version": "1.0.0",
+  "description": "Scraper do SUAP para o SCAAE",
+  "scripts": {
+    "login": "tsx src/login.ts",
+    "sync": "tsx src/sync.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
