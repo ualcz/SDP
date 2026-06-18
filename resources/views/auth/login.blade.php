@@ -1,72 +1,109 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IFBA</title>
 
-    <title>Login SCAAE</title>
+    <link rel="stylesheet" href="login.css">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<h1>SCAAE</h1>
+    <div class="background-verde"></div>
 
-<h3>Entrar</h3>
+    <div class="container">
 
-@if($errors->any())
+        <!-- Logo -->
+        <div class="logo-area">
+            <img src="logo-ifba.png" alt="Logo IFBA">
+        </div>
 
-    <div style="color:red;">
+        <!-- Card Login -->
+        <div class="login-card">
 
-        {{ $errors->first() }}
+            <h1>Login</h1>
+
+            <p class="subtitulo">
+                Informe sua matrícula (SUAP) ou e-mail (Administrador) e sua senha.
+            </p>
+
+            <!-- Exibição de erros Laravel -->
+            @if($errors->any())
+                <div class="erro-login">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <!-- Formulário Laravel -->
+            <form method="POST" action="/login">
+
+                @csrf
+
+                <!-- Matrícula ou E-mail -->
+                <div class="campo">
+                    <label for="login">
+                        Matrícula (SUAP) ou E-mail (Administrador)
+                    </label>
+
+                    <div class="input-icon">
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="login"
+                            name="login"
+                            placeholder="Digite sua matrícula ou e-mail"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Senha -->
+                <div class="campo">
+                    <label for="senha">Senha</label>
+
+                    <div class="input-icon">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="password"
+                            placeholder="Digite sua senha"
+                            required>
+
+                        <i
+                            class="fa-solid fa-eye mostrar"
+                            id="toggleSenha">
+                        </i>
+
+                    </div>
+                </div>
+
+                <!-- Botão -->
+                <button type="submit">
+                    Entrar
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+
+            </form>
+
+            <a href="#" class="esqueceu">
+                Esqueceu sua senha?
+            </a>
+
+        </div>
 
     </div>
 
-@endif
-
-<form method="POST" action="/login">
-
-    @csrf
-
-    <label>
-
-        Matrícula (SUAP) ou Email (Admin)
-
-    </label>
-
-    <br>
-
-    <input
-        type="text"
-        name="login"
-        required
-    >
-
-    <br><br>
-
-    <label>
-
-        Senha
-
-    </label>
-
-    <br>
-
-    <input
-        type="password"
-        name="password"
-        required
-    >
-
-    <br><br>
-
-    <button type="submit">
-
-        Entrar
-
-    </button>
-
-</form>
+    <script src="script.js"></script>
 
 </body>
+
 </html>
