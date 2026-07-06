@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\TurmaController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\SuapCrawlerController;
 use App\Http\Controllers\SuapExplorerController;
+use App\Http\Controllers\SuapTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -179,11 +180,6 @@ Route::middleware(['auth','role:admin'])
             '/suap/explorador',
             [SuapExplorerController::class,'consultar']
         );
-
 });
-
-Route::get(
-    '/teste/scraper',
-    [SuapCrawlerController::class, 'testar']
-);
+Route::get('/teste-suap', [SuapTestController::class, 'index']);
 ?>

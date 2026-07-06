@@ -16,7 +16,8 @@ class Usuario extends Authenticatable
         'nome',
         'email',
         'password',
-        'role'
+        'role',
+        'senha_suap'
     ];
 
     protected $hidden = [

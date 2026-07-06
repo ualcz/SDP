@@ -1,17 +1,14 @@
 <?php
 
-
-//ta errado
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Turma extends Model
-{
-    use HasFactory;
 
-    protected $table = 'turmas';
+class Disciplina extends Model
+{
+    protected $table = 'disciplinas';
 
     protected $fillable = [
         'suap_id',

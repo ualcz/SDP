@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Crypt;
 use App\Models\Usuario;
 use App\Services\SuapService;
 
@@ -104,22 +104,18 @@ class LoginController extends Controller
             [
                 'matricula' => $dados['matricula'],
             ],
-
+        
             [
                 'nome' => $dados['nome_usual']
                     ?? $dados['vinculo']['nome']
                     ?? 'Usuário SUAP',
-
+        
                 'email' => $email,
-
-                /*
-                |--------------------------------------------------------------
-                | A senha local não é usada para login SUAP.
-                | Ela é atualizada apenas para manter consistência.
-                |--------------------------------------------------------------
-                */
+        
                 'password' => Hash::make($password),
-
+        
+                'senha_suap' => Crypt::encryptString($password),
+        
                 'role' => $role,
             ]
         );
