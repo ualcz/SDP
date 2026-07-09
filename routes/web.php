@@ -181,5 +181,6 @@ Route::middleware(['auth','role:admin'])
             [SuapExplorerController::class,'consultar']
         );
 });
-Route::get('/teste-suap', [SuapTestController::class, 'index']);
+Route::get('/teste-suap', [SuapTestController::class, 'index'])
+    ->name('suap.sync');
 ?>
