@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-
 use App\Services\Suap\Browser;
 use App\Services\Suap\TurmaScraper;
 use App\Services\Suap\ProfessorScraper;
@@ -44,6 +43,16 @@ class SuapTestController extends Controller
         $codigoTurma = $turmaAlunoScraper->codigoAtual(
             $paginaAluno
         );
+
+        /*
+|--------------------------------------------------------------------------
+| Atualiza o código da turma do usuário
+|--------------------------------------------------------------------------
+*/
+
+$usuario->update([
+    'turma_codigo' => $codigoTurma
+]);
 
         /*
         |--------------------------------------------------------------------------
