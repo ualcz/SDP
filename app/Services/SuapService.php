@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 
 class SuapService
 {
@@ -14,8 +15,11 @@ class SuapService
     |--------------------------------------------------------------------------
     */
     public function autenticar($matricula, $senha)
-    {
+{
+    try {
+
         $response = Http::asJson()
+            ->timeout(10)
             ->post($this->baseUrl . '/autenticacao/token/', [
                 'username' => $matricula,
                 'password' => $senha,
@@ -26,7 +30,12 @@ class SuapService
         }
 
         return $response->json()['token'] ?? null;
+
+    } catch (ConnectionException $e) {
+
+        return null;
     }
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -34,10 +43,12 @@ class SuapService
     |--------------------------------------------------------------------------
     */
     public function meusDados($jwt)
-    {
+{
+    try {
+
         $response = Http::withHeaders([
             'Authorization' => 'JWT ' . $jwt,
-            'Content-Type' => 'application/json',
+            'Content-Type'  => 'application/json',
         ])->get(
             $this->baseUrl . '/minhas-informacoes/meus-dados/'
         );
@@ -47,6 +58,11 @@ class SuapService
         }
 
         return $response->json();
+
+    } catch (ConnectionException $e) {
+
+        return null;
     }
+}
 }
 ?>

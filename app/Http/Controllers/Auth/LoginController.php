@@ -56,12 +56,33 @@ class LoginController extends Controller
         */
         $jwt = $suap->autenticar($login, $password);
 
-        if (!$jwt) {
+/*
+|--------------------------------------------------------------------------
+| FALLBACK LOCAL
+|--------------------------------------------------------------------------
+*/
+if (!$jwt) {
 
-            return back()->withErrors([
-                'login' => 'Matrícula ou senha inválidos.',
-            ]);
-        }
+    $usuario = Usuario::where('matricula', $login)->first();
+
+    if (
+        !$usuario ||
+        !Hash::check($password, $usuario->password)
+    ) {
+
+        return back()->withErrors([
+            'login' => 'Matrícula ou senha inválidos.',
+        ]);
+    }
+
+    Auth::login($usuario);
+
+    if ($usuario->isProfessor()) {
+        return redirect('/professor/dashboard');
+    }
+
+    return redirect('/aluno/dashboard');
+}
 
         $dados = $suap->meusDados($jwt);
 
