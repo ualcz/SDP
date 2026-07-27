@@ -14,7 +14,15 @@ class Evento extends Model
         'data_inicio',
         'hora_inicio',
         'hora_fim',
-        'descricao'
+        'descricao',
+        'disciplina_professor_id'
     ];
+
+    public function oferta()
+    {
+        return $this->belongsTo(
+            DisciplinaProfessor::class,
+            'disciplina_professor_id'
+        );
+    }
 }
-?>

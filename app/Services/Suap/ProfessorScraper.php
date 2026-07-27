@@ -18,7 +18,24 @@ class ProfessorScraper
                     return;
                 }
 
-                $professores[] = trim($box->filter('h4')->text());
+                $nome = trim(
+                    $box->filter('h4')->text()
+                );
+
+                $matricula = null;
+
+                $dds = $box->filter('dd');
+
+                if ($dds->count() > 0) {
+                    $matricula = trim(
+                        $dds->eq(0)->text()
+                    );
+                }
+
+                $professores[] = [
+                    'nome' => $nome,
+                    'matricula' => $matricula,
+                ];
             });
 
         return $professores;

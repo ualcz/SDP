@@ -11,7 +11,9 @@ class Professor extends Model
     protected $table = 'professores';
 
     protected $fillable = [
-        'nome'
+        'nome',
+        'matricula',
+        'suap_id'
     ];
 
     public function disciplinas()

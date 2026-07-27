@@ -79,7 +79,6 @@ $usuario->update([
             $turma['professores'] =
                 $professorScraper->extrair($crawlerTurma);
         }
-
         /*
         |--------------------------------------------------------------------------
         | Salva tudo no banco
@@ -99,21 +98,23 @@ $usuario->update([
                     'nome'   => $disc['nome']
                 ]
             );
+foreach ($disc['professores'] as $dadosProfessor) {
 
-            foreach ($disc['professores'] as $nomeProfessor) {
+    $professor = Professor::updateOrCreate(
+    [
+        'matricula' => $dadosProfessor['matricula'] ?: null
+    ],
+    [
+        'nome' => $dadosProfessor['nome']
+    ]
+);
 
-                $professor = Professor::firstOrCreate([
-                    'nome' => $nomeProfessor
-                ]);
-
-                $disciplina->professores()->syncWithoutDetaching([
-
-                    $professor->id => [
-                        'turma_codigo' => $codigoTurma
-                    ]
-
-                ]);
-            }
+    $disciplina->professores()->syncWithoutDetaching([
+        $professor->id => [
+            'turma_codigo' => $codigoTurma
+        ]
+    ]);
+}
         }
 
         return "SYNC FINALIZADO COM SUCESSO";
