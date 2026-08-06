@@ -57,6 +57,14 @@ class Usuario extends Authenticatable
     {
         return $this->role === 'professor';
     }
+    public function professor()
+{
+    return $this->hasOne(
+        Professor::class,
+        'matricula',
+        'matricula'
+    );
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -70,4 +78,20 @@ class Usuario extends Authenticatable
             ->where('ativo', true)
             ->exists();
     }
+     /*
+    |--------------------------------------------------------------------------
+    | FUNÇÕES AUXILIARES
+    |--------------------------------------------------------------------------
+    */
+    public function podeGerenciarEventos()
+{
+    return $this->isAdmin()
+        || $this->isProfessor()
+        || $this->representanteAtivo();
+}
+
+public function podeExcluirEventos()
+{
+    return $this->isAdmin();
+}
 }

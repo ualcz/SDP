@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Aluno;
 use App\Models\Usuario;
+use App\Models\Representante;
 
 class AlunoController extends Controller
 {
@@ -21,7 +22,7 @@ class AlunoController extends Controller
             'matricula' => 'required'
         ]);
 
-        $aluno = Aluno::where('matricula', $request->matricula)->first();
+        $aluno = Usuario::where('matricula', $request->matricula)->first();
 
         if (!$aluno) {
             return back()->withErrors([
@@ -29,7 +30,7 @@ class AlunoController extends Controller
             ]);
         }
 
-        $usuario = Usuario::find($aluno->usuario_id);
+        $usuario = Usuario::find($aluno->id);
 
         if (!$usuario) {
             return back()->withErrors([
@@ -37,11 +38,17 @@ class AlunoController extends Controller
             ]);
         }
 
-        Representante::create([
-            'usuario_id' => $usuario->id,
-            'turma_id' => $request->turma_id,
-            'ativo' => true,
-        ]);
+Representante::updateOrCreate(
+
+    [
+        'usuario_id' => $usuario->id
+    ],
+
+    [
+        'ativo' => true,
+        'inicio_mandato' => now()
+    ]
+);
     }
 }
 ?>

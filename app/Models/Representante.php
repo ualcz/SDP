@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Representante extends Model
 {
     protected $table = 'representantes';
-
     protected $fillable = [
-        'usuario_id',
-        'turma_id',
-        'inicio_mandato',
-        'fim_mandato',
-        'ativo'
-    ];
+    'usuario_id',
+    'inicio_mandato',
+    'fim_mandato',
+    'ativo'
+];
 
     protected $casts = [
         'ativo' => 'boolean',

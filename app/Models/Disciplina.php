@@ -20,4 +20,10 @@ class Disciplina extends Model
     {
         return $this->belongsToMany(Professor::class);
     }
+    public function ofertas()
+    {
+        return $this->hasMany(
+        DisciplinaProfessor::class
+        );
+    }
 }

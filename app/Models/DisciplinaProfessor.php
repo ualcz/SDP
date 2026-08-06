@@ -6,14 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DisciplinaProfessor extends Model
 {
-    <?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class DisciplinaProfessor extends Model
-{
     protected $table = 'disciplina_professor';
 
     protected $fillable = [
@@ -36,5 +28,4 @@ class DisciplinaProfessor extends Model
     {
         return $this->hasMany(Evento::class);
     }
-}
 }

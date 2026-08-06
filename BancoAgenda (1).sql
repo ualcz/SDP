@@ -344,9 +344,12 @@ ADD CONSTRAINT fk_professores
 FOREIGN KEY (professor_id) 
 REFERENCES professores(id) 
 ON DELETE CASCADE;
+ALTER TABLE professores
+ADD COLUMN matricula VARCHAR(100) NULL;
 ALTER TABLE eventos
 ADD CONSTRAINT fk_turmas 
 FOREIGN KEY (turma_id) 
 REFERENCES turmas(id) 
 ON DELETE CASCADE;
 SET FOREIGN_KEY_CHECKS = 1;
+

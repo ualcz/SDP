@@ -33,10 +33,19 @@
             <label>Hora final</label>
 
             <input type="time" id="hora_fim">
+           <label>Disciplina</label>
 
-            <label>Descrição</label>
+<select id="disciplina_professor_id" required>
 
-            <textarea id="descricao"></textarea>
+    <option value="56">
+        Teste
+    </option>
+
+</select>
+
+<label>Descrição</label>
+
+<textarea id="descricao"></textarea>
 
             <div class="botoes-modal">
 
@@ -48,8 +57,8 @@
                     Cancelar
                 </button>
 
-                <button type="submit">
-                    Salvar
+                <button type="submit" id="btnSalvar">
+                Salvar
                 </button>
 
             </div>

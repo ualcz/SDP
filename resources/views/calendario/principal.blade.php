@@ -111,21 +111,33 @@
     </div>
 
     @include('calendario.modal-evento')
+    <script>
+
+const PODE_GERENCIAR =
+    @json($podeGerenciarEventos);
+
+const PODE_EXCLUIR =
+    @json($podeExcluirEventos);
+
+const OFERTAS =
+    @json($ofertas);
+
+</script>
 
     <script>
         let calendar;
 
         document.addEventListener('DOMContentLoaded', function() {
-
+        carregarOfertas();
             calendar = new FullCalendar.Calendar(
                 document.getElementById('calendar'), {
                     locale: 'pt-br',
 
                     initialView: 'dayGridMonth',
 
-                    editable: true,
+                    editable: PODE_GERENCIAR,
 
-                    selectable: true,
+                    selectable: PODE_GERENCIAR,
 
                     headerToolbar: {
                         left: 'prev,next today',
@@ -143,12 +155,21 @@
                     events: '/eventos',
 
                     dateClick: function(info) {
-                        novoEvento(info.dateStr);
-                    },
 
-                    eventClick: function(info) {
-                        editarEvento(info.event);
+                     if (!PODE_GERENCIAR) {
+                            return;
+                        }
+
+                    novoEvento(info.dateStr);
                     },
+                    eventClick: function(info) {
+
+                     if (!PODE_GERENCIAR) {
+                        return;
+                        }
+
+    editarEvento(info.event);
+},
 
                     eventDrop: async function(info){
 
@@ -167,19 +188,22 @@ await fetch('/eventos/' + info.event.id, {
 
     body: JSON.stringify({
 
-        titulo: info.event.title,
+    titulo: info.event.title,
 
-        tipo: info.event.extendedProps.tipo,
+    tipo: info.event.extendedProps.tipo,
 
-        data_inicio: info.event.startStr,
+    data_inicio: info.event.startStr,
 
-        hora_inicio: info.event.extendedProps.hora_inicio,
+    hora_inicio: info.event.extendedProps.hora_inicio,
 
-        hora_fim: info.event.extendedProps.hora_fim,
+    hora_fim: info.event.extendedProps.hora_fim,
 
-        descricao: info.event.extendedProps.descricao
+    descricao: info.event.extendedProps.descricao,
 
-    })
+    disciplina_professor_id:
+        info.event.extendedProps
+            .disciplina_professor_id
+})
 
 });
 
@@ -200,6 +224,27 @@ await fetch('/eventos/' + info.event.id, {
         function fecharModal() {
             document.getElementById('modalEvento').style.display = 'none';
         }
+        function carregarOfertas() {
+            let select =
+            document.getElementById(
+            'disciplina_professor_id'
+        );
+
+    select.innerHTML = '';
+
+    OFERTAS.forEach(function(oferta){
+
+        let option =
+            document.createElement('option');
+
+        option.value = oferta.id;
+
+        option.text =
+            oferta.disciplina.nome;
+
+        select.appendChild(option);
+    });
+}
 
         function novoEvento(data) {
 
@@ -212,6 +257,7 @@ await fetch('/eventos/' + info.event.id, {
             document.getElementById('data_inicio').value = data;
 
             document.getElementById('btnExcluir').style.display = 'none';
+            document.getElementById('btnSalvar').style.display = PODE_GERENCIAR ? 'inline' : 'none';
 
             abrirModal();
         }
@@ -237,7 +283,18 @@ await fetch('/eventos/' + info.event.id, {
             document.getElementById('descricao').value =
                 evento.extendedProps.descricao ?? '';
 
-            document.getElementById('btnExcluir').style.display = 'inline';
+            document.getElementById('disciplina_professor_id').value =
+                evento.extendedProps
+                 .disciplina_professor_id;
+
+            document.getElementById('btnSalvar')
+            .style.display = PODE_GERENCIAR ? 'inline' : 'none';
+
+            document.getElementById('btnExcluir')
+    .style.display =
+        PODE_EXCLUIR
+            ? 'inline'
+            : 'none';
 
             abrirModal();
         }
@@ -269,20 +326,25 @@ await fetch('/eventos/' + info.event.id, {
                             .content
                     },
 
-                    body: JSON.stringify({
+    body: JSON.stringify({
 
-                        titulo: document.getElementById('titulo').value,
+        titulo: document.getElementById('titulo').value,
 
-                        tipo: document.getElementById('tipo').value,
+        tipo: document.getElementById('tipo').value,
 
-                        data_inicio: document.getElementById('data_inicio').value,
+        data_inicio: document.getElementById('data_inicio').value,
 
-                        hora_inicio: document.getElementById('hora_inicio').value,
+        hora_inicio: document.getElementById('hora_inicio').value,
 
-                        hora_fim: document.getElementById('hora_fim').value,
+        hora_fim: document.getElementById('hora_fim').value,
 
-                        descricao: document.getElementById('descricao').value
-                    })
+        descricao: document.getElementById('descricao').value,
+
+        disciplina_professor_id:
+            document.getElementById(
+                'disciplina_professor_id'
+            ).value
+})
                 });
 
                 fecharModal();

@@ -16,8 +16,10 @@ class Professor extends Model
         'suap_id'
     ];
 
-    public function disciplinas()
-    {
-        return $this->belongsToMany(Disciplina::class);
-    }
+  public function ofertas()
+{
+    return $this->hasMany(
+        DisciplinaProfessor::class
+    );
+}
 }
