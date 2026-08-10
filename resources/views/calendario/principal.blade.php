@@ -163,12 +163,18 @@ const OFERTAS =
                     novoEvento(info.dateStr);
                     },
                     eventClick: function(info) {
+        console.log('EVENTO CLICADOo');
+        console.log(info.event);
+        console.log(info.event.extendedProps);
 
-                     if (!PODE_GERENCIAR) {
-                        return;
-                        }
+        if (PODE_GERENCIAR) {
 
-    editarEvento(info.event);
+            editarEvento(info.event);
+
+        } else {
+
+            abrirVisualizacao(info.event);
+    }
 },
 
                     eventDrop: async function(info){
@@ -379,6 +385,56 @@ await fetch('/eventos/' + info.event.id, {
                 calendar.refetchEvents();
 
             });
+        function abrirVisualizacao(evento)
+        {
+            document.getElementById(
+                'viewTitulo'
+            ).innerText = evento.title;
+
+            document.getElementById(
+                'viewDisciplina'
+            ).innerText =
+                evento.extendedProps.disciplina ?? '-';
+
+            document.getElementById(
+                'viewProfessor'
+            ).innerText =
+                evento.extendedProps.professor ?? '-';
+
+            document.getElementById(
+                'viewData'
+            ).innerText =
+                evento.extendedProps.data_inicio ?? '-';
+
+            document.getElementById(
+                'viewHorario'
+            ).innerText =
+                (evento.extendedProps.hora_inicio ?? '')
+                + ' - ' +
+                (evento.extendedProps.hora_fim ?? '');
+
+            document.getElementById(
+                'viewTipo'
+            ).innerText =
+                evento.extendedProps.tipo ?? '-';
+
+            document.getElementById(
+                'viewDescricao'
+            ).innerText =
+                evento.extendedProps.descricao ?? '-';
+
+            document.getElementById(
+                'modalVisualizar'
+            ).style.display = 'flex';
+        }
+
+        function fecharVisualizacao()
+        {
+            document.getElementById(
+                'modalVisualizar'
+            ).style.display = 'none';
+        }
+        
     </script>
 
 </body>

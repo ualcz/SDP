@@ -133,35 +133,50 @@ class CalendarioController extends Controller
             $ofertas
         )->get();
     }
+    $eventos = $eventos->load(
+    'oferta.disciplina',
+    'oferta.professor'
+);
 
     $dados = $eventos->map(function ($evento) {
 
-        return [
-            'id' => $evento->id,
+    $oferta = $evento->oferta;
 
-            'title' => $evento->titulo,
+    return [
 
-            'start' => $evento->data_inicio,
+        'id' => $evento->id,
 
-            'color' => $this->corPorTipo(
-                $evento->tipo
-            ),
+        'title' => $evento->titulo,
 
-            'extendedProps' => [
+        'start' => $evento->data_inicio,
 
-                 'tipo' => $evento->tipo,
+        'color' => $this->corPorTipo(
+            $evento->tipo
+        ),
 
-                 'hora_inicio' => $evento->hora_inicio,
+        'extendedProps' => [
 
-                'hora_fim' => $evento->hora_fim,
+            'tipo' => $evento->tipo,
 
-                'descricao' => $evento->descricao,
+            'hora_inicio' => $evento->hora_inicio,
 
-                'disciplina_professor_id' =>
-                    $evento->disciplina_professor_id
-            ]
-        ];
-    });
+            'hora_fim' => $evento->hora_fim,
+
+            'descricao' => $evento->descricao,
+
+            'data_inicio' => $evento->data_inicio,
+
+            'disciplina' =>
+                $oferta?->disciplina?->nome,
+
+            'professor' =>
+                $oferta?->professor?->nome,
+
+            'disciplina_professor_id' =>
+                $evento->disciplina_professor_id
+        ]
+    ];
+});
 
     return response()->json($dados);
 }

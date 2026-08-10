@@ -1,3 +1,54 @@
+<div id="modalVisualizar" class="modal">
+
+    <div class="modal-content">
+
+        <h2 id="viewTitulo"></h2>
+
+        <p>
+            <strong>Disciplina:</strong>
+            <span id="viewDisciplina"></span>
+        </p>
+
+        <p>
+            <strong>Professor:</strong>
+            <span id="viewProfessor"></span>
+        </p>
+
+        <p>
+            <strong>Data:</strong>
+            <span id="viewData"></span>
+        </p>
+
+        <p>
+            <strong>Horário:</strong>
+            <span id="viewHorario"></span>
+        </p>
+
+        <p>
+            <strong>Tipo:</strong>
+            <span id="viewTipo"></span>
+        </p>
+
+        <p>
+            <strong>Descrição:</strong>
+            <span id="viewDescricao"></span>
+        </p>
+
+        <div class="botoes-modal">
+
+            <button
+                type="button"
+                onclick="fecharVisualizacao()"
+            >
+                Fechar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <div id="modalEvento" class="modal">
 
     <div class="modal-content">
