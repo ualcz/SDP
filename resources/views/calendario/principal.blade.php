@@ -162,7 +162,11 @@ const EH_REPRESENTANTE =
         let calendar;
         let turmaSelecionada = '';
 
-        document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+
+    if (EH_REPRESENTANTE) {
+        carregarProfessores();
+    }
 
     carregarOfertas();
 
@@ -412,6 +416,24 @@ const EH_REPRESENTANTE =
             'selectTurma'
         );
 
+const selectProfessor =
+    document.getElementById(
+        'professor_id'
+    );
+
+
+if (selectProfessor) {
+
+    selectProfessor.addEventListener(
+        'change',
+        function() {
+
+            carregarOfertas();
+
+        }
+    );
+}
+
 
     if (selectTurma) {
 
@@ -451,24 +473,36 @@ const EH_REPRESENTANTE =
         function fecharModal() {
             document.getElementById('modalEvento').style.display = 'none';
         }
-        function carregarOfertas(){
-    const select =
+function carregarOfertas() {
+
+    const selectDisciplina =
         document.getElementById(
             'disciplina_professor_id'
         );
 
+    const selectProfessor =
+        document.getElementById(
+            'professor_id'
+        );
 
-    if (!select) {
+
+    if (!selectDisciplina) {
         return;
     }
 
 
-    select.innerHTML = '';
+    /*
+    |--------------------------------------------------------------------------
+    | Limpa o select de disciplinas
+    |--------------------------------------------------------------------------
+    */
+
+    selectDisciplina.innerHTML = '';
 
 
     /*
     |--------------------------------------------------------------------------
-    | Professor
+    | PROFESSOR
     |--------------------------------------------------------------------------
     */
 
@@ -486,7 +520,7 @@ const EH_REPRESENTANTE =
             option.text =
                 'Selecione uma turma primeiro';
 
-            select.appendChild(
+            selectDisciplina.appendChild(
                 option
             );
 
@@ -495,10 +529,10 @@ const EH_REPRESENTANTE =
 
 
         /*
-        |--------------------------------------------------------------
-        | Mostra somente disciplinas do professor
-        | naquela turma
-        |--------------------------------------------------------------
+        |----------------------------------------------------------------------
+        | Somente disciplinas do professor
+        | na turma selecionada
+        |----------------------------------------------------------------------
         */
 
         OFERTAS
@@ -506,6 +540,7 @@ const EH_REPRESENTANTE =
 
                 return oferta.turma_codigo
                     === turmaSelecionada;
+
             })
             .forEach(function(oferta) {
 
@@ -520,7 +555,7 @@ const EH_REPRESENTANTE =
                 option.text =
                     oferta.disciplina.nome;
 
-                select.appendChild(
+                selectDisciplina.appendChild(
                     option
                 );
             });
@@ -531,11 +566,145 @@ const EH_REPRESENTANTE =
 
     /*
     |--------------------------------------------------------------------------
-    | Representante
+    | REPRESENTANTE
+    |--------------------------------------------------------------------------
+    */
+
+    if (EH_REPRESENTANTE) {
+
+        /*
+        |----------------------------------------------------------------------
+        | Ainda não selecionou professor
+        |----------------------------------------------------------------------
+        */
+
+        if (
+            !selectProfessor ||
+            !selectProfessor.value
+        ) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+            option.value = '';
+
+            option.text =
+                'Selecione um professor primeiro';
+
+            selectDisciplina.appendChild(
+                option
+            );
+
+            return;
+        }
+
+
+        /*
+        |----------------------------------------------------------------------
+        | Professor selecionado
+        |----------------------------------------------------------------------
+        */
+
+        const professorId =
+            selectProfessor.value;
+
+
+        OFERTAS
+            .filter(function(oferta) {
+
+                return String(
+                    oferta.professor_id
+                ) === String(
+                    professorId
+                );
+
+            })
+            .forEach(function(oferta) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+                option.value =
+                    oferta.id;
+
+                option.text =
+                    oferta.disciplina.nome;
+
+                selectDisciplina.appendChild(
+                    option
+                );
+            });
+    }
+}
+
+
+function carregarProfessores() {
+
+    const select =
+        document.getElementById(
+            'professor_id'
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    select.innerHTML = '';
+
+
+    const professores = [];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Percorre as ofertas e cria uma lista de professores únicos
     |--------------------------------------------------------------------------
     */
 
     OFERTAS.forEach(function(oferta) {
+
+        if (!oferta.professor) {
+            return;
+        }
+
+
+        const jaExiste =
+            professores.some(function(professor) {
+
+                return String(professor.id)
+                    === String(oferta.professor_id);
+
+            });
+
+
+        if (!jaExiste) {
+
+            professores.push({
+
+                id:
+                    oferta.professor_id,
+
+                nome:
+                    oferta.professor.nome
+
+            });
+        }
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Adiciona os professores ao select
+    |--------------------------------------------------------------------------
+    */
+
+    professores.forEach(function(professor) {
 
         const option =
             document.createElement(
@@ -543,10 +712,10 @@ const EH_REPRESENTANTE =
             );
 
         option.value =
-            oferta.id;
+            professor.id;
 
         option.text =
-            oferta.disciplina.nome;
+            professor.nome;
 
         select.appendChild(
             option
@@ -577,6 +746,12 @@ const EH_REPRESENTANTE =
     document.getElementById(
         'formEvento'
     ).reset();
+
+    if (EH_REPRESENTANTE) {
+     carregarProfessores();
+
+}
+carregarOfertas();
 
 
     document.getElementById(
@@ -685,7 +860,25 @@ const EH_REPRESENTANTE =
         }
     }
 
+    /*
+|--------------------------------------------------------------------------
+| Representante
+|--------------------------------------------------------------------------
+*/
 
+if (EH_REPRESENTANTE) {
+
+    const selectProfessor =
+        document.getElementById(
+            'professor_id'
+        );
+
+    if (selectProfessor) {
+
+        selectProfessor.value =
+            evento.extendedProps.professor_id;
+    }
+}
     carregarOfertas();
 
 

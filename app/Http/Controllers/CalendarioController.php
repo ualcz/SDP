@@ -36,15 +36,15 @@ class CalendarioController extends Controller
             )->first();
 
             if ($professor) {
-
-                $ofertas = DisciplinaProfessor::with(
-                    'disciplina'
-                )
-                ->where(
-                    'professor_id',
-                    $professor->id
-                )
-                ->get();
+                $ofertas = DisciplinaProfessor::with([
+                    'disciplina',
+                    'professor'
+])
+            ->where(
+                'professor_id',
+                $professor->id
+)
+->get();
 
                 /*
                 |--------------------------------------------------------------
@@ -67,10 +67,10 @@ class CalendarioController extends Controller
         */
 
         elseif ($usuario->representanteAtivo()) {
-
-            $ofertas = DisciplinaProfessor::with(
-                'disciplina'
-            )
+            $ofertas = DisciplinaProfessor::with([
+                'disciplina',
+                'professor'
+            ])
             ->where(
                 'turma_codigo',
                 $usuario->turma_codigo
@@ -339,6 +339,8 @@ class CalendarioController extends Controller
 
                     'professor' =>
                         $oferta?->professor?->nome,
+                    'professor_id' =>
+                        $oferta?->professor_id,
 
                     'turma_codigo' =>
                         $oferta?->turma_codigo,

@@ -84,11 +84,25 @@
             <label>Hora final</label>
 
             <input type="time" id="hora_fim">
-           <label>Disciplina</label>
+@if ($ehRepresentante)
+
+    <label>Professor</label>
+
+    <select id="professor_id">
+        <option value="">
+            Selecione um professor
+        </option>
+    </select>
+
+@endif
+
+<label>Disciplina</label>
 
 <select id="disciplina_professor_id" required>
 
-    
+    <option value="">
+        Selecione uma disciplina
+    </option>
 
 </select>
 
