@@ -1,0 +1,247 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    background:#f8f8f8;
+
+    padding:20px;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    position:relative;
+
+}
+
+.background-verde{
+
+    position:fixed;
+
+    left:0;
+    bottom:0;
+
+    width:100%;
+    height:220px;
+
+    overflow:hidden;
+
+    z-index:0;
+
+}
+
+.background-verde::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220%;
+    height:220px;
+
+    left:-60%;
+    bottom:-110px;
+
+    background:#0a6e29;
+
+    border-radius:43% 57% 38% 62% /
+                  50% 40% 60% 50%;
+
+}
+
+.background-verde::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:220%;
+    height:180px;
+
+    left:-50%;
+    bottom:-80px;
+
+    background:#008f2f;
+
+    border-radius:55% 45% 60% 40% /
+                  45% 60% 40% 55%;
+
+    opacity:.9;
+
+}
+
+.container{
+
+    width:100%;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+.logo-area{
+
+    text-align:center;
+    margin-bottom:20px;
+
+}
+
+.logo-area img{
+
+    width:320px;
+    max-width:90%;
+
+}
+
+.dashboard-card{
+
+    width:100%;
+    max-width:650px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+
+}
+
+.dashboard-card h1{
+
+    text-align:center;
+
+    color:#008f2f;
+
+    font-size:34px;
+
+}
+
+.dashboard-card h1::after{
+
+    content:"";
+
+    display:block;
+
+    width:90px;
+    height:4px;
+
+    background:#d10000;
+
+    margin:10px auto 20px;
+
+    border-radius:20px;
+
+}
+
+.bem-vindo{
+
+    text-align:center;
+
+    color:#444;
+
+    font-size:18px;
+
+    margin-bottom:30px;
+
+}
+
+.acoes{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+.botao{
+
+    width:100%;
+
+    height:55px;
+
+    background:#008f2f;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:12px;
+
+    font-size:18px;
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.botao:hover{
+
+    background:#006d24;
+
+}
+
+@media(max-width:768px){
+
+    body{
+
+        padding:15px;
+
+    }
+
+    .logo-area img{
+
+        width:250px;
+
+    }
+
+    .dashboard-card{
+
+        padding:20px;
+
+    }
+
+    .dashboard-card h1{
+
+        font-size:28px;
+
+    }
+
+    .bem-vindo{
+
+        font-size:16px;
+
+    }
+
+    .botao{
+
+        height:48px;
+
+        font-size:16px;
+
+    }
+
+}
