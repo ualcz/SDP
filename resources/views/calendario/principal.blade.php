@@ -106,7 +106,35 @@
 
         <h1>Calendário Acadêmico</h1>
 
-        <div id="calendar"></div>
+@if ($ehProfessor)
+
+    <div style="margin-bottom: 20px;">
+
+        <label for="selectTurma">
+            <strong>Selecione a turma:</strong>
+        </label>
+
+        <select id="selectTurma">
+
+            <option value="">
+                Selecione uma turma
+            </option>
+
+            @foreach ($turmas as $turma)
+
+                <option value="{{ $turma }}">
+                    {{ $turma }}
+                </option>
+
+            @endforeach
+
+        </select>
+
+    </div>
+
+@endif
+
+<div id="calendar"></div>
 
     </div>
 
@@ -122,106 +150,299 @@ const PODE_EXCLUIR =
 const OFERTAS =
     @json($ofertas);
 
+const EH_PROFESSOR =
+    @json($ehProfessor);
+
+const EH_REPRESENTANTE =
+    @json($ehRepresentante);
+
 </script>
 
     <script>
         let calendar;
+        let turmaSelecionada = '';
 
         document.addEventListener('DOMContentLoaded', function() {
-        carregarOfertas();
-            calendar = new FullCalendar.Calendar(
-                document.getElementById('calendar'), {
-                    locale: 'pt-br',
 
-                    initialView: 'dayGridMonth',
+    carregarOfertas();
 
-                    editable: PODE_GERENCIAR,
+    calendar = new FullCalendar.Calendar(
+        document.getElementById('calendar'),
+        {
 
-                    selectable: PODE_GERENCIAR,
+            locale: 'pt-br',
 
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,listMonth'
-                    },
+            initialView: 'dayGridMonth',
 
-                    buttonText: {
-                        today: 'Hoje',
-                        month: 'Mês',
-                        week: 'Semana',
-                        list: 'Lista'
-                    },
+            /*
+            |--------------------------------------------------------------
+            | Não permitimos arrastar eventos do professor.
+            | A edição será feita pelo modal.
+            |--------------------------------------------------------------
+            */
 
-                    events: '/eventos',
+            editable:
+                PODE_GERENCIAR && !EH_PROFESSOR,
 
-                    dateClick: function(info) {
+            selectable:
+                PODE_GERENCIAR,
 
-                     if (!PODE_GERENCIAR) {
-                            return;
-                        }
+            headerToolbar: {
 
-                    novoEvento(info.dateStr);
-                    },
-                    eventClick: function(info) {
-        console.log('EVENTO CLICADOo');
-        console.log(info.event);
-        console.log(info.event.extendedProps);
+                left: 'prev,next today',
 
-        if (PODE_GERENCIAR) {
+                center: 'title',
 
-            editarEvento(info.event);
+                right:
+                    'dayGridMonth,timeGridWeek,listMonth'
+            },
 
-        } else {
+            buttonText: {
 
-            abrirVisualizacao(info.event);
+                today: 'Hoje',
+
+                month: 'Mês',
+
+                week: 'Semana',
+
+                list: 'Lista'
+            },
+
+            /*
+            |--------------------------------------------------------------
+            | A URL será montada dinamicamente.
+            |--------------------------------------------------------------
+            */
+
+            events: function(
+                fetchInfo,
+                successCallback,
+                failureCallback
+            ) {
+
+                let url = '/eventos';
+
+                if (
+                    EH_PROFESSOR &&
+                    turmaSelecionada
+                ) {
+
+                    url +=
+                        '?turma_codigo=' +
+                        encodeURIComponent(
+                            turmaSelecionada
+                        );
+                }
+
+                fetch(url)
+
+                    .then(response =>
+                        response.json()
+                    )
+
+                    .then(data =>
+                        successCallback(data)
+                    )
+
+                    .catch(error => {
+
+                        console.error(error);
+
+                        failureCallback(error);
+                    });
+            },
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Clique em uma data
+            |--------------------------------------------------------------------------
+            */
+
+            dateClick: function(info) {
+
+                if (!PODE_GERENCIAR) {
+
+                    return;
+                }
+
+
+                /*
+                |--------------------------------------------------------------
+                | Professor precisa selecionar turma
+                |--------------------------------------------------------------
+                */
+
+                if (
+                    EH_PROFESSOR &&
+                    !turmaSelecionada
+                ) {
+
+                    alert(
+                        'Selecione uma turma antes de criar um evento.'
+                    );
+
+                    return;
+                }
+
+
+                novoEvento(info.dateStr);
+            },
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Clique em evento
+            |--------------------------------------------------------------------------
+            */
+
+            eventClick: function(info) {
+
+                console.log(
+                    'EVENTO CLICADO'
+                );
+
+                console.log(
+                    info.event
+                );
+
+                console.log(
+                    info.event.extendedProps
+                );
+
+
+                /*
+                |--------------------------------------------------------------
+                | Se o usuário puder editar ESTE evento
+                |--------------------------------------------------------------
+                */
+
+                if (
+                    info.event.extendedProps.pode_editar
+                ) {
+
+                    editarEvento(
+                        info.event
+                    );
+
+                } else {
+
+                    abrirVisualizacao(
+                        info.event
+                    );
+                }
+            },
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Arrastar evento
+            |--------------------------------------------------------------------------
+            */
+
+            eventDrop: async function(info) {
+
+                await fetch(
+                    '/eventos/' +
+                    info.event.id,
+                    {
+
+                        method: 'PUT',
+
+                        headers: {
+
+                            'Content-Type':
+                                'application/json',
+
+                            'X-CSRF-TOKEN':
+                                document
+                                    .querySelector(
+                                        'meta[name="csrf-token"]'
+                                    )
+                                    .content
+                        },
+
+                        body: JSON.stringify({
+
+                            titulo:
+                                info.event.title,
+
+                            tipo:
+                                info.event.extendedProps.tipo,
+
+                            data_inicio:
+                                info.event.startStr,
+
+                            hora_inicio:
+                                info.event.extendedProps.hora_inicio,
+
+                            hora_fim:
+                                info.event.extendedProps.hora_fim,
+
+                            descricao:
+                                info.event.extendedProps.descricao,
+
+                            disciplina_professor_id:
+                                info.event.extendedProps
+                                    .disciplina_professor_id
+                        })
+                    }
+                );
+
+            }
+        }
+    );
+
+
+    console.log(
+        "Calendário iniciado"
+    );
+
+    calendar.render();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mudança de turma
+    |--------------------------------------------------------------------------
+    */
+
+    const selectTurma =
+        document.getElementById(
+            'selectTurma'
+        );
+
+
+    if (selectTurma) {
+
+        selectTurma.addEventListener(
+            'change',
+            function() {
+
+                turmaSelecionada =
+                    this.value;
+
+                /*
+                |--------------------------------------------------------------
+                | Atualiza as disciplinas disponíveis
+                |--------------------------------------------------------------
+                */
+
+                carregarOfertas();
+
+
+                /*
+                |--------------------------------------------------------------
+                | Recarrega eventos da turma
+                |--------------------------------------------------------------
+                */
+
+                calendar.refetchEvents();
+            }
+        );
     }
-},
-
-                    eventDrop: async function(info){
-
-await fetch('/eventos/' + info.event.id, {
-
-    method: 'PUT',
-
-    headers: {
-        'Content-Type': 'application/json',
-
-        'X-CSRF-TOKEN':
-            document
-            .querySelector('meta[name="csrf-token"]')
-            .content
-    },
-
-    body: JSON.stringify({
-
-    titulo: info.event.title,
-
-    tipo: info.event.extendedProps.tipo,
-
-    data_inicio: info.event.startStr,
-
-    hora_inicio: info.event.extendedProps.hora_inicio,
-
-    hora_fim: info.event.extendedProps.hora_fim,
-
-    descricao: info.event.extendedProps.descricao,
-
-    disciplina_professor_id:
-        info.event.extendedProps
-            .disciplina_professor_id
-})
 
 });
-
-}
-                }
-            );
-
-            console.log("Calendário iniciado");
-
-            calendar.render();
-
-        });
 
         function abrirModal() {
             document.getElementById('modalEvento').style.display = 'flex';
@@ -230,80 +451,267 @@ await fetch('/eventos/' + info.event.id, {
         function fecharModal() {
             document.getElementById('modalEvento').style.display = 'none';
         }
-        function carregarOfertas() {
-            let select =
-            document.getElementById(
+        function carregarOfertas(){
+    const select =
+        document.getElementById(
             'disciplina_professor_id'
         );
 
+
+    if (!select) {
+        return;
+    }
+
+
     select.innerHTML = '';
 
-    OFERTAS.forEach(function(oferta){
 
-        let option =
-            document.createElement('option');
+    /*
+    |--------------------------------------------------------------------------
+    | Professor
+    |--------------------------------------------------------------------------
+    */
 
-        option.value = oferta.id;
+    if (EH_PROFESSOR) {
+
+        if (!turmaSelecionada) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+            option.value = '';
+
+            option.text =
+                'Selecione uma turma primeiro';
+
+            select.appendChild(
+                option
+            );
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------
+        | Mostra somente disciplinas do professor
+        | naquela turma
+        |--------------------------------------------------------------
+        */
+
+        OFERTAS
+            .filter(function(oferta) {
+
+                return oferta.turma_codigo
+                    === turmaSelecionada;
+            })
+            .forEach(function(oferta) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+                option.value =
+                    oferta.id;
+
+                option.text =
+                    oferta.disciplina.nome;
+
+                select.appendChild(
+                    option
+                );
+            });
+
+        return;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Representante
+    |--------------------------------------------------------------------------
+    */
+
+    OFERTAS.forEach(function(oferta) {
+
+        const option =
+            document.createElement(
+                'option'
+            );
+
+        option.value =
+            oferta.id;
 
         option.text =
             oferta.disciplina.nome;
 
-        select.appendChild(option);
+        select.appendChild(
+            option
+        );
     });
 }
 
-        function novoEvento(data) {
+        function novoEvento(data){
+    if (
+        EH_PROFESSOR &&
+        !turmaSelecionada
+    ) {
 
-            document.getElementById('tituloModal').innerText = 'Novo Evento';
+        alert(
+            'Selecione uma turma antes de criar um evento.'
+        );
 
-            document.getElementById('formEvento').reset();
+        return;
+    }
 
-            document.getElementById('evento_id').value = '';
 
-            document.getElementById('data_inicio').value = data;
+    document.getElementById(
+        'tituloModal'
+    ).innerText =
+        'Novo Evento';
 
-            document.getElementById('btnExcluir').style.display = 'none';
-            document.getElementById('btnSalvar').style.display = PODE_GERENCIAR ? 'inline' : 'none';
 
-            abrirModal();
+    document.getElementById(
+        'formEvento'
+    ).reset();
+
+
+    document.getElementById(
+        'evento_id'
+    ).value = '';
+
+
+    document.getElementById(
+        'data_inicio'
+    ).value = data;
+
+
+    carregarOfertas();
+
+
+    document.getElementById(
+        'btnExcluir'
+    ).style.display =
+        'none';
+
+
+    document.getElementById(
+        'btnSalvar'
+    ).style.display =
+        PODE_GERENCIAR
+            ? 'inline'
+            : 'none';
+
+
+    abrirModal();
+}
+
+        function editarEvento(evento)
+{
+    document.getElementById(
+        'tituloModal'
+    ).innerText =
+        'Editar Evento';
+
+
+    document.getElementById(
+        'evento_id'
+    ).value =
+        evento.id;
+
+
+    document.getElementById(
+        'titulo'
+    ).value =
+        evento.title;
+
+
+    document.getElementById(
+        'tipo'
+    ).value =
+        evento.extendedProps.tipo;
+
+
+    document.getElementById(
+        'data_inicio'
+    ).value =
+        evento.startStr;
+
+
+    document.getElementById(
+        'hora_inicio'
+    ).value =
+        evento.extendedProps.hora_inicio
+        ?? '';
+
+
+    document.getElementById(
+        'hora_fim'
+    ).value =
+        evento.extendedProps.hora_fim
+        ?? '';
+
+
+    document.getElementById(
+        'descricao'
+    ).value =
+        evento.extendedProps.descricao
+        ?? '';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Professor
+    |--------------------------------------------------------------------------
+    */
+
+    if (EH_PROFESSOR) {
+
+        turmaSelecionada =
+            evento.extendedProps.turma_codigo;
+
+        const selectTurma =
+            document.getElementById(
+                'selectTurma'
+            );
+
+        if (selectTurma) {
+
+            selectTurma.value =
+                turmaSelecionada;
         }
+    }
 
-        function editarEvento(evento) {
 
-            document.getElementById('tituloModal').innerText = 'Editar Evento';
+    carregarOfertas();
 
-            document.getElementById('evento_id').value = evento.id;
 
-            document.getElementById('titulo').value = evento.title;
+    document.getElementById(
+        'disciplina_professor_id'
+    ).value =
+        evento.extendedProps
+            .disciplina_professor_id;
 
-            document.getElementById('tipo').value = evento.extendedProps.tipo;
 
-            document.getElementById('data_inicio').value = evento.startStr;
+    document.getElementById(
+        'btnSalvar'
+    ).style.display =
+        'inline';
 
-            document.getElementById('hora_inicio').value =
-                evento.extendedProps.hora_inicio ?? '';
 
-            document.getElementById('hora_fim').value =
-                evento.extendedProps.hora_fim ?? '';
-
-            document.getElementById('descricao').value =
-                evento.extendedProps.descricao ?? '';
-
-            document.getElementById('disciplina_professor_id').value =
-                evento.extendedProps
-                 .disciplina_professor_id;
-
-            document.getElementById('btnSalvar')
-            .style.display = PODE_GERENCIAR ? 'inline' : 'none';
-
-            document.getElementById('btnExcluir')
-    .style.display =
+    document.getElementById(
+        'btnExcluir'
+    ).style.display =
         PODE_EXCLUIR
             ? 'inline'
             : 'none';
 
-            abrirModal();
-        }
+
+    abrirModal();
+}
 
         document.getElementById('formEvento')
             .addEventListener('submit', async function(e) {

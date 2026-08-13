@@ -88,9 +88,7 @@
 
 <select id="disciplina_professor_id" required>
 
-    <option value="56">
-        Teste
-    </option>
+    
 
 </select>
 
