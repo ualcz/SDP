@@ -337,6 +337,7 @@ class CalendarioController extends Controller
                     'disciplina' =>
                         $oferta?->disciplina?->nome,
 
+                    
                     'professor' =>
                         $oferta?->professor?->nome,
                     'professor_id' =>
