@@ -94,7 +94,9 @@ class CalendarioController extends Controller
                 || $usuario->representanteAtivo(),
 
             'podeExcluirEventos' =>
-                $usuario->isAdmin(),
+            $usuario->isAdmin()
+            || $usuario->isProfessor()
+            || $usuario->representanteAtivo(),
 
             'ehProfessor' =>
                 $usuario->isProfessor(),
@@ -263,6 +265,7 @@ class CalendarioController extends Controller
             $oferta = $evento->oferta;
 
             $podeEditar = false;
+            $podeExcluir = false;
 
             /*
             |--------------------------------------------------------------
@@ -273,6 +276,7 @@ class CalendarioController extends Controller
             if ($usuario->isAdmin()) {
 
                 $podeEditar = true;
+                $podeExcluir = $podeEditar;
             }
 
             /*
@@ -289,6 +293,7 @@ class CalendarioController extends Controller
             ) {
 
                 $podeEditar = true;
+                $podeExcluir = $podeEditar;
             }
 
             /*
@@ -304,6 +309,7 @@ class CalendarioController extends Controller
             ) {
 
                 $podeEditar = true;
+                $podeExcluir = $podeEditar;
             }
 
             return [
@@ -356,7 +362,9 @@ class CalendarioController extends Controller
                     */
 
                     'pode_editar' =>
-                        $podeEditar
+                        $podeEditar,
+                    'pode_excluir' =>
+                        $podeExcluir
                 ]
             ];
         });
@@ -547,21 +555,31 @@ class CalendarioController extends Controller
     |--------------------------------------------------------------------------
     */
     public function destroy(Evento $evento)
-    {
-        if (!auth()->user()->podeExcluirEventos()) {
+{
+    $usuario = auth()->user();
 
-            abort(
-                403,
-                'Você não possui permissão.'
-            );
-        }
+    /*
+    |--------------------------------------------------------------------------
+    | Verifica se o usuário pode excluir ESTE evento
+    |--------------------------------------------------------------------------
+    */
 
-        $evento->delete();
+    if (!$this->usuarioPodeGerenciarEvento($evento)) {
 
-        return response()->json([
-            'success' => true
-        ]);
+        abort(
+            403,
+            'Você não possui permissão para excluir este evento.'
+        );
     }
+
+
+    $evento->delete();
+
+
+    return response()->json([
+        'success' => true
+    ]);
+}
 
 
     /*

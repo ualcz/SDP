@@ -111,7 +111,6 @@
 <textarea id="descricao"></textarea>
 
             <div class="botoes-modal">
-
                 <button type="button" id="btnExcluir">
                     Excluir
                 </button>
@@ -123,7 +122,6 @@
                 <button type="submit" id="btnSalvar">
                 Salvar
                 </button>
-
             </div>
 
         </form>

@@ -95,7 +95,7 @@
         }
 
         #btnExcluir {
-            background: #FCA5A5;
+            background: #eba4a4;
         }
     </style>
 </head>
@@ -896,11 +896,10 @@ if (EH_REPRESENTANTE) {
 
 
     document.getElementById(
-        'btnExcluir'
-    ).style.display =
-        PODE_EXCLUIR
-            ? 'inline'
-            : 'none';
+    'btnExcluir').style.display =
+    evento.extendedProps.pode_excluir
+        ? 'inline'
+        : 'none';
 
 
     abrirModal();
@@ -961,31 +960,60 @@ if (EH_REPRESENTANTE) {
             });
 
         document.getElementById('btnExcluir')
-            .addEventListener('click', async function() {
+    .addEventListener('click', async function() {
 
-                if (!confirm('Excluir evento?')) {
-                    return;
+        console.log('BOTÃO EXCLUIR CLICADO');
+
+        if (!confirm('Excluir evento?')) {
+            return;
+        }
+
+        let id =
+            document.getElementById('evento_id').value;
+
+        console.log('ID DO EVENTO:', id);
+
+        let resposta =
+            await fetch('/eventos/' + id, {
+
+                method: 'DELETE',
+
+                headers: {
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector(
+                                'meta[name="csrf-token"]'
+                            )
+                            .content
                 }
 
-                let id = document.getElementById('evento_id').value;
-
-                await fetch('/eventos/' + id, {
-
-                    method: 'DELETE',
-
-                    headers: {
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            .content
-                    }
-
-                });
-
-                fecharModal();
-
-                calendar.refetchEvents();
-
             });
+
+        console.log(
+            'STATUS:',
+            resposta.status
+        );
+
+        console.log(
+            'RESPOSTA:',
+            await resposta.text()
+        );
+
+        if (!resposta.ok) {
+
+            alert(
+                'Erro ao excluir evento. Status: '
+                + resposta.status
+            );
+
+            return;
+        }
+
+        fecharModal();
+
+        calendar.refetchEvents();
+
+    });
         function abrirVisualizacao(evento)
         {
             document.getElementById(
