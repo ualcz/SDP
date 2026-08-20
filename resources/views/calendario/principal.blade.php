@@ -8,15 +8,17 @@
 
     <title>Calendário Acadêmico</title>
 
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 40px;
-            font-family: Arial, sans-serif;
-            background: #F8FAFC;
-        }
+body {
+    margin: 0;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    background: #F8FAFC;
+    position: relative;
+}
 
         .container {
             max-width: 1200px;
@@ -67,6 +69,88 @@
 
     position: relative;
 }
+.navbar {
+    max-width: 1200px;
+    margin: 0 auto 20px auto;
+
+    background: white;
+
+    padding: 12px 20px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.navbar-esquerda {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+.nav-botao {
+    text-decoration: none;
+
+    color: #475569;
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    transition: .2s;
+}
+
+.nav-botao:hover {
+    background: #F1F5F9;
+
+    color: #1E293B;
+}
+
+.nav-botao.ativo {
+    background: #E2E8F0;
+
+    color: #1E293B;
+
+    font-weight: bold;
+}
+
+.navbar-direita {
+    display: flex;
+
+    align-items: center;
+}
+
+.usuario-logado {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    color: #334155;
+}
+
+.usuario-logado strong {
+    font-size: 15px;
+}
+
+.usuario-logado span {
+    margin-top: 3px;
+
+    font-size: 13px;
+
+    color: #64748B;
+}
 
         input,
         select,
@@ -102,7 +186,9 @@
 
 <body>
 
-    <div class="container">
+@include('layouts.navegacao')
+
+<div class="container">
 
         <h1>Calendário Acadêmico</h1>
 
@@ -177,6 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
             locale: 'pt-br',
 
             initialView: 'dayGridMonth',
+
+
 
             /*
             |--------------------------------------------------------------
@@ -724,6 +812,20 @@ function carregarProfessores() {
 }
 
         function novoEvento(data){
+            const hoje =
+                new Date()
+                    .toISOString()
+                    .split('T')[0];
+
+            if (data < hoje) {
+
+            alert(
+                'Não é possível criar eventos em datas passadas.'
+            );
+
+            return;
+    }
+            
     if (
         EH_PROFESSOR &&
         !turmaSelecionada
@@ -1029,6 +1131,11 @@ if (EH_REPRESENTANTE) {
                 'viewProfessor'
             ).innerText =
                 evento.extendedProps.professor ?? '-';
+
+            document.getElementById(
+                'viewCriador'
+            ).innerText =
+                evento.extendedProps.criador ?? '-';
 
             document.getElementById(
                 'viewData'

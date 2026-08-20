@@ -230,7 +230,8 @@ class CalendarioController extends Controller
 
         $eventos = $eventos->load(
             'oferta.disciplina',
-            'oferta.professor'
+            'oferta.professor',
+            'criador'
         );
 
 
@@ -320,9 +321,7 @@ class CalendarioController extends Controller
 
                 'start' => $evento->data_inicio,
 
-                'color' => $this->corPorTipo(
-                    $evento->tipo
-                ),
+                'color' => $this->corEvento($evento),
 
                 'extendedProps' => [
 
@@ -343,6 +342,8 @@ class CalendarioController extends Controller
                     'disciplina' =>
                         $oferta?->disciplina?->nome,
 
+                    'criador' =>
+                        $evento->criador?->nome,
                     
                     'professor' =>
                         $oferta?->professor?->nome,
@@ -396,8 +397,8 @@ class CalendarioController extends Controller
             'tipo' =>
                 'required',
 
-            'data_inicio' =>
-                'required|date',
+'data_inicio' =>
+    'required|date|after_or_equal:today',
 
             'disciplina_professor_id' =>
                 'required|exists:disciplina_professor,id'
@@ -444,7 +445,9 @@ class CalendarioController extends Controller
                 $request->descricao,
 
             'disciplina_professor_id' =>
-                $request->disciplina_professor_id
+                $request->disciplina_professor_id,
+
+            'criado_por' => auth()->id()
         ]);
 
 
@@ -677,24 +680,41 @@ class CalendarioController extends Controller
     | Cor do evento
     |--------------------------------------------------------------------------
     */
+    private function corEvento($evento)
+    {
+        if (
+            \Carbon\Carbon::parse(
+                $evento->data_inicio
+            )->isBefore(
+                \Carbon\Carbon::today()
+            )
+        ) {
+            return '#bfbfbf';
+        }
+    
+        return $this->corPorTipo(
+            $evento->tipo
+        );
+    }
+    
     private function corPorTipo($tipo)
     {
         return match ($tipo) {
-
+    
             'prova' =>
-                '#FCA5A5',
-
+                '#E45756',
+    
             'trabalho' =>
-                '#FDBA74',
-
+                '#D9825B',
+    
             'seminario' =>
-                '#C4B5FD',
-
+                '#D6A83D',
+    
             'reuniao' =>
-                '#93C5FD',
-
+                '#53687A',
+    
             default =>
-                '#86EFAC'
+                '#81758F'
         };
     }
 }

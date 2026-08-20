@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Model;
 
 class Evento extends Model
@@ -15,7 +15,8 @@ class Evento extends Model
         'hora_inicio',
         'hora_fim',
         'descricao',
-        'disciplina_professor_id'
+        'disciplina_professor_id',
+        'criado_por',
     ];
 
     public function oferta()
@@ -25,4 +26,9 @@ class Evento extends Model
             'disciplina_professor_id'
         );
     }
+    public function criador()
+{
+    // mudei de User para usuario
+    return $this->belongsTo(Usuario::class, 'criado_por');
+}
 }

@@ -15,6 +15,10 @@
         </p>
 
         <p>
+            <strong>Criado por:</strong>
+            <span id="viewCriador"></span>
+        </p>
+        <p>
             <strong>Data:</strong>
             <span id="viewData"></span>
         </p>
