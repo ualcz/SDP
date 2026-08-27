@@ -15,6 +15,7 @@ class Usuario extends Authenticatable
         'matricula',
         'nome',
         'email',
+        'email_pessoal',
         'password',
         'senha_suap',
         'turma_codigo',

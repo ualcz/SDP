@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,11 @@ class Evento extends Model
         'descricao',
         'disciplina_professor_id',
         'criado_por',
+        'lembrete_enviado',
+    ];
+
+    protected $casts = [
+        'lembrete_enviado' => 'boolean',
     ];
 
     public function oferta()
@@ -26,9 +32,13 @@ class Evento extends Model
             'disciplina_professor_id'
         );
     }
+
     public function criador()
-{
-    // mudei de User para usuario
-    return $this->belongsTo(Usuario::class, 'criado_por');
+    {
+        return $this->belongsTo(
+            Usuario::class,
+            'criado_por'
+        );
+    }
 }
-}
+?>

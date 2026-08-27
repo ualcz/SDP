@@ -10,6 +10,7 @@ use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\SuapCrawlerController;
 use App\Http\Controllers\SuapExplorerController;
 use App\Http\Controllers\SuapTestController;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +167,15 @@ Route::put('/eventos/{evento}', [CalendarioController::class, 'update']);
 
 Route::delete('/eventos/{evento}', [CalendarioController::class, 'destroy']);
 
+//rota teste para email
+Route::get('/teste-email', function () {
+    Mail::raw('Este é um teste de envio de e-mail do SCAAE. Teste número 2', function ($message) {
+        $message->to('senhormu12q@gmail.com')
+                ->subject('Teste SCAAE');
+    });
+
+    return 'E-mail enviado!';
+});
 
 Route::middleware(['auth','role:admin'])
     ->prefix('admin')
