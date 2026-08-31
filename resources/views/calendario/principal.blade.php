@@ -54,6 +54,78 @@ body {
     z-index: 9999;
 }
 
+.lista-eventos-semana {
+    margin-top: 30px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.lista-eventos-semana h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.evento-semana {
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 5px solid #2c7be5;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+}
+
+.evento-semana:last-child {
+    margin-bottom: 0;
+}
+
+.evento-titulo {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.evento-informacoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.evento-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 150px;
+}
+
+.evento-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #777;
+}
+
+.navegacao-semana {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.navegacao-semana button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.navegacao-semana button:hover {
+    opacity: 0.85;
+}
+
 .modal-content {
     background: white;
 
@@ -222,6 +294,28 @@ body {
 
 <div id="calendar"></div>
 
+<div id="listaEventosSemana" class="lista-eventos-semana">
+
+    <h2 id="tituloSemanaEventos">Eventos da semana</h2>
+
+    <div id="eventosSemana">
+        <p>Nenhum evento disponível.</p>
+    </div>
+
+    <div class="navegacao-semana">
+        <button type="button" id="btnSemanaAnterior">
+            Semana anterior
+        </button>
+
+        <button type="button" id="btnProximaSemana">
+            Próxima semana
+        </button>
+    </div>
+
+</div>
+
+</div>
+
     </div>
 
     @include('calendario.modal-evento')
@@ -255,6 +349,109 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     carregarOfertas();
+
+    function atualizarListaEventosSemana() {
+
+const dataAtual = calendar.getDate();
+
+const inicioSemana = new Date(dataAtual);
+inicioSemana.setDate(
+    dataAtual.getDate() - dataAtual.getDay()
+);
+
+const fimSemana = new Date(inicioSemana);
+fimSemana.setDate(
+    inicioSemana.getDate() + 6
+);
+
+const eventos = calendar.getEvents().filter(evento => {
+
+    if (!evento.start) {
+        return false;
+    }
+
+    const dataEvento = new Date(evento.start);
+
+    return (
+        dataEvento >= inicioSemana &&
+        dataEvento <= fimSemana
+    );
+});
+
+const container = document.getElementById('eventosSemana');
+const titulo = document.getElementById('tituloSemanaEventos');
+
+const opcoesData = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+};
+
+titulo.textContent =
+    'Eventos de ' +
+    inicioSemana.toLocaleDateString('pt-BR', opcoesData) +
+    ' a ' +
+    fimSemana.toLocaleDateString('pt-BR', opcoesData);
+
+container.innerHTML = '';
+
+if (eventos.length === 0) {
+
+    container.innerHTML =
+        '<p>Nenhum evento disponível nesta semana.</p>';
+
+    return;
+}
+
+eventos.sort((a, b) => {
+    return a.start - b.start;
+});
+
+eventos.forEach(evento => {
+
+    const div = document.createElement('div');
+
+    div.classList.add('evento-semana');
+
+    const disciplina =
+        evento.extendedProps.disciplina || 'Não informada';
+
+    const professor =
+        evento.extendedProps.professor || 'Não informado';
+
+    const data =
+        evento.start.toLocaleDateString(
+            'pt-BR',
+            opcoesData
+        );
+
+        div.innerHTML = `
+    <div class="evento-titulo">
+        ${evento.title}
+    </div>
+
+    <div class="evento-informacoes">
+
+        <div class="evento-info">
+            <span class="evento-label">Disciplina</span>
+            <span>${disciplina}</span>
+        </div>
+
+        <div class="evento-info">
+            <span class="evento-label">Data</span>
+            <span>${data}</span>
+        </div>
+
+        <div class="evento-info">
+            <span class="evento-label">Professor</span>
+            <span>${professor}</span>
+        </div>
+
+    </div>
+`;
+    container.appendChild(div);
+});
+}
 
     calendar = new FullCalendar.Calendar(
         document.getElementById('calendar'),
@@ -344,6 +541,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
             },
 
+            eventsSet: function() {
+    atualizarListaEventosSemana();
+},
 
             /*
             |--------------------------------------------------------------------------
@@ -353,33 +553,56 @@ document.addEventListener('DOMContentLoaded', function() {
 
             dateClick: function(info) {
 
-                if (!PODE_GERENCIAR) {
+if (!PODE_GERENCIAR) {
+    return;
+}
 
-                    return;
-                }
+/*
+|--------------------------------------------------------------
+| Professor precisa selecionar turma
+|--------------------------------------------------------------
+*/
 
+if (
+    EH_PROFESSOR &&
+    !turmaSelecionada
+) {
+    alert(
+        'Selecione uma turma antes de criar um evento.'
+    );
 
-                /*
-                |--------------------------------------------------------------
-                | Professor precisa selecionar turma
-                |--------------------------------------------------------------
-                */
+    return;
+}
 
-                if (
-                    EH_PROFESSOR &&
-                    !turmaSelecionada
-                ) {
+/*
+|--------------------------------------------------------------
+| Verifica se já existem 3 eventos nesse dia
+|--------------------------------------------------------------
+*/
 
-                    alert(
-                        'Selecione uma turma antes de criar um evento.'
-                    );
+const eventosDoDia = calendar.getEvents().filter(evento => {
 
-                    return;
-                }
+    return evento.startStr.substring(0, 10) === info.dateStr;
 
+});
 
-                novoEvento(info.dateStr);
-            },
+if (eventosDoDia.length >= 3) {
+
+    alert(
+        'Não é possível criar um evento neste dia, pois esta turma já possui 3 avaliações marcadas para essa data.'
+    );
+
+    return;
+}
+
+/*
+|--------------------------------------------------------------
+| Abre o formulário
+|--------------------------------------------------------------
+*/
+
+novoEvento(info.dateStr);
+},
 
 
             /*
@@ -485,6 +708,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     );
 
+    document.getElementById('btnProximaSemana')
+    .addEventListener('click', function() {
+
+        calendar.next();
+        atualizarListaEventosSemana();
+    });
+
+
+document.getElementById('btnSemanaAnterior')
+    .addEventListener('click', function() {
+
+        calendar.prev();
+        atualizarListaEventosSemana();
+    });
+
+    let semanaEventos = 0;
 
     console.log(
         "Calendário iniciado"
@@ -728,6 +967,7 @@ function carregarOfertas() {
             });
     }
 }
+
 
 
 function carregarProfessores() {
@@ -1007,59 +1247,89 @@ if (EH_REPRESENTANTE) {
     abrirModal();
 }
 
-        document.getElementById('formEvento')
-            .addEventListener('submit', async function(e) {
+document.getElementById('formEvento')
+    .addEventListener('submit', async function(e) {
 
-                e.preventDefault();
+        e.preventDefault();
 
-                let id = document.getElementById('evento_id').value;
+        let id = document.getElementById('evento_id').value;
+        let url = '/eventos';
+        let metodo = 'POST';
 
-                let url = '/eventos';
+        if (id) {
+            url = '/eventos/' + id;
+            metodo = 'PUT';
+        }
 
-                let metodo = 'POST';
+        const dados = {
+            titulo: document.getElementById('titulo').value,
+            tipo: document.getElementById('tipo').value,
+            data_inicio: document.getElementById('data_inicio').value,
+            hora_inicio: document.getElementById('hora_inicio').value,
+            hora_fim: document.getElementById('hora_fim').value,
+            descricao: document.getElementById('descricao').value,
+            disciplina_professor_id:
+                document.getElementById('disciplina_professor_id').value
+        };
 
-                if (id) {
-                    url = '/eventos/' + id;
-                    metodo = 'PUT';
+        try {
+
+            const resposta = await fetch(url, {
+                method: metodo,
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .content
+                },
+
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+
+            /*
+             * Se o servidor recusou o evento
+             */
+            if (!resposta.ok) {
+
+                if (resultado.limite_atingido) {
+
+                    mostrarAlertaLimite(
+                        resultado.mensagem
+                    );
+
+                    return;
                 }
 
-                await fetch(url, {
-                    method: metodo,
+                alert(
+                    resultado.mensagem ||
+                    'Não foi possível salvar o evento.'
+                );
 
-                    headers: {
-                        'Content-Type': 'application/json',
+                return;
+            }
 
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            .content
-                    },
+            /*
+             * Só fecha o formulário se o evento
+             * realmente tiver sido salvo.
+             */
+            fecharModal();
 
-    body: JSON.stringify({
+            calendar.refetchEvents();
 
-        titulo: document.getElementById('titulo').value,
+        } catch (erro) {
 
-        tipo: document.getElementById('tipo').value,
+            console.error(erro);
 
-        data_inicio: document.getElementById('data_inicio').value,
-
-        hora_inicio: document.getElementById('hora_inicio').value,
-
-        hora_fim: document.getElementById('hora_fim').value,
-
-        descricao: document.getElementById('descricao').value,
-
-        disciplina_professor_id:
-            document.getElementById(
-                'disciplina_professor_id'
-            ).value
-})
-                });
-
-                fecharModal();
-
-                calendar.refetchEvents();
-
-            });
+            alert(
+                'Ocorreu um erro ao tentar salvar o evento. Verifique se as informações estão corretas.'
+            );
+        }
+    });
 
         document.getElementById('btnExcluir')
     .addEventListener('click', async function() {

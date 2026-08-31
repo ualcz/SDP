@@ -379,6 +379,109 @@ class CalendarioController extends Controller
     | Salva evento
     |--------------------------------------------------------------------------
     */
+
+/*
+|--------------------------------------------------------------------------
+| Verifica quantidade de eventos de uma turma em uma data
+|--------------------------------------------------------------------------
+*/
+public function verificarLimite(Request $request)
+{
+    $usuario = auth()->user();
+
+    $request->validate([
+        'data' => 'required|date',
+        'turma_codigo' => 'required|string',
+    ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verifica se o usuário pode acessar essa turma
+    |--------------------------------------------------------------------------
+    */
+
+    if ($usuario->isProfessor()) {
+
+        $professor = Professor::where(
+            'matricula',
+            $usuario->matricula
+        )->first();
+
+        if (!$professor) {
+            return response()->json([
+                'permitido' => false,
+                'mensagem' => 'Professor não encontrado.'
+            ], 403);
+        }
+
+        $possuiTurma = DisciplinaProfessor::where(
+            'professor_id',
+            $professor->id
+        )
+        ->where(
+            'turma_codigo',
+            $request->turma_codigo
+        )
+        ->exists();
+
+        if (!$possuiTurma) {
+            return response()->json([
+                'permitido' => false,
+                'mensagem' => 'Você não possui acesso a esta turma.'
+            ], 403);
+        }
+    }
+
+    elseif ($usuario->representanteAtivo()) {
+
+        if ($request->turma_codigo !== $usuario->turma_codigo) {
+            return response()->json([
+                'permitido' => false,
+                'mensagem' => 'Você não possui acesso a esta turma.'
+            ], 403);
+        }
+    }
+
+    else {
+        return response()->json([
+            'permitido' => false,
+            'mensagem' => 'Você não possui permissão.'
+        ], 403);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Busca todas as disciplinas daquela turma
+    |--------------------------------------------------------------------------
+    */
+
+    $ofertas = DisciplinaProfessor::where(
+        'turma_codigo',
+        $request->turma_codigo
+    )->pluck('id');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Conta os eventos da turma naquela data
+    |--------------------------------------------------------------------------
+    */
+
+    $quantidade = Evento::whereIn(
+        'disciplina_professor_id',
+        $ofertas
+    )
+    ->whereDate(
+        'data_inicio',
+        $request->data
+    )
+    ->count();
+
+    return response()->json([
+        'quantidade' => $quantidade,
+        'limite_atingido' => $quantidade >= 3
+    ]);
+}
+
     public function store(Request $request)
     {
         if (!auth()->user()->podeGerenciarEventos()) {
@@ -423,6 +526,31 @@ class CalendarioController extends Controller
             );
         }
 
+        $oferta = DisciplinaProfessor::find(
+            $request->disciplina_professor_id
+        );
+        
+        $quantidade = Evento::whereIn(
+            'disciplina_professor_id',
+            DisciplinaProfessor::where(
+                'turma_codigo',
+                $oferta->turma_codigo
+            )->pluck('id')
+        )
+        ->whereDate(
+            'data_inicio',
+            $request->data_inicio
+        )
+        ->count();
+        
+        if ($quantidade >= 3) {
+        
+            return response()->json([
+                'limite_atingido' => true,
+                'mensagem' =>
+                    'Não é possível criar este evento, pois esta turma já possui 3 avaliações marcadas para esta data.'
+            ], 422);
+        }
 
         Evento::create([
 
@@ -520,7 +648,37 @@ class CalendarioController extends Controller
             );
         }
 
-
+        $oferta = DisciplinaProfessor::find(
+            $request->disciplina_professor_id
+        );
+        
+        $quantidade = Evento::whereIn(
+            'disciplina_professor_id',
+            DisciplinaProfessor::where(
+                'turma_codigo',
+                $oferta->turma_codigo
+            )->pluck('id')
+        )
+        ->whereDate(
+            'data_inicio',
+            $request->data_inicio
+        )
+        ->where(
+            'id',
+            '!=',
+            $evento->id
+        )
+        ->count();
+        
+        if ($quantidade >= 3) {
+        
+            return response()->json([
+                'limite_atingido' => true,
+                'mensagem' =>
+                    'Não é possível alterar a data deste evento, pois esta turma já possui 3 avaliações marcadas para essa data.'
+            ], 422);
+        }
+        
         $evento->update([
 
             'titulo' =>

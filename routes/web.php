@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Mail;
 */
 Route::redirect('/', '/login');
 
+Route::get('/calendario/verificar-limite', [
+    CalendarioController::class,
+    'verificarLimite'
+]);
 
 /*
 |--------------------------------------------------------------------------
