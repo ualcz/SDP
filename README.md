@@ -1,58 +1,217 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏛️ SDP - Sistema de Protocolos & Requerimentos (IFBA - Campus Seabra)
+
+<div align="center">
+
+![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange?style=for-the-badge)
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <b>Geração, Assinatura Digital e Despacho Automatizado de Requerimentos por E-mail</b><br>
+  <i>Instituto Federal de Educação, Ciência e Tecnologia da Bahia (IFBA) — Campus Seabra</i>
 </p>
 
-## About Laravel
+</div>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📑 Sumário
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Sobre o Projeto](#-sobre-o-projeto)
+- [Como o Sistema Funciona (Fluxo Simplificado)](#-como-o-sistema-funciona-fluxo-simplificado)
+- [Origem e Reaproveitamento (Fork)](#-origem-e-reaproveitamento-fork)
+- [Arquitetura e Fluxo de Envio](#-arquitetura-e-fluxo-de-envio)
+- [Tipos de Requerimentos e Destinos](#-tipos-de-requerimentos-e-destinos)
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Estrutura do Repositório](#-estrutura-do-repositório)
+- [Instalação e Configuração](#-instalação-e-configuração)
+- [Documentação Detalhada](#-documentação-detalhada)
+- [Licença](#-licença)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📌 Sobre o Projeto
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+O **SDP (Sistema de Protocolos)** é uma solução ágil e direta desenvolvida para o **IFBA Campus Seabra**. Seu objetivo principal é simplificar a solicitação de serviços acadêmicos e administrativos sem a necessidade de deslocamento físico ou preenchimento de papel.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+O sistema permite que **alunos e servidores**:
+1. Entrem com suas credenciais do **SUAP**.
+2. Selecionem o **requerimento desejado** e preencham os campos necessários (com upload de anexos/comprovantes).
+3. O sistema gere automaticamente o **PDF do Requerimento Oficial preenchido e assinado digitalmente**.
+4. O SDP envie simultaneamente o PDF e os anexos para o **e-mail do solicitante** (comprovante) e para o **e-mail do setor responsável** (para processamento).
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## ⚡ Como o Sistema Funciona (Fluxo Simplificado)
 
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```mermaid
+flowchart TD
+    A["1. Login com Matricula e Senha SUAP"] --> B["2. Escolha do Requerimento no Catalogo"]
+    B --> C["3. Preenchimento de Justificativa + Anexos"]
+    C --> D["4. Confirmacao da Solicitacao"]
+    D --> E["Sistema gera o PDF Oficial do Requerimento"]
+    E --> F[("Salva registro no Banco de Dados")]
+    E --> G["Disparo de E-mails Automaticos"]
+    G --> H["Copia com PDF para o Aluno / Servidor"]
+    G --> I["E-mail com PDF + Anexos para o Setor Responsavel (CORAE, Coordenacao, CAE)"]
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 🔄 Origem e Reaproveitamento (Fork)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Este projeto foi construído baseada na integração do sistema anterior:
 
-## Code of Conduct
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        COMPOSIÇÃO DO PROJETO                           │
+├──────────────────────────────────┬─────────────────────────────────────┤
+│ ♻️ REAPROVEITADO DO SISTEMA BASE │ ✨ NOVO FLUXO DIRETO (SDP SEABRA)   │
+├──────────────────────────────────┼─────────────────────────────────────┤
+│ • Autenticação Híbrida (SUAP/JWT)│ • Catálogo de Requerimentos Rápidos │
+│ • Login Local para Administradores│ • Formulários de Justificativa      │
+│ • Web Scraping e Sincronização   │ • Geração Automática de PDF         │
+│   (BrowserKit / Playwright)      │ • Disparo Imediato de E-mails       │
+│ • Armazenamento seguro de Sessão │ • Anexo de comprovantes ao setor    │
+└──────────────────────────────────┴─────────────────────────────────────┘
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🏛️ Tipos de Requerimentos e Destinos (Campus Seabra)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+O sistema roteia automaticamente a solicitação com base no tipo de requerimento:
 
-## License
+| Categoria | Tipo de Requerimento | Anexos Comuns | Setor de Destino (E-mail) |
+|---|---|---|---|
+| **Acadêmico** | 2ª Chamada de Avaliação | Atestado / Justificativa | Coordenação de Curso / Docente |
+| **Acadêmico** | Revisão de Prova / Nota | Cópia da avaliação | Coordenação de Curso |
+| **Registro** | Trancamento / Cancelamento | Justificativa | CORAE (Registros Escolares) |
+| **Registro** | Aproveitamento de Estudos / Dispensa | Ementa / Histórico | CORAE / Coordenação |
+| **Frequência**| Justificativa de Faltas | Atestado médico | CAE / Registros Escolares |
+| **Documento** | Declarações Específicas | — | CORAE |
+| **Geral** | Requerimento Administrativo Diverso | Documentos pertinentes | Gabinete / Direção |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📐 Arquitetura e Fluxos
+
+### 1. Autenticação Híbrida (SUAP + Local)
+- **Alunos e Professores**: Autenticam via API v2 do SUAP (`/api/v2/autenticacao/token/`). O sistema obtém nome, matrícula, vínculo e e-mail institucional.
+- **Admin Local**: Acesso via e-mail e senha cadastrados no sistema.
+- **Fallback Local**: Caso o SUAP esteja temporariamente fora do ar, usuários já cadastrados conseguem autenticar via credencial local segura.
+
+### 2. Geração de PDF e Notificação por E-mail
+Ao submeter o formulário:
+1. O backend compila os dados do usuário obtidos do SUAP + dados preenchidos no formulário.
+2. É gerado um documento PDF padronizado com identificação visual do IFBA Seabra, código de autenticidade e carimbo de data/hora.
+3. A fila de e-mails (`Illuminate\Support\Facades\Mail`) envia:
+   - **Para o usuário**: Confirmação da solicitação com o PDF anexado.
+   - **Para o setor**: Notificação formal com o requerimento PDF e todos os anexos enviados pelo requerente.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **[PHP 8.3+](https://www.php.net/)** & **[Laravel 13.x](https://laravel.com/)**
+- **[Symfony BrowserKit & DomCrawler](https://symfony.com/)** — Web scraping para sincronização de dados adicionais
+- **[Playwright / TypeScript](https://playwright.dev/)** — Automação de extração do SUAP
+- **[Blade](https://laravel.com/docs/blade)** + CSS moderno
+- **[Laravel Mail](https://laravel.com/docs/mail)** — Envio de e-mails com anexos via SMTP
+- **[Vite](https://vitejs.dev/)**
+
+---
+
+## 📂 Estrutura do Repositório
+
+```text
+SDP/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/              # Login com SUAP e Local
+│   │   │   ├── RequerimentoController.php # Criação, PDF e envio por e-mail
+│   │   │   └── Admin/             # Gestão de setores e tipos de requerimentos
+│   ├── Mail/                      # Classes Mailable (RequerimentoEnviado, etc.)
+│   ├── Models/                    # Usuario, Requerimento, Setor, etc.
+│   └── Services/
+│       ├── SuapService.php        # Integração REST API SUAP
+│       └── Suap/                  # Módulos de Scraping (BrowserKit)
+├── docs/                          # Documentações técnicas
+│   ├── fluxo-autenticacao.md      # Fluxo detalhado de login SUAP
+│   ├── web-scraping-suap.md       # Documentação do motor de scraping
+│   └── arquitetura-protocolos.md  # Especificação do fluxo simplificado de requerimentos
+├── resources/
+│   ├── views/
+│   │   ├── requerimentos/         # Telas de seleção e formulário de requerimento
+│   │   ├── pdf/                   # Template Blade do PDF oficial gerado
+│   │   └── emails/                # Templates Blade de e-mails (aluno e setor)
+├── routes/
+│   └── web.php                    # Rotas do sistema
+├── scraper/                       # Rotinas de scraping Playwright
+└── vite.config.js
+```
+
+---
+
+## 🚀 Instalação e Configuração
+
+### 1. Pré-requisitos
+- **PHP 8.3+**
+- **Composer 2.x**
+- **Node.js 20+**
+
+### 2. Passo a Passo
+```bash
+# Clonar repositório
+git clone https://github.com/ualcz/SDP.git
+cd SDP
+
+# Instalar dependências PHP
+composer install
+
+# Configurar ambiente
+cp .env.example .env
+php artisan key:generate
+
+# Configurar banco de dados e SMTP de e-mail no .env
+php artisan migrate --seed
+
+# Instalar dependências de interface
+npm install
+```
+
+### 3. Configuração de Envio de E-mail (.env)
+Configure as credenciais SMTP no arquivo `.env`:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com # ou servidor institucional do IFBA
+MAIL_PORT=587
+MAIL_USERNAME=seu-email@ifba.edu.br
+MAIL_PASSWORD=sua-senha-ou-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="protocolos.seabra@ifba.edu.br"
+MAIL_FROM_NAME="SDP - IFBA Seabra"
+```
+
+### 4. Executando em Desenvolvimento
+```bash
+composer run dev
+```
+Acesse em: `http://localhost:8000`
+
+---
+
+## 📖 Documentação Detalhada
+
+- 🔐 [**Fluxo de Autenticação Híbrida**](./docs/fluxo-autenticacao.md)
+- 🕷️ [**Web Scraping & Sincronização SUAP**](./docs/web-scraping-suap.md)
+- 📄 [**Fluxo de Requerimentos, PDF e E-mails**](./docs/arquitetura-protocolos.md)
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença [MIT](LICENSE).
