@@ -1,33 +1,66 @@
-<h1>Dashboard do Admin</h1>
+<!DOCTYPE html>
 
-<p>Bem-vindo, {{ auth()->user()->nome }}</p>
+<html lang="pt-BR">
 
-<hr>
+<head>
+    <meta charset="UTF-8">
 
-<h3>Turmas</h3>
+```
+<title>Dashboard do Admin</title>
 
-<a href="/admin/turmas/create">
-    ➕ Criar Turma
-</a>
+<link rel="stylesheet" href="{{ asset('css/dashboardadmin.css') }}">
+```
 
-<br><br>
+</head>
 
-<a href="/admin/turmas/listar">
-    📋 Listar Turmas
-</a>
+<body>
 
-<hr>
+```
+<div class="dashboard">
 
-<h3>Professores</h3>
+    <h1>Dashboard do Admin</h1>
 
-<a href="/admin/professores/create">
-    ➕ Criar Professor
-</a>
+    <p>
+        Bem-vindo, {{ auth()->user()->nome }}
+    </p>
 
-<hr>
+    <hr>
 
-<h3>Alunos</h3>
+    <section class="dashboard-section">
+        <h3>Turmas</h3>
 
-<a href="/admin/alunos/promover">
-    ⭐ Promover Aluno
-</a>
+        <a href="/admin/turmas/create">
+            ➕ Criar Turma
+        </a>
+
+        <a href="/admin/turmas/listar">
+            📋 Listar Turmas
+        </a>
+    </section>
+
+    <hr>
+
+    <section class="dashboard-section">
+        <h3>Professores</h3>
+
+        <a href="/admin/professores/create">
+            ➕ Criar Professor
+        </a>
+    </section>
+
+    <hr>
+
+    <section class="dashboard-section">
+        <h3>Alunos</h3>
+
+        <a href="/admin/alunos/promover">
+            ⭐ Promover Aluno
+        </a>
+    </section>
+
+</div>
+```
+
+</body>
+
+</html>

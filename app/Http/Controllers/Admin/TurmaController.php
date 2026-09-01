@@ -8,6 +8,7 @@ use App\Models\Turma;
 class TurmaController extends Controller
 {
     public function listar()
+    // aqui tem que puxar do banco de dados da tabela usuários
 {
     $turmas = Turma::all();
 
