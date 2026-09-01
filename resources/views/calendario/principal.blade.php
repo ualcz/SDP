@@ -55,26 +55,25 @@ body {
 }
 
 .lista-eventos-semana {
-    margin-top: 30px;
-    padding: 25px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 .lista-eventos-semana h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
+    margin-bottom: 10px;
+    font-size: 17px;
     text-align: center;
 }
 
 .evento-semana {
-    padding: 18px 20px;
-    margin-bottom: 15px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
     background: #f8f9fa;
-    border-radius: 10px;
-    border-left: 5px solid #2c7be5;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+    border-left: 3px solid #2c7be5;
 }
 
 .evento-semana:last-child {
@@ -82,27 +81,27 @@ body {
 }
 
 .evento-titulo {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 
 .evento-informacoes {
     display: flex;
     flex-wrap: wrap;
-    gap: 25px;
+    gap: 5px 12px;
 }
 
 .evento-info {
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    min-width: 150px;
+    gap: 1px;
+    min-width: 80px;
 }
 
 .evento-label {
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 9px;
+    font-weight: 600;
     text-transform: uppercase;
     color: #777;
 }
@@ -110,20 +109,16 @@ body {
 .navegacao-semana {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 25px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .navegacao-semana button {
-    padding: 10px 20px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
-}
-
-.navegacao-semana button:hover {
-    opacity: 0.85;
+    font-size: 12px;
 }
 
 .modal-content {
