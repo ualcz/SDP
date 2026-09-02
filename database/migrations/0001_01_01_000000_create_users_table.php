@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('matricula')->nullable()->unique();
             $table->string('nome');
+            $table->string('cpf', 14)->nullable();
             $table->string('email')->unique();
             $table->string('email_pessoal')->nullable();
+            $table->string('endereco')->nullable();
             $table->string('password');
             $table->text('senha_suap')->nullable();
             $table->string('turma_codigo')->nullable();

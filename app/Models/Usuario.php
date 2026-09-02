@@ -14,12 +14,12 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'matricula',
         'nome',
-        'cpf', 
+        'cpf',
         'email',
         'email_pessoal',
         'password',
         'senha_suap',
-        'endereço',
+        'endereco',
         'turma_codigo',
         'role',
     ];
