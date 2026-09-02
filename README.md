@@ -55,7 +55,7 @@ flowchart TD
     E --> F[("Salva registro no Banco de Dados")]
     E --> G["Disparo de E-mails Automaticos"]
     G --> H["Copia com PDF para o Aluno / Servidor"]
-    G --> I["E-mail com PDF + Anexos para o Setor Responsavel (CORAE, Coordenacao, CAE)"]
+    G --> I["E-mail com PDF + Anexos para o Setor Responsavel (CORES, Coordenacao, DACD)"]
 ```
 
 ---

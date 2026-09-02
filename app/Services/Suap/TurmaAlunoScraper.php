@@ -21,16 +21,17 @@ class TurmaAlunoScraper
             if ($linhas->count() > 0) {
                 foreach ($linhas as $tr) {
                     $linha = new Crawler($tr);
+                    $textoLinha = strtolower($linha->text());
+                    $statusValido = preg_match('/matriculado|ativo|regular|cursando|em curso|inscrito|vinculado/i', $textoLinha) === 1;
 
-                    $tdSituacao = $linha->filter('td:nth-child(4), td:nth-child(5)');
-                    $textoLinha = $linha->text();
+                    $colunas = $linha->filter('td');
+                    foreach ($colunas as $coluna) {
+                        $txt = trim($coluna->textContent);
 
-                    if (stripos($textoLinha, 'Matriculado') !== false || stripos($textoLinha, 'Ativo') !== false) {
-                        $colunas = $linha->filter('td');
-                        foreach ($colunas as $coluna) {
-                            $txt = trim($coluna->textContent);
-                            // Identifica códigos de turma típicos (ex: 2024.1, 2025.1, 2026.1-INFO, etc.)
-                            if (preg_match('/^[0-9]{4,}[A-Za-z0-9\.\-_]*$/', $txt) && strlen($txt) >= 4) {
+                        // Identifica códigos de turma típicos (ex: 2024.1, 2025.1, 2026.1-INFO, etc.)
+                        if (preg_match('/^[0-9]{4,}[A-Za-z0-9\.\-_]*$/', $txt) && strlen($txt) >= 4) {
+                            // Não depende só de "Ativo/Matriculado"; há turmas em outros estados de matrícula.
+                            if ($statusValido || preg_match('/\d{4,}/', $txt)) {
                                 return $txt;
                             }
                         }
