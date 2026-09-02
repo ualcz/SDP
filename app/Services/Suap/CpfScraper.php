@@ -22,9 +22,14 @@ class CpfScraper
             if ($cpfNode->count() > 0) {
                 $valor = trim($cpfNode->text());
                 
-                // Validação simples do formato do CPF (opcional)
-                if (preg_match('/^\d{3}\.\d{3}\.\d{3}-\d{2}$/', $valor)) {
-                    return $valor;
+                $cpf = preg_replace('/\D/', '', $valor);
+
+                if (strlen($cpf) === 11) {
+                    return preg_replace(
+                        '/^(\d{3})(\d{3})(\d{3})(\d{2})$/',
+                        '$1.$2.$3-$4',
+                        $cpf
+                    );
                 }
             }
         } catch (\Throwable $e) {

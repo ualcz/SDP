@@ -34,6 +34,11 @@
         </div>
 
         <div class="item">
+            <div class="item-label">Endereço</div>
+            <div class="item-value">{{ auth()->user()->endereco ?? 'Não identificado' }}</div>
+        </div>
+
+        <div class="item">
             <div class="item-label">Turma / Curso</div>
             <div class="item-value">{{ auth()->user()->turma_codigo ?? 'Não identificada' }}</div>
         </div>

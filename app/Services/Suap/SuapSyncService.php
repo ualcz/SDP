@@ -10,7 +10,9 @@ class SuapSyncService
     public function __construct(
         protected Browser $browser,
         protected EmailPessoalScraper $emailScraper,
-        protected TurmaAlunoScraper $turmaScraper
+        protected CpfScraper $cpfScraper,
+        protected TurmaAlunoScraper $turmaScraper,
+        protected EnderecoScraper $enderecoScraper
     ) {}
 
     /**
@@ -45,6 +47,16 @@ class SuapSyncService
                     if ($emailPessoal) {
                         $updates['email_pessoal'] = $emailPessoal;
                     }
+
+                    $cpf = $this->cpfScraper->extrair($paginaDadosPessoais);
+                    if ($cpf) {
+                        $updates['cpf'] = $cpf;
+                    }
+
+                    $endereco = $this->enderecoScraper->extrair($paginaDadosPessoais);
+                    if ($endereco) {
+                        $updates['endereco'] = $endereco;
+                    }
                 }
             } else {
                 // Servidor - página de dados pessoais
@@ -57,6 +69,11 @@ class SuapSyncService
                     $emailPessoal = $this->emailScraper->extrair($paginaServidor);
                     if ($emailPessoal) {
                         $updates['email_pessoal'] = $emailPessoal;
+                    }
+
+                    $cpf = $this->cpfScraper->extrair($paginaServidor);
+                    if ($cpf) {
+                        $updates['cpf'] = $cpf;
                     }
                 }
             }
