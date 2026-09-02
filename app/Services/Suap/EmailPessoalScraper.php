@@ -16,31 +16,20 @@ class EmailPessoalScraper
         }
 
         try {
-            // Estratégia 1: Busca em tabelas/listas procurando linha/célula com 'E-mail Pessoal' ou 'Email'
-            $linhas = $crawler->filter('tr, div.form-row, dl, p');
-            foreach ($linhas as $linhaDom) {
-                $item = new Crawler($linhaDom);
-                $texto = trim($item->text());
+            
+           // Estratégia corrigida: Buscando célula por célula ou usando XPath direto no Crawler
+            $emailNode = $crawler->filterXPath("//td[normalize-space(text())='E-mail Pessoal']/following-sibling::td[1]");
 
-                if (stripos($texto, 'E-mail Pessoal') !== false || stripos($texto, 'Email Pessoal') !== false) {
-                    // Procura padrão de e-mail na linha
-                    if (preg_match('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $texto, $matches)) {
-                        $email = trim($matches[0]);
-                        if (!str_ends_with(strtolower($email), '@ifba.edu.br')) {
-                            return $email;
-                        }
-                    }
-
-                    // Ou pega o valor da coluna/campo seguinte
-                    $colunas = $item->filter('td, dd, span.value, input');
-                    if ($colunas->count() >= 2) {
-                        $valor = trim($colunas->eq(1)->text());
-                        if (filter_var($valor, FILTER_VALIDATE_EMAIL)) {
-                            return $valor;
-                        }
+            if ($emailNode->count() > 0) {
+                $valor = trim($emailNode->text());
+                
+                if (filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                    if (!str_ends_with(strtolower($valor), '@ifba.edu.br')) {
+                        return $valor;
                     }
                 }
             }
+
 
             // Estratégia 2: Busca campos de input/readonly
             $inputs = $crawler->filter('input[name*="email"], input[id*="email"]');
