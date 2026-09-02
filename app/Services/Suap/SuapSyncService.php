@@ -12,7 +12,8 @@ class SuapSyncService
         protected EmailPessoalScraper $emailScraper,
         protected CpfScraper $cpfScraper,
         protected TurmaAlunoScraper $turmaScraper,
-        protected EnderecoScraper $enderecoScraper
+        protected NomeScraper $nomeScraper,
+        protected EnderecoScraper $enderecoScraper,
     ) {}
 
     /**
@@ -56,6 +57,11 @@ class SuapSyncService
                     $endereco = $this->enderecoScraper->extrair($paginaDadosPessoais);
                     if ($endereco) {
                         $updates['endereco'] = $endereco;
+                    }
+
+                    $nome = $this->nomeScraper->extrair($paginaDadosPessoais);
+                    if ($nome) {
+                        $updates['nome'] = $nome;
                     }
                 }
             } else {
