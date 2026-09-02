@@ -1,1 +1,0 @@
-//Esse é o orquestrador. Ele chama tudo.

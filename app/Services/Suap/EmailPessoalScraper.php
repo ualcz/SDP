@@ -7,39 +7,64 @@ use Symfony\Component\DomCrawler\Crawler;
 class EmailPessoalScraper
 {
     /**
-     * Extrai o e-mail pessoal da página do aluno no SUAP.
+     * Extrai o e-mail pessoal a partir da página de dados pessoais do SUAP
      */
-    public function extrair(Crawler $pagina): ?string
+    public function extrair(?Crawler $crawler): ?string
     {
-        $email = null;
+        if (!$crawler) {
+            return null;
+        }
 
-        $pagina->filter('table.info tr')->each(function (Crawler $linha) use (&$email) {
+        try {
+            // Estratégia 1: Busca em tabelas/listas procurando linha/célula com 'E-mail Pessoal' ou 'Email'
+            $linhas = $crawler->filter('tr, div.form-row, dl, p');
+            foreach ($linhas as $linhaDom) {
+                $item = new Crawler($linhaDom);
+                $texto = trim($item->text());
 
-            $celulas = $linha->filter('td');
-
-            for ($i = 0; $i < $celulas->count(); $i++) {
-
-                $texto = trim($celulas->eq($i)->text());
-
-                if ($texto === 'E-mail Pessoal') {
-
-                    if ($i + 1 < $celulas->count()) {
-                        $valor = trim($celulas->eq($i + 1)->text());
-
-                        if (
-                            $valor !== '-' &&
-                            filter_var($valor, FILTER_VALIDATE_EMAIL)
-                        ) {
-                            $email = $valor;
+                if (stripos($texto, 'E-mail Pessoal') !== false || stripos($texto, 'Email Pessoal') !== false) {
+                    // Procura padrão de e-mail na linha
+                    if (preg_match('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $texto, $matches)) {
+                        $email = trim($matches[0]);
+                        if (!str_ends_with(strtolower($email), '@ifba.edu.br')) {
+                            return $email;
                         }
                     }
 
-                    return;
+                    // Ou pega o valor da coluna/campo seguinte
+                    $colunas = $item->filter('td, dd, span.value, input');
+                    if ($colunas->count() >= 2) {
+                        $valor = trim($colunas->eq(1)->text());
+                        if (filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                            return $valor;
+                        }
+                    }
                 }
             }
-        });
 
-        return $email;
+            // Estratégia 2: Busca campos de input/readonly
+            $inputs = $crawler->filter('input[name*="email"], input[id*="email"]');
+            foreach ($inputs as $inputDom) {
+                $val = trim($inputDom->getAttribute('value') ?? '');
+                if (filter_var($val, FILTER_VALIDATE_EMAIL) && !str_ends_with(strtolower($val), '@ifba.edu.br')) {
+                    return $val;
+                }
+            }
+
+            // Estratégia 3: Varredura de todos os e-mails na página que não sejam @ifba.edu.br
+            $textoGeral = $crawler->html();
+            if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $textoGeral, $matches)) {
+                foreach ($matches[0] as $emailEncontrado) {
+                    $emailEncontrado = trim($emailEncontrado);
+                    if (filter_var($emailEncontrado, FILTER_VALIDATE_EMAIL) && !str_ends_with(strtolower($emailEncontrado), '@ifba.edu.br')) {
+                        return $emailEncontrado;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Erro no scraping de email pessoal: ' . $e->getMessage());
+        }
+
+        return null;
     }
 }
-?>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Usuario;
 use App\Services\SuapService;
+use App\Services\Suap\SuapSyncService;
 
 class LoginController extends Controller
 {
@@ -19,7 +20,7 @@ class LoginController extends Controller
     | Admin: email + senha local
     | Aluno/Professor: matrícula + senha SUAP
     */
-    public function login(Request $request, SuapService $suap)
+    public function login(Request $request, SuapService $suap, SuapSyncService $syncService)
     {
         $request->validate([
             'login' => 'required',
@@ -78,10 +79,10 @@ if (!$jwt) {
     Auth::login($usuario);
 
     if ($usuario->isProfessor()) {
-        return redirect('/professor/dashboard');
+        return redirect('/requerimentos/servidor');
     }
 
-    return redirect('/aluno/dashboard');
+    return redirect('/requerimentos/aluno');
 }
 
         $dados = $suap->meusDados($jwt);
@@ -150,6 +151,14 @@ if (!$jwt) {
 
         /*
         |--------------------------------------------------------------------------
+        | WEB SCRAPING: E-MAIL PESSOAL & TURMA
+        |--------------------------------------------------------------------------
+        | Busca dados complementares não disponíveis na API REST
+        */
+        $syncService->sincronizar($usuario, $password);
+
+        /*
+        |--------------------------------------------------------------------------
         | SALVA JWT NA SESSÃO
         |--------------------------------------------------------------------------
         | Permitirá futuras integrações com o SUAP
@@ -166,10 +175,10 @@ if (!$jwt) {
         */
         if ($usuario->isProfessor()) {
 
-            return redirect('/professor/dashboard');
+            return redirect('/requerimentos/servidor');
         }
 
-        return redirect('/aluno/dashboard');
+        return redirect('/requerimentos/aluno');
     }
 
     /*

@@ -29,70 +29,22 @@ class Usuario extends Authenticatable
 
     /*
     |--------------------------------------------------------------------------
-    | RELACIONAMENTOS
-    |--------------------------------------------------------------------------
-    */
-
-    public function representantes()
-    {
-        return $this->hasMany(Representante::class);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
     | MÉTODOS DE PAPEL
     |--------------------------------------------------------------------------
     */
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    public function isAluno()
+    public function isAluno(): bool
     {
         return $this->role === 'aluno';
     }
 
-    public function isProfessor()
+    public function isProfessor(): bool
     {
         return $this->role === 'professor';
     }
-    public function professor()
-{
-    return $this->hasOne(
-        Professor::class,
-        'matricula',
-        'matricula'
-    );
-}
-
-    /*
-    |--------------------------------------------------------------------------
-    | REPRESENTANTE
-    |--------------------------------------------------------------------------
-    */
-
-    public function representanteAtivo()
-    {
-        return $this->representantes()
-            ->where('ativo', true)
-            ->exists();
-    }
-     /*
-    |--------------------------------------------------------------------------
-    | FUNÇÕES AUXILIARES
-    |--------------------------------------------------------------------------
-    */
-    public function podeGerenciarEventos()
-{
-    return $this->isAdmin()
-        || $this->isProfessor()
-        || $this->representanteAtivo();
-}
-
-public function podeExcluirEventos()
-{
-    return $this->isAdmin();
-}
 }
