@@ -37,6 +37,11 @@
             <div class="item-label">Turma / Curso</div>
             <div class="item-value">{{ auth()->user()->turma_codigo ?? 'Não identificada' }}</div>
         </div>
+        
+        <div class="item">
+            <div class="item-label">CPF</div>
+            <div class="item-value">{{ auth()->user()->cpf ?? 'Não identificado' }}</div>
+        </div>
 
         <div class="item">
             <div class="item-label">Vínculo</div>
