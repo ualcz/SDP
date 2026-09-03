@@ -11,7 +11,7 @@
 
 <div class="card">
     <h3>Seus Dados</h3>
-    
+
     <div class="grid">
         <div class="item">
             <div class="item-label">Nome Completo</div>
@@ -42,7 +42,7 @@
             <div class="item-label">Turma / Curso</div>
             <div class="item-value">{{ auth()->user()->turma_codigo ?? 'Não identificada' }}</div>
         </div>
-        
+
         <div class="item">
             <div class="item-label">CPF</div>
             <div class="item-value">{{ auth()->user()->cpf ?? 'Não identificado' }}</div>
