@@ -129,6 +129,7 @@
   
   /* Campo com ícone */
   .input-icon {
+    
   position: relative;
   }
   
@@ -136,7 +137,8 @@
   position: absolute;
   
   ```
-  left: 18px;
+  /*left: 18px;*/
+  margin-right: 25px;
   top: 50%;
   
   transform: translateY(-50%);
@@ -178,17 +180,13 @@
   .mostrar {
   position: absolute;
   
-  ```
-  right: 18px;
+  
+  margin-right: 18px;
+  margin-left: -30px;
   top: 50%;
-  
   transform: translateY(-50%);
-  
   color: #666;
-  
   cursor: pointer;
-  ```
-  
   }
   
   /* Botão */

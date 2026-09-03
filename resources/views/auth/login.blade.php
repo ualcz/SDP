@@ -49,14 +49,16 @@
                     </label>
 
                     <div class="input-icon">
+                        
                         <i class="fa-solid fa-user"></i>
-
+                              
                         <input
                             type="text"
                             id="login"
                             name="login"
                             placeholder="Digite sua matrícula ou e-mail"
                             required>
+                        
                     </div>
                 </div>
 
