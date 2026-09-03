@@ -26,13 +26,14 @@
 
             <div class="flex gap-10 items-end justify-end font-semibold text-gray-700">
 
-                <a href="/">Novo Protocolo</a>
+                <a href="{{ route('requerimentos.aluno.novo') }}">Novo Requerimento</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-logout">
                         <i class="fa-solid fa-right-from-bracket"></i> Sair
                     </button>
                 </form>
+               <p>{{ explode(' ', auth()->user()->nome)[0] }}</p>
             </div>
         </div>
     </header>

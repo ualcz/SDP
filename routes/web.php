@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\RequerimentoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::get('/requerimentos/aluno', function () {
         return view('requerimentos.aluno');
     })->name('requerimentos.aluno');
+
+    Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
 });
 
 /*
