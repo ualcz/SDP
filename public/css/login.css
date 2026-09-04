@@ -110,6 +110,7 @@
   /* Campos */
   .campo {
   margin-bottom: 18px;
+  margin-top: 10px;
   }
   
   .campo label {
@@ -129,6 +130,7 @@
   
   /* Campo com ícone */
   .input-icon {
+    
   position: relative;
   }
   
@@ -136,7 +138,8 @@
   position: absolute;
   
   ```
-  left: 18px;
+  margin-right: 25px;
+  margin-left: 10px;
   top: 50%;
   
   transform: translateY(-50%);
@@ -153,7 +156,6 @@
   height: 50px;
   
   ```
-  padding-left: 50px;
   padding-right: 50px;
   
   border: 1px solid #d8d8d8;
@@ -161,6 +163,7 @@
   border-radius: 10px;
   
   font-size: 16px;
+  padding-left: 40px;
   ```
   
   }
@@ -178,17 +181,13 @@
   .mostrar {
   position: absolute;
   
-  ```
-  right: 18px;
+  
+  margin-right: 18px;
+  margin-left: -30px;
   top: 50%;
-  
   transform: translateY(-50%);
-  
   color: #666;
-  
   cursor: pointer;
-  ```
-  
   }
   
   /* Botão */
@@ -309,8 +308,7 @@
   
   .subtitulo {
       font-size: 14px;
-  }
-  
+ }
   .campo label {
       font-size: 16px;
   }
