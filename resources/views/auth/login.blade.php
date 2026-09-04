@@ -103,9 +103,6 @@
 
 <div class="background-verde">
     <div class="creditos">
-        
-    
-    Desenvolvido por Murilo e Tainah · © IFBA
     </div>
 </div>
 
