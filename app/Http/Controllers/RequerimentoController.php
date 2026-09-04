@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class RequerimentoController extends Controller
 {
     public function create() {
-        return view('requerimentos.form');
+        $setores = config('setores.destinatarios', []);
+        return view('requerimentos.form', compact('setores'));
     }
 }

@@ -49,6 +49,9 @@ class EnvioEmailController extends Controller
         if (!empty($aluno->email)) {
             $destinatarios[] = $aluno->email;
         }
+        if (!empty($request->input('email_adicional'))) {
+            $destinatarios[] = $request->input('email_adicional');
+        }
 
         if (empty($destinatarios)) {
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);

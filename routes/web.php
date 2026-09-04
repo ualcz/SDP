@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\EnvioEmailController;
+use App\Http\Controllers\RequerimentoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,9 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
         $setores = config('setores.destinatarios', []);
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
+
+    Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
+    Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
 });
 
 /*
