@@ -18,19 +18,25 @@
         <div class="container mx-auto px-4 p-4 grid grid-cols-2 gap-4 items-center">
 
             <div class="align-items-center">
-                <img src="{{ asset('img/logoVertical.png') }}" alt="Logo IFBA" class="w-12 h-auto inline">
-                <div class="logo inline">
-                    Sistema de Protocolos
-                </div>
+                <a href="{{ route('requerimentos.aluno') }}">
+                    <img src="{{ asset('img/logoVertical.png') }}" alt="Logo IFBA" class="w-12 h-auto inline">
+                    <div class="logo inline">
+                        Sistema de Protocolos
+                    </div>
+                </a>
             </div>
 
             <div class="flex gap-10 items-end justify-end font-semibold text-gray-700">
 
-                <a href="{{ route('requerimentos.aluno.novo') }}">Novo Requerimento</a>
-                <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}">Meus Requerimentos</a>
+                <a href="{{ route('requerimentos.aluno.novo') }}"
+                class="{{ request()->routeIs('requerimentos.aluno.novo') ? ' border-b-2 border-green-400' : 'text-gray-700 hover:text-green-700' }}">Novo Requerimento</a>
+
+                <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}"
+                class="{{ request()->routeIs('requerimentos.aluno.meusRequerimentos') ? '  border-b-2 border-green-400' : 'text-gray-700 hover:text-green-700' }}">Meus Requerimentos</a>
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn-logout">
+                    <button type="submit" class="btn-logout hover:text-red-700">
                         <i class="fa-solid fa-right-from-bracket"></i> Sair
                     </button>
                 </form>
