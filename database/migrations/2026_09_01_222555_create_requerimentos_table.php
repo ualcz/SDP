@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('requerimentos', function (Blueprint $table) {
             $table->id();
+            $table->string('objetoDoRequerimento');
+            $table->string('motivo');
+            $table->string('situação');
             $table->timestamps();
         });
     }

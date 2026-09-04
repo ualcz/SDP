@@ -27,6 +27,7 @@
             <div class="flex gap-10 items-end justify-end font-semibold text-gray-700">
 
                 <a href="{{ route('requerimentos.aluno.novo') }}">Novo Requerimento</a>
+                <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}">Meus Requerimentos</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-logout">
