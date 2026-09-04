@@ -9,5 +9,5 @@ class Requerimento extends Model
     protected $table = 'requerimentos';
 
     //Indicação dos campos que poderão ser preenchidos;
-    protected $fillable = ['objetoDoRequerimento','motivo'];
+    protected $fillable = ['objetoDoRequerimento', 'motivo', 'situação'];
 }

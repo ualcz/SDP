@@ -24,7 +24,8 @@ class InformacoesAlunoMail extends Mailable
         public Usuario $aluno,
         public string $setorNome,
         public ?string $mensagem = null,
-        public array $arquivos = []
+        public array $arquivos = [],
+        public ?string $objeto = null
     ) {}
 
     /**
@@ -32,8 +33,12 @@ class InformacoesAlunoMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $assunto = $this->objeto 
+            ? 'Requerimento [' . $this->objeto . '] - ' . $this->aluno->nome 
+            : 'Informações Cadastrais do Aluno: ' . $this->aluno->nome;
+
         return new Envelope(
-            subject: 'Informações Cadastrais do Aluno: ' . $this->aluno->nome,
+            subject: $assunto,
         );
     }
 

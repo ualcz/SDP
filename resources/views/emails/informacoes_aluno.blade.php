@@ -15,6 +15,16 @@
             <th align="left">Campo</th>
             <th align="left">Informação</th>
         </tr>
+        @if(!empty($objeto))
+        <tr>
+            <td><strong>Objeto do Requerimento</strong></td>
+            <td><strong>{{ $objeto }}</strong></td>
+        </tr>
+        @endif
+        <tr>
+            <td><strong>Data da Solicitação</strong></td>
+            <td>{{ date('d/m/Y H:i') }}</td>
+        </tr>
         <tr>
             <td><strong>Nome</strong></td>
             <td>{{ $aluno->nome }}</td>

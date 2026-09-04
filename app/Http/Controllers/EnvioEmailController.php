@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\InformacoesAlunoMail;
+use App\Models\Requerimento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,6 +16,7 @@ class EnvioEmailController extends Controller
     {
         $request->validate([
             'setor' => 'required|string',
+            'objeto' => 'nullable|string|max:255',
             'mensagem' => 'nullable|string|max:3000',
             'email_adicional' => 'nullable|email',
             'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
@@ -29,6 +31,9 @@ class EnvioEmailController extends Controller
 
         $setor = $setores[$chaveSetor];
         $aluno = auth()->user();
+        $objeto = !empty($request->input('objeto_outro')) 
+            ? 'Outros: ' . $request->input('objeto_outro') 
+            : $request->input('objeto', 'Requerimento Geral');
 
         // 1. Montagem da lista de destinatários
         $destinatarios = [];
@@ -60,14 +65,27 @@ class EnvioEmailController extends Controller
         // 2. Coleta os arquivos enviados no formulário
         $arquivos = $request->file('arquivos', []);
 
-        // 3. Dispara o e-mail
+        // 3. Salva o registro no banco de dados
+        try {
+            Requerimento::create([
+                'objetoDoRequerimento' => $objeto,
+                'motivo' => $request->input('mensagem') ?? 'Solicitação de ' . $objeto,
+                'situação' => 'Em Análise',
+            ]);
+        } catch (\Exception $e) {
+            // Caso a tabela ainda não esteja migrada, continua o envio de e-mail sem quebrar a execução
+            logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
+        }
+
+        // 4. Dispara o e-mail
         Mail::to($destinatarios)->send(new InformacoesAlunoMail(
             aluno: $aluno,
             setorNome: $setor['nome'],
             mensagem: $request->input('mensagem'),
-            arquivos: is_array($arquivos) ? $arquivos : [$arquivos]
+            arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
+            objeto: $objeto
         ));
 
-        return back()->with('sucesso', 'E-mail enviado com sucesso para: ' . implode(', ', $destinatarios));
+        return back()->with('sucesso', 'Requerimento enviado com sucesso!');
     }
 }
