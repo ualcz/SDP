@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('objetoDoRequerimento');
             $table->string('motivo');
-            $table->string('situação');
+            //O campo 'situação' pode ser null, pois tem o valor padrão 'Em análise'.
+            $table->string('situação')->nullable();
             $table->timestamps();
         });
     }
