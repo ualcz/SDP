@@ -58,6 +58,9 @@ class EnvioEmailController extends Controller
             $destinatarios[] = $request->input('email_adicional');
         }
 
+        // Remove duplicados, nulos e espaços em branco da lista
+        $destinatarios = array_values(array_unique(array_filter(array_map('trim', $destinatarios))));
+
         if (empty($destinatarios)) {
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);
         }
@@ -83,7 +86,8 @@ class EnvioEmailController extends Controller
             setorNome: $setor['nome'],
             mensagem: $request->input('mensagem'),
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
-            objeto: $objeto
+            objeto: $objeto,
+            setorChave: $chaveSetor
         ));
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');

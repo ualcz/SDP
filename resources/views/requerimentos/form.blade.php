@@ -168,7 +168,7 @@
 
         <!-- Botão de Envio -->
         <div>
-            <button type="submit">
+            <button type="submit" id="btnEnviar" onclick="this.form.addEventListener('submit', () => { this.disabled = true; this.innerText = 'Enviando requerimento...'; });">
                 Enviar Requerimento ({{ $modeloAtivo['setor_sigla'] ?? 'Setor' }})
             </button>
         </div>
