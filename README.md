@@ -1,4 +1,6 @@
-# 🏛️ SDP - Sistema de Protocolos & Requerimentos (IFBA - Campus Seabra)
+# SDP - Sistema de Protocolos e Requerimentos
+
+Sistema do IFBA Campus Seabra para solicitar requerimentos academicos e administrativos sem uso de papel.
 
 <div align="center">
 
@@ -14,144 +16,123 @@
 </p>
 
 </div>
+## O que o sistema faz
 
----
+- Autentica alunos e servidores com matricula e senha do SUAP.
+- Permite login local de administradores por e-mail e senha.
+- Exibe requerimentos organizados por setor, como CORES e COTEP.
+- Recebe justificativas e anexos enviados pelo aluno.
+- Gera um PDF do requerimento.
+- Envia o PDF e os anexos por e-mail ao aluno e ao setor responsavel.
+- Mantem o historico dos requerimentos no banco de dados.
 
-## 📑 Sumário
-
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Como o Sistema Funciona (Fluxo Simplificado)](#-como-o-sistema-funciona-fluxo-simplificado)
-- [Origem e Reaproveitamento (Fork)](#-origem-e-reaproveitamento-fork)
-- [Arquitetura e Fluxo de Envio](#-arquitetura-e-fluxo-de-envio)
-- [Tipos de Requerimentos e Destinos](#-tipos-de-requerimentos-e-destinos)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Estrutura do Repositório](#-estrutura-do-repositório)
-- [Instalação e Configuração](#-instalação-e-configuração)
-- [Documentação Detalhada](#-documentação-detalhada)
-- [Licença](#-licença)
-
----
-
-## 📌 Sobre o Projeto
-
-O **SDP (Sistema de Protocolos)** é uma solução ágil e direta desenvolvida para o **IFBA Campus Seabra**. Seu objetivo principal é simplificar a solicitação de serviços acadêmicos e administrativos sem a necessidade de deslocamento físico ou preenchimento de papel.
-
-O sistema permite que **alunos e servidores**:
-1. Entrem com suas credenciais do **SUAP**.
-2. Selecionem o **requerimento desejado** e preencham os campos necessários (com upload de anexos/comprovantes).
-3. O sistema gere automaticamente o **PDF do Requerimento Oficial preenchido e assinado digitalmente**.
-4. O SDP envie simultaneamente o PDF e os anexos para o **e-mail do solicitante** (comprovante) e para o **e-mail do setor responsável** (para processamento).
-
----
-
-## ⚡ Como o Sistema Funciona (Fluxo Simplificado)
-
-```mermaid
-flowchart TD
-    A["1. Login com Matricula e Senha SUAP"] --> B["2. Escolha do Requerimento no Catalogo"]
-    B --> C["3. Preenchimento de Justificativa + Anexos"]
-    C --> D["4. Confirmacao da Solicitacao"]
-    D --> E["Sistema gera o PDF Oficial do Requerimento"]
-    E --> F[("Salva registro no Banco de Dados")]
-    E --> G["Disparo de E-mails Automaticos"]
-    G --> H["Copia com PDF para o Aluno / Servidor"]
-    G --> I["E-mail com PDF + Anexos para o Setor Responsavel (CORES, Coordenacao, DACD)"]
-```
-
----
-
-## 🔄 Origem e Reaproveitamento (Fork)
-
-Este projeto foi construído baseada na integração do sistema anterior:
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        COMPOSIÇÃO DO PROJETO                           │
-├──────────────────────────────────┬─────────────────────────────────────┤
-│ ♻️ REAPROVEITADO DO SISTEMA BASE │ ✨ NOVO FLUXO DIRETO (SDP SEABRA)   │
-├──────────────────────────────────┼─────────────────────────────────────┤
-│ • Autenticação Híbrida (SUAP/JWT)│ • Catálogo de Requerimentos Rápidos │
-│ • Login Local para Administradores│ • Formulários de Justificativa      │
-│ • Web Scraping e Sincronização   │ • Geração Automática de PDF         │
-│   (BrowserKit / Playwright)      │ • Disparo Imediato de E-mails       │
-│ • Armazenamento seguro de Sessão │ • Anexo de comprovantes ao setor    │
-└──────────────────────────────────┴─────────────────────────────────────┘
-```
-
----
-
-## 🏛️ Tipos de Requerimentos e Destinos (Campus Seabra)
-
-O sistema roteia automaticamente a solicitação com base no tipo de requerimento:
-
-| Categoria | Tipo de Requerimento | Anexos Comuns | Setor de Destino (E-mail) |
-|---|---|---|---|
-| **Acadêmico** | 2ª Chamada de Avaliação | Atestado / Justificativa | Coordenação de Curso / Docente |
-| **Acadêmico** | Revisão de Prova / Nota | Cópia da avaliação | Coordenação de Curso |
-| **Registro** | Trancamento / Cancelamento | Justificativa | CORAE (Registros Escolares) |
-| **Registro** | Aproveitamento de Estudos / Dispensa | Ementa / Histórico | CORAE / Coordenação |
-| **Frequência**| Justificativa de Faltas | Atestado médico | CAE / Registros Escolares |
-| **Documento** | Declarações Específicas | — | CORAE |
-| **Geral** | Requerimento Administrativo Diverso | Documentos pertinentes | Gabinete / Direção |
-
----
-
-## 📐 Arquitetura e Fluxos
-
-### 1. Autenticação Híbrida (SUAP + Local)
-- **Alunos e Professores**: Autenticam via API v2 do SUAP (`/api/v2/autenticacao/token/`). O sistema obtém nome, matrícula, vínculo e e-mail institucional.
-- **Admin Local**: Acesso via e-mail e senha cadastrados no sistema.
-- **Fallback Local**: Caso o SUAP esteja temporariamente fora do ar, usuários já cadastrados conseguem autenticar via credencial local segura.
-
-### 2. Geração de PDF e Notificação por E-mail
-Ao submeter o formulário:
-1. O backend compila os dados do usuário obtidos do SUAP + dados preenchidos no formulário.
-2. É gerado um documento PDF padronizado com identificação visual do IFBA Seabra, código de autenticidade e carimbo de data/hora.
-3. A fila de e-mails (`Illuminate\Support\Facades\Mail`) envia:
-   - **Para o usuário**: Confirmação da solicitação com o PDF anexado.
-   - **Para o setor**: Notificação formal com o requerimento PDF e todos os anexos enviados pelo requerente.
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-- **[PHP 8.3+](https://www.php.net/)** & **[Laravel 13.x](https://laravel.com/)**
-- **[Symfony BrowserKit & DomCrawler](https://symfony.com/)** — Web scraping para sincronização de dados adicionais
-- **[Playwright / TypeScript](https://playwright.dev/)** — Automação de extração do SUAP
-- **[Blade](https://laravel.com/docs/blade)** + CSS moderno
-- **[Laravel Mail](https://laravel.com/docs/mail)** — Envio de e-mails com anexos via SMTP
-- **[Vite](https://vitejs.dev/)**
-
----
-
-## 📂 Estrutura do Repositório
+## Fluxo principal
 
 ```text
-SDP/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Auth/              # Login com SUAP e Local
-│   │   │   ├── RequerimentoController.php # Criação, PDF e envio por e-mail
-│   │   │   └── Admin/             # Gestão de setores e tipos de requerimentos
-│   ├── Mail/                      # Classes Mailable (RequerimentoEnviado, etc.)
-│   ├── Models/                    # Usuario, Requerimento, Setor, etc.
-│   └── Services/
-│       ├── SuapService.php        # Integração REST API SUAP
-│       └── Suap/                  # Módulos de Scraping (BrowserKit)
-├── docs/                          # Documentações técnicas
-│   ├── fluxo-autenticacao.md      # Fluxo detalhado de login SUAP
-│   ├── web-scraping-suap.md       # Documentação do motor de scraping
-│   └── arquitetura-protocolos.md  # Especificação do fluxo simplificado de requerimentos
-├── resources/
-│   ├── views/
-│   │   ├── requerimentos/         # Telas de seleção e formulário de requerimento
-│   │   ├── pdf/                   # Template Blade do PDF oficial gerado
-│   │   └── emails/                # Templates Blade de e-mails (aluno e setor)
-├── routes/
-│   └── web.php                    # Rotas do sistema
-├── scraper/                       # Rotinas de scraping Playwright
-└── vite.config.js
+Login -> Escolha do requerimento -> Justificativa e anexos
+     -> Validacao -> Registro no banco -> PDF e e-mails
 ```
 
----
+
+## Requisitos
+
+- PHP 8.3 ou superior
+- Composer
+- Node.js 20 ou superior e npm
+- MySQL/MariaDB ou SQLite
+- Acesso ao SUAP para autenticacao de alunos e servidores
+
+## Instalacao rapida
+
+Na raiz do projeto, execute:
+
+```bash
+composer run setup
+```
+
+Esse comando instala as dependencias, cria o arquivo `.env`, gera a chave da aplicacao, executa as migrations e compila os assets.
+
+Para iniciar o ambiente de desenvolvimento:
+
+```bash
+composer run dev
+```
+
+O comando inicia o servidor Laravel, o worker de filas e o Vite.
+
+## Configuracao
+
+Copie `.env.example` para `.env` caso o arquivo ainda nao exista:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure principalmente:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=SDP
+DB_USERNAME=root
+DB_PASSWORD=
+
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS="protocolos.seabra@ifba.edu.br"
+MAIL_FROM_NAME="SDP - IFBA Seabra"
+
+SUAP_BASE_URL="https://suap.ifba.edu.br"
+SUAP_API_URL="https://suap.ifba.edu.br/api/v2"
+```
+
+Para envio real de e-mails, altere `MAIL_MAILER` e informe os dados do servidor SMTP.
+
+## Comandos uteis
+
+```bash
+# Rodar migrations
+php artisan migrate
+
+# Executar os testes
+composer run test
+
+# Gerar os assets para producao
+npm run build
+```
+
+## Rotas principais
+
+| Metodo | Rota | Funcao |
+|---|---|---|
+| GET | `/login` | Tela de login |
+| POST | `/login` | Autenticacao |
+| POST | `/logout` | Encerramento da sessao |
+| GET | `/requerimentos/aluno` | Painel do aluno |
+| GET | `/requerimentos/aluno/novo` | Novo requerimento |
+| POST | `/requerimentos/aluno/enviar-email` | Envio do requerimento |
+| GET | `/requerimentos/aluno/meusRequerimentos` | Historico do aluno |
+| GET | `/requerimentos/servidor` | Painel do servidor |
+| GET | `/requerimentos/gerar-pdf` | Geracao do PDF |
+
+## Estrutura essencial
+
+```text
+app/
+  Http/Controllers/          Controllers da aplicacao
+  Mail/                       E-mails enviados pelo sistema
+  Models/                     Usuarios e requerimentos
+  Services/                   Integracao e sincronizacao com o SUAP
+config/
+  modelos_requerimentos.php  Catalogo de requerimentos
+  setores.php                Destinatarios por setor
+database/migrations/          Estrutura do banco de dados
+resources/views/              Telas, e-mails e template do PDF
+routes/web.php                Rotas web
+scraper/                      Integracao alternativa com Playwright
+```
+
+## Configuracao dos requerimentos
+
+Os modelos disponiveis ficam em `config/modelos_requerimentos.php` e os destinatarios dos setores em `config/setores.php`.
