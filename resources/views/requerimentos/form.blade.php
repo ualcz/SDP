@@ -1,188 +1,122 @@
 @extends('layouts.app')
 
-@section('title', ($modeloAtivo['titulo'] ?? 'Requerimento') . ' - SDP IFBA')
+@section('title', 'Novo Requerimento - SDP IFBA')
 @section('tag', 'Aluno')
 
 @section('content')
-<div>
+<link rel="stylesheet" href="{{ asset('css/form.css') }}">
 
-    <!-- Seletor de Modelos de Requerimento por Setor -->
-    <div>
-        <strong>Selecione o Setor / Modelo de Requerimento:</strong><br><br>
-        <div>
-            @foreach($modelos as $chave => $mod)
-                <a href="{{ route('requerimentos.aluno.novo', ['modelo' => $chave]) }}">
-                    [{{ $mod['setor_sigla'] ?? strtoupper($chave) }}]
-                </a>
-                &nbsp;
-            @endforeach
-        </div>
-    </div>
-    <br>
+<div class="form-box">
 
-    <!-- Cabeçalho Oficial do Setor -->
-    <div>
-        <h3>INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA</h3>
-        <h4>CAMPUS SEABRA</h4>
-        <h4>{{ strtoupper($modeloAtivo['setor_nome'] ?? 'COORDENAÇÃO DE REGISTRO ESCOLARES (CORES)') }}</h4>
-        <p><strong>REQUERIMENTO Nº {{ date('Y') }}/_____ &nbsp;&nbsp;&nbsp;&nbsp; Processo: {{ $modeloAtivo['processo_prefixo'] ?? '23720' }}.______/{{ date('Y') }}-__</strong></p>
+    <!-- Navegação entre modelos / setores -->
+    <div class="setores-nav">
+        <strong>Setor:</strong>
+        @foreach($modelos as $chave => $mod)
+            <a href="{{ route('requerimentos.aluno.novo', ['modelo' => $chave]) }}"
+               class="{{ ($modeloChave ?? '') === $chave ? 'active' : '' }}">
+                [{{ $mod['setor_sigla'] ?? strtoupper($chave) }}]
+            </a>
+        @endforeach
     </div>
-    <hr>
+
+    <!-- Título do Requerimento -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
+        <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
+    </div>
 
     @if (session('sucesso'))
-        <div>
-            <strong>✓ {{ session('sucesso') }}</strong>
-        </div>
-        <br>
+        <div class="sucesso">✓ {{ session('sucesso') }}</div>
     @endif
 
     @if ($errors->any())
-        <div>
-            <strong>Erros encontrados:</strong>
-            <ul>
+        <div class="erros">
+            <strong>Erros:</strong>
+            <ul style="margin: 5px 0 0 20px;">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
-        <br>
     @endif
 
     <form action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
-        <!-- Setor de Destino vinculado ao modelo ativo -->
         <input type="hidden" name="setor" value="{{ $setorChave }}">
 
-        <!-- 1. IDENTIFICAÇÃO DO REQUERENTE -->
+        <!-- 1. Identificação do Aluno -->
         <fieldset>
-            <legend><strong>IDENTIFICAÇÃO DO REQUERENTE</strong></legend>
-
-            <div>
-                <label><strong>Nome do Requerente:</strong></label><br>
-                <input type="text" name="nome" value="{{ auth()->user()->nome }}" readonly>
+            <legend>Identificação do Aluno</legend>
+            <div class="form-linha">
+                <div class="campo">
+                    <label>Nome:</label>
+                    <input type="text" value="{{ auth()->user()->nome }}" readonly>
+                </div>
+                <div class="campo">
+                    <label>Matrícula:</label>
+                    <input type="text" value="{{ auth()->user()->matricula ?? '' }}" readonly>
+                </div>
+                <div class="campo">
+                    <label>Turma / Curso:</label>
+                    <input type="text" value="{{ auth()->user()->turma_codigo ?? '' }}" readonly>
+                </div>
             </div>
-            <br>
 
-            <div>
-                <label><strong>Nº do CPF:</strong></label><br>
-                <input type="text" name="cpf" value="{{ auth()->user()->cpf ?? '' }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>Matrícula (SUAP):</strong></label><br>
-                <input type="text" name="matricula" value="{{ auth()->user()->matricula ?? '' }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>Nº da Turma / Código:</strong></label><br>
-                <input type="text" name="turma_codigo" value="{{ auth()->user()->turma_codigo ?? '' }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>Endereço:</strong></label><br>
-                <input type="text" name="endereco" value="{{ auth()->user()->endereco ?? '' }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>E-mail Institucional:</strong></label><br>
-                <input type="email" name="email" value="{{ auth()->user()->email }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>E-mail Pessoal:</strong></label><br>
-                <input type="email" name="email_pessoal" value="{{ auth()->user()->email_pessoal ?? '' }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>Data da Solicitação:</strong></label><br>
-                <input type="text" name="data_solicitacao" value="{{ date('d/m/Y') }}" readonly>
-            </div>
-            <br>
-
-            <div>
-                <label><strong>Setor de Destino:</strong></label><br>
-                <input type="text" value="{{ $setorDestino['nome'] ?? $modeloAtivo['setor_nome'] }} ({{ is_array($setorDestino['email'] ?? null) ? implode(', ', $setorDestino['email']) : ($setorDestino['email'] ?? $modeloAtivo['email'] ?? '') }})" readonly>
+            <div class="form-linha">
+                <div class="campo">
+                    <label>E-mail Pessoal (editável):</label>
+                    <input type="email" name="email_pessoal" value="{{ old('email_pessoal', auth()->user()->email_pessoal ?? '') }}" placeholder="seu.email@exemplo.com">
+                </div>
+                <div class="campo">
+                    <label>Telefone / WhatsApp (editável):</label>
+                    <input type="text" name="telefone" value="{{ old('telefone', auth()->user()->telefone ?? '') }}" placeholder="(XX) XXXXX-XXXX">
+                </div>
+                <div class="campo">
+                    <label>Endereço (editável):</label>
+                    <input type="text" name="endereco" value="{{ old('endereco', auth()->user()->endereco ?? '') }}" placeholder="Rua, Número, Bairro, Cidade">
+                </div>
             </div>
         </fieldset>
-        <br>
 
-        <!-- 2. OBJETO DO REQUERIMENTO -->
+        <!-- 2. Objeto do Requerimento -->
         <fieldset>
-            <legend><strong>OBJETO DO REQUERIMENTO - {{ $modeloAtivo['setor_sigla'] ?? '' }}</strong></legend>
-
-            <div>
+            <legend>Objeto do Requerimento</legend>
+            <div class="opcoes-objeto">
                 @foreach($modeloAtivo['objetos'] ?? [] as $codigo => $descricao)
-                    <div>
-                        <label>
-                            <input type="radio" name="objeto" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
-                            {{ $descricao }}
-                        </label>
-                    </div>
+                    <label>
+                        <input type="radio" name="objeto" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
+                        {{ $descricao }}
+                    </label>
                 @endforeach
             </div>
-            <br>
 
-            <div>
-                <label for="objeto_outro"><strong>Se necessário, especifique detalhes / outro motivo:</strong></label><br>
-                <input type="text" name="objeto_outro" id="objeto_outro" placeholder="Especifique caso necessário">
+            <div class="campo" style="margin-top: 10px;">
+                <label>Outro / Detalhe adicional (opcional):</label>
+                <input type="text" name="objeto_outro" placeholder="Especifique caso necessário">
             </div>
-
-            @if(!empty($modeloAtivo['observacoes']))
-                <br>
-                <div>
-                    @foreach($modeloAtivo['observacoes'] as $obs)
-                        <small>{{ $obs }}</small><br>
-                    @endforeach
-                </div>
-            @endif
         </fieldset>
-        <br>
 
-        <!-- 3. EXPOSIÇÃO DE MOTIVOS -->
+        <!-- 3. Mensagem / Motivo -->
         <fieldset>
-            <legend><strong>EXPOSIÇÃO DE MOTIVOS</strong></legend>
-
-            <div>
-                <textarea name="mensagem" id="mensagem" rows="5" placeholder="Descreva aqui detalhadamente a justificativa ou motivo do seu requerimento..."></textarea>
+            <legend>Justificativa / Motivo</legend>
+            <div class="campo">
+                <textarea name="mensagem" rows="4" placeholder="Descreva os motivos da sua solicitação..."></textarea>
             </div>
         </fieldset>
-        <br>
 
-        <!-- 4. ANEXOS (DOCUMENTOS COMPROBATÓRIOS) -->
+        <!-- 4. Anexos -->
         <fieldset>
-            <legend><strong>ANEXOS / COMPROVANTES (Opcional)</strong></legend>
-
-            <div>
-                <input type="file" name="arquivos[]" id="arquivos" multiple><br>
-                <small>Permite anexar comprovantes, atestados, ementas ou documentos comprobatórios (PDF, imagens, etc.).</small>
+            <legend>Anexos (opcional)</legend>
+            <div class="campo">
+                <input type="file" name="arquivos[]" multiple>
             </div>
         </fieldset>
-        <br>
 
         <!-- Botão de Envio -->
-        <div>
-            <button type="submit" id="btnEnviar" onclick="this.form.addEventListener('submit', () => { this.disabled = true; this.innerText = 'Enviando requerimento...'; });">
-                Enviar Requerimento ({{ $modeloAtivo['setor_sigla'] ?? 'Setor' }})
-            </button>
-        </div>
-
+        <button type="submit" class="btn-enviar">
+            Enviar Requerimento
+        </button>
     </form>
-
-    <br>
-    <hr>
-    <div>
-        <small>
-            IFBA Campus Seabra - Estrada Vicinal para Tenda, Zona Rural, Barro Vermelho. CEP: 46.900.000. Tel: (75) 99811-1125 / 99811-1016<br>
-            {{ $modeloAtivo['rodape_contato'] ?? 'Contato: sdp.seabra@ifba.edu.br' }}
-        </small>
-    </div>
 
 </div>
 @endsection

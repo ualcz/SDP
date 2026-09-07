@@ -1,0 +1,100 @@
+.form-box { max-width: 800px; margin: 20px auto; background: #fff; 
+    padding: 25px; 
+    border-radius: 8px;
+    border: 1px solid #ddd; 
+}
+.setores-nav {
+    margin-bottom: 20px;
+    font-size: 14px; 
+}
+.setores-nav a {
+    margin-right: 12px; 
+    color: #059669;
+    text-decoration: none; 
+    font-weight: bold; 
+}
+.setores-nav a.active {
+    text-decoration: underline; 
+    color: #047857;
+ }
+.form-box fieldset {
+    border: 1px solid #ddd;
+    border-radius: 6px; 
+    padding: 15px; 
+    margin-bottom: 18px; 
+}
+.form-box legend { 
+    font-weight: bold; 
+    padding: 0 6px;
+    color: #333; 
+}
+.form-linha {
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap; 
+}
+.campo { 
+    flex: 1; 
+    min-width: 220px; 
+    margin-bottom: 12px; 
+}
+.campo.full { 
+    flex: 100%;
+ }
+.campo label { 
+    display: block; 
+    font-size: 13px; 
+    font-weight: bold; 
+    margin-bottom: 4px; 
+    color: #444; 
+}
+.campo input[type="text"], .campo input[type="email"], .campo textarea, .campo input[type="file"]{   
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+    font-size: 14px; 
+}
+.campo input[readonly] {
+        background: #f5f5f5; 
+    color: #666; 
+}
+.campo textarea { 
+    resize: vertical; 
+}
+.opcoes-objeto label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-size: 14px; 
+    cursor: pointer; 
+}
+.btn-enviar { 
+    background: #059669; 
+    color: #fff; 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 4px; 
+    font-size: 15px; 
+    cursor: pointer; 
+    width: 100%; 
+    font-weight: bold; 
+}
+.btn-enviar:hover { 
+    background: #047857; 
+}
+.sucesso { 
+    background: #d1fae5; 
+    color: #065f46; 
+    padding: 10px; 
+    border-radius: 4px; 
+    margin-bottom: 15px; 
+    font-weight: bold; 
+}
+.erros { 
+    background: #fee2e2; 
+    color: #991b1b; 
+    padding: 10px;
+    border-radius: 4px; 
+    margin-bottom: 15px; 
+}
