@@ -34,7 +34,9 @@ class RequerimentoController extends Controller
     //Método para mostrar requerimentos que já foram realizados pelo usuário;
     public function index(Request $request)
     {
-        $requerimentos = Requerimento::all();
+        //Implementação da lógica de que o usuário logado só pode ver os seus próprios requerimentos;
+        //Uso de chave estrangeira na tabela requerimentos;
+        $requerimentos = auth()->user()->requerimentos;
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));  
     }
 }
