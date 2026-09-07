@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Requerimento;
 
 class Usuario extends Authenticatable
 {
@@ -48,5 +49,9 @@ class Usuario extends Authenticatable
     public function isProfessor(): bool
     {
         return $this->role === 'professor';
+    }
+
+    public function requerimentos(){
+        return $this->hasMany(Requerimento::class);
     }
 }
