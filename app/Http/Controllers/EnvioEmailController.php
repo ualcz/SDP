@@ -25,6 +25,12 @@ class EnvioEmailController extends Controller
             'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
         ]);
 
+        //Armazena os dados na tabela 'requerimentos' antes de enviar via e-mail;
+        $data = $request->all();
+        $data['usuario_id'] = auth()->id();
+        $requerimento = Requerimento::create($data);
+        $requerimento->save();
+
         $setores = config('setores.destinatarios', []);
         $chaveSetor = $request->input('setor');
 
