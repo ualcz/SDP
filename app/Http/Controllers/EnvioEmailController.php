@@ -18,6 +18,9 @@ class EnvioEmailController extends Controller
             'setor' => 'required|string',
             'objeto' => 'nullable|string|max:255',
             'mensagem' => 'nullable|string|max:3000',
+            'email_pessoal' => 'nullable|email|max:255',
+            'endereco' => 'nullable|string|max:255',
+            'telefone' => 'nullable|string|max:30',
             'email_adicional' => 'nullable|email',
             'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
         ]);
@@ -31,6 +34,29 @@ class EnvioEmailController extends Controller
 
         $setor = $setores[$chaveSetor];
         $aluno = auth()->user();
+
+        // Atualiza campos editados pelo aluno no preenchimento
+        if ($request->filled('email_pessoal')) {
+            $aluno->email_pessoal = $request->input('email_pessoal');
+        }
+        if ($request->filled('endereco')) {
+            $aluno->endereco = $request->input('endereco');
+        }
+        if ($request->filled('telefone')) {
+            $aluno->telefone = $request->input('telefone');
+        }
+
+        try {
+            $dadosParaSalvar = [];
+            if ($request->filled('email_pessoal')) $dadosParaSalvar['email_pessoal'] = $request->input('email_pessoal');
+            if ($request->filled('endereco')) $dadosParaSalvar['endereco'] = $request->input('endereco');
+            if (!empty($dadosParaSalvar)) {
+                $aluno->update($dadosParaSalvar);
+            }
+        } catch (\Throwable $e) {
+            logger()->info('Não foi possível persistir dados do aluno no BD: ' . $e->getMessage());
+        }
+
         $objeto = !empty($request->input('objeto_outro')) 
             ? 'Outros: ' . $request->input('objeto_outro') 
             : $request->input('objeto', 'Requerimento Geral');

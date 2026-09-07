@@ -21,6 +21,7 @@ class Usuario extends Authenticatable
         'password',
         'senha_suap',
         'endereco',
+        'telefone',
         'turma_codigo',
         'role',
     ];

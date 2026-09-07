@@ -66,6 +66,12 @@
             <td><strong>Endereço:</strong></td>
             <td>{{ $aluno->endereco ?? 'Não informado' }}</td>
         </tr>
+        @if(!empty($aluno->telefone))
+        <tr>
+            <td><strong>Telefone:</strong></td>
+            <td>{{ $aluno->telefone }}</td>
+        </tr>
+        @endif
         <tr>
             <td><strong>Setor de Destino:</strong></td>
             <td>{{ $setorNomeOficial }}</td>
