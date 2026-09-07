@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
+use App\Http\Controllers\RequerimentoPdfController;
 use App\Models\Usuario;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
@@ -62,15 +62,15 @@ class InformacoesAlunoMail extends Mailable
     {
         $anexos = [];
 
-        // 1. Gera o PDF do requerimento a partir da view Blade
+        // 1. Gera o PDF do requerimento através do controller especializado
         try {
-            $pdf = Pdf::loadView('pdf.requerimento', [
-                'aluno' => $this->aluno,
-                'setorNome' => $this->setorNome,
-                'setorChave' => $this->setorChave,
-                'objeto' => $this->objeto,
-                'mensagem' => $this->mensagem,
-            ])->setPaper('a4', 'portrait');
+            $pdf = RequerimentoPdfController::criarPdf(
+                aluno: $this->aluno,
+                setorNome: $this->setorNome,
+                setorChave: $this->setorChave,
+                objeto: $this->objeto,
+                mensagem: $this->mensagem,
+            );
 
             $nomePdf = 'Requerimento_' . Str::slug($this->aluno->nome) . '_' . date('Ymd_His') . '.pdf';
 

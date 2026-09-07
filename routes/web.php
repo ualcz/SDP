@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
+use App\Http\Controllers\RequerimentoPdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,14 @@ Route::middleware(['auth', 'role:professor,admin'])->group(function () {
         return view('requerimentos.servidor');
     })->name('requerimentos.servidor');
 });
+
+/*
+|--------------------------------------------------------------------------
+| VISUALIZAÇÃO DE BLADE & GERAÇÃO DE PDF
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/requerimentos/visualizar-blade', [RequerimentoPdfController::class, 'visualizarBlade'])->name('requerimentos.visualizar-blade');
+    Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
+});
+
