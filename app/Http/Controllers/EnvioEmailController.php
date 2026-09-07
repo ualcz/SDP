@@ -71,6 +71,7 @@ class EnvioEmailController extends Controller
         // 3. Salva o registro no banco de dados
         try {
             Requerimento::create([
+                'usuario_id' => $aluno->id,
                 'objetoDoRequerimento' => $objeto,
                 'motivo' => $request->input('mensagem') ?? 'Solicitação de ' . $objeto,
                 'situação' => 'Em Análise',

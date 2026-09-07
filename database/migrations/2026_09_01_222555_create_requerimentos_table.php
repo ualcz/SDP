@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('requerimentos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained()->onDelete('cascade');
+            $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
             $table->string('objetoDoRequerimento');
             $table->string('motivo');
             //O campo 'situação' pode ser null, pois tem o valor padrão 'Em análise'.

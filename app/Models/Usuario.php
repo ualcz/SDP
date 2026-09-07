@@ -51,7 +51,8 @@ class Usuario extends Authenticatable
         return $this->role === 'professor';
     }
 
-    public function requerimentos(){
-        return $this->hasMany(Requerimento::class);
+    public function requerimentos()
+    {
+        return $this->hasMany(Requerimento::class, 'usuario_id');
     }
 }
