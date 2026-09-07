@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('email_pessoal')->nullable();
             $table->string('endereco')->nullable();
+            $table->string('telefone', 30)->nullable();
             $table->string('password');
             $table->text('senha_suap')->nullable();
             $table->string('turma_codigo')->nullable();

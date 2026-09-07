@@ -14,6 +14,7 @@ class SuapSyncService
         protected TurmaAlunoScraper $turmaScraper,
         protected NomeScraper $nomeScraper,
         protected EnderecoScraper $enderecoScraper,
+        protected TelefoneScraper $telefoneScraper,
     ) {}
 
     /**
@@ -63,6 +64,11 @@ class SuapSyncService
                     if ($nome) {
                         $updates['nome'] = $nome;
                     }
+
+                    $telefone = $this->telefoneScraper->extrair($paginaDadosPessoais);
+                    if ($telefone) {
+                        $updates['telefone'] = $telefone;
+                    }
                 }
             } else {
                 // Servidor - página de dados pessoais
@@ -80,6 +86,11 @@ class SuapSyncService
                     $cpf = $this->cpfScraper->extrair($paginaServidor);
                     if ($cpf) {
                         $updates['cpf'] = $cpf;
+                    }
+
+                    $telefone = $this->telefoneScraper->extrair($paginaServidor);
+                    if ($telefone) {
+                        $updates['telefone'] = $telefone;
                     }
                 }
             }
