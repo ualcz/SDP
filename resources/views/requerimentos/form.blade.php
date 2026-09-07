@@ -84,7 +84,7 @@
             <div class="opcoes-objeto">
                 @foreach($modeloAtivo['objetos'] ?? [] as $codigo => $descricao)
                     <label>
-                        <input type="radio" name="objeto" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
+                        <input type="radio" name="objetoDoRequerimento" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
                         {{ $descricao }}
                     </label>
                 @endforeach
@@ -100,7 +100,7 @@
         <fieldset>
             <legend>Justificativa / Motivo</legend>
             <div class="campo">
-                <textarea name="mensagem" rows="4" placeholder="Descreva os motivos da sua solicitação..."></textarea>
+                <textarea name="motivo" rows="4" placeholder="Descreva os motivos da sua solicitação..."></textarea>
             </div>
         </fieldset>
 
