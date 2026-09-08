@@ -17,6 +17,9 @@ class EnvioEmailController extends Controller
         $request->validate([
             'setor' => 'required|string',
             'objeto' => 'nullable|string|max:255',
+            'objetoDoRequerimento' => 'nullable|string|max:255',
+            'objeto_outro' => 'nullable|string|max:255',
+            'motivo' => 'nullable|string|max:3000',
             'mensagem' => 'nullable|string|max:3000',
             'email_pessoal' => 'nullable|email|max:255',
             'telefone' => 'nullable|string|max:30',
@@ -30,12 +33,6 @@ class EnvioEmailController extends Controller
             'email_adicional' => 'nullable|email',
             'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
         ]);
-
-        // Armazena os dados na tabela 'requerimentos' antes de enviar via e-mail;
-        $data = $request->all();
-        $data['usuario_id'] = auth()->id();
-        $requerimento = Requerimento::create($data);
-        $requerimento->save();
 
         $setores = config('setores.destinatarios', []);
         $chaveSetor = $request->input('setor');
@@ -95,7 +92,11 @@ class EnvioEmailController extends Controller
 
         $objeto = !empty($request->input('objeto_outro')) 
             ? 'Outros: ' . $request->input('objeto_outro') 
-            : $request->input('objeto', 'Requerimento Geral');
+            : ($request->input('objetoDoRequerimento') ?? $request->input('objeto', 'Requerimento Geral'));
+
+        $motivo = !empty($request->input('motivo')) 
+            ? $request->input('motivo') 
+            : (!empty($request->input('mensagem')) ? $request->input('mensagem') : 'Solicitação de ' . $objeto);
 
         // 1. Montagem da lista de destinatários
         $destinatarios = [];
@@ -135,11 +136,10 @@ class EnvioEmailController extends Controller
             Requerimento::create([
                 'usuario_id' => $aluno->id,
                 'objetoDoRequerimento' => $objeto,
-                'motivo' => $request->input('mensagem') ?? 'Solicitação de ' . $objeto,
+                'motivo' => $motivo,
                 'situação' => 'Em Análise',
             ]);
         } catch (\Exception $e) {
-            // Caso a tabela ainda não esteja migrada, continua o envio de e-mail sem quebrar a execução
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
 
@@ -147,7 +147,7 @@ class EnvioEmailController extends Controller
         Mail::to($destinatarios)->send(new InformacoesAlunoMail(
             aluno: $aluno,
             setorNome: $setor['nome'],
-            mensagem: $request->input('mensagem'),
+            mensagem: $motivo,
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
             objeto: $objeto,
             setorChave: $chaveSetor
