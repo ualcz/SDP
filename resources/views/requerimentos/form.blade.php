@@ -74,13 +74,9 @@
             </div>
 
             <div class="form-linha">
-                <div class="campo" style="flex: 2; min-width: 200px;">
-                    <label>Rua / Logradouro (editável):</label>
-                    <input type="text" name="rua" value="{{ old('rua', auth()->user()->endereco?->rua ?? '') }}" placeholder="Rua / Avenida">
-                </div>
-                <div class="campo" style="flex: 1; min-width: 90px;">
-                    <label>Número:</label>
-                    <input type="text" name="numero" value="{{ old('numero', auth()->user()->endereco?->numero ?? '') }}" placeholder="Ex: 60 ou S/N">
+                <div class="campo" style="flex: 2; min-width: 240px;">
+                    <label>Rua e Número (editável):</label>
+                    <input type="text" name="rua" value="{{ old('rua', auth()->user()->endereco?->rua ?? '') }}" placeholder="Ex: Rua Antonio Francisco, 60">
                 </div>
                 <div class="campo" style="flex: 1.5; min-width: 150px;">
                     <label>Bairro:</label>

@@ -35,10 +35,12 @@ class Endereco extends Model
 
         if (!empty($this->rua)) {
             $linhaRua = $this->rua;
-            if (!empty($this->numero)) {
+            if (!empty($this->numero) && !str_contains($this->rua, $this->numero)) {
                 $linhaRua .= ', ' . $this->numero;
             }
             $partes[] = $linhaRua;
+        } elseif (!empty($this->numero)) {
+            $partes[] = $this->numero;
         }
 
         if (!empty($this->bairro)) {

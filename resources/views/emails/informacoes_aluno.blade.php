@@ -50,8 +50,20 @@
             <td>{{ $aluno->turma_codigo ?? 'Não informada' }}</td>
         </tr>
         <tr>
-            <td><strong>Endereço</strong></td>
-            <td>{{ $aluno->endereco?->formatado ?: 'Não informado' }}</td>
+            <td><strong>Rua e Número</strong></td>
+            <td>{{ $aluno->endereco?->rua ?: 'Não informado' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Bairro</strong></td>
+            <td>{{ $aluno->endereco?->bairro ?: 'Não informado' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Cidade / UF</strong></td>
+            <td>{{ $aluno->endereco?->cidade ? ($aluno->endereco->cidade . ($aluno->endereco->estado ? ' - ' . $aluno->endereco->estado : '')) : 'Não informado' }}</td>
+        </tr>
+        <tr>
+            <td><strong>CEP</strong></td>
+            <td>{{ $aluno->endereco?->cep ?: 'Não informado' }}</td>
         </tr>
         @if(!empty($aluno->telefone))
         <tr>

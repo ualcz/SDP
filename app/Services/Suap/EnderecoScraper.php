@@ -80,7 +80,8 @@ class EnderecoScraper
 
         // Padrão padrão do SUAP com 5 partes: [Rua, Número, Bairro, CEP, Cidade-UF]
         if (count($partes) === 5) {
-            $dados['rua'] = $partes[0];
+            // Rua e Número no mesmo campo
+            $dados['rua'] = $partes[0] . ', ' . $partes[1];
             $dados['numero'] = $partes[1];
             $dados['bairro'] = $partes[2];
             $dados['cep'] = $partes[3];
@@ -125,6 +126,7 @@ class EnderecoScraper
         if (count($partes) >= 1) {
             if (preg_match('/^(\d+|s\/?n|sem n[úu]mero)$/i', $partes[0])) {
                 $dados['numero'] = array_shift($partes);
+                $dados['rua'] .= ', ' . $dados['numero'];
             }
         }
         if (count($partes) >= 1) {
