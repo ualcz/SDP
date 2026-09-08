@@ -1,0 +1,95 @@
+/* ==========================================================================
+   Footer - SDP IFBA Seabra
+   ========================================================================== */
+
+.site-footer {
+    background: #1a1f2e;
+    color: #d1d5db;
+    margin-top: 48px;
+}
+
+.footer-inner {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+/* ── Brand no footer ──────────────────────────────────────────────────────── */
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-logo {
+    width: 34px;
+    height: auto;
+    opacity: 0.85;
+    filter: brightness(0) invert(1);
+}
+
+.footer-brand-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+}
+
+.footer-brand-sub {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* ── Links do footer ──────────────────────────────────────────────────────── */
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+    color: #34d399;
+}
+
+/* ── Linha de copyright ───────────────────────────────────────────────────── */
+
+.footer-bottom {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    border-top: 1px solid #2d3748;
+    font-size: 12px;
+    color: #4b5563;
+    text-align: center;
+}
+
+/* ── Responsividade ───────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .footer-inner {
+        flex-direction: column;
+        gap: 24px;
+        padding: 24px 16px;
+    }
+
+    .footer-bottom {
+        padding: 12px 16px;
+    }
+}

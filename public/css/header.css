@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Header / Navbar - SDP IFBA Seabra
+   ========================================================================== */
+
+.site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+/* ── Logotipo ─────────────────────────────────────────────────────────────── */
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #111827;
+    flex-shrink: 0;
+}
+
+.header-brand img {
+    width: 36px;
+    height: auto;
+}
+
+.header-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.header-brand-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #059669;
+    letter-spacing: -0.01em;
+}
+
+.header-brand-subtitle {
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+/* ── Navegação principal ──────────────────────────────────────────────────── */
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    position: relative;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background-color: #f0fdf4;
+    color: #059669;
+}
+
+.nav-link.active {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-weight: 600;
+}
+
+/* ── Área do usuário (nome + logout) ──────────────────────────────────────── */
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid #e5e7eb;
+}
+
+.header-username {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    background: #f3f4f6;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-logout:hover {
+    color: #dc2626;
+    border-color: #fca5a5;
+    background: #fef2f2;
+}
+
+/* ── Responsividade ───────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .header-inner {
+        padding: 0 14px;
+        height: 56px;
+    }
+
+    .header-brand-subtitle {
+        display: none;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-link {
+        padding: 6px 10px;
+    }
+
+    .header-username {
+        display: none;
+    }
+
+    .header-user {
+        margin-left: 6px;
+        padding-left: 6px;
+    }
+}
