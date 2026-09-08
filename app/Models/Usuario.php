@@ -20,7 +20,6 @@ class Usuario extends Authenticatable
         'email_pessoal',
         'password',
         'senha_suap',
-        'endereco',
         'telefone',
         'turma_codigo',
         'role',
@@ -55,5 +54,10 @@ class Usuario extends Authenticatable
     public function requerimentos()
     {
         return $this->hasMany(Requerimento::class, 'usuario_id');
+    }
+
+    public function endereco()
+    {
+        return $this->hasOne(Endereco::class, 'usuario_id');
     }
 }
