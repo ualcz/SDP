@@ -35,7 +35,7 @@
 
         <div class="item">
             <div class="item-label">Endereço</div>
-            <div class="item-value">{{ auth()->user()->endereco ?? 'Não identificado' }}</div>
+            <div class="item-value">{{ auth()->user()->endereco?->formatado ?: 'Não identificado' }}</div>
         </div>
 
         <div class="item">

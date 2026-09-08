@@ -71,9 +71,35 @@
                     <label>Telefone / WhatsApp (editável):</label>
                     <input type="text" name="telefone" value="{{ old('telefone', auth()->user()->telefone ?? '') }}" placeholder="(XX) XXXXX-XXXX">
                 </div>
-                <div class="campo">
-                    <label>Endereço (editável):</label>
-                    <input type="text" name="endereco" value="{{ old('endereco', auth()->user()->endereco ?? '') }}" placeholder="Rua, Número, Bairro, Cidade">
+            </div>
+
+            <div class="form-linha">
+                <div class="campo" style="flex: 2; min-width: 200px;">
+                    <label>Rua / Logradouro (editável):</label>
+                    <input type="text" name="rua" value="{{ old('rua', auth()->user()->endereco?->rua ?? '') }}" placeholder="Rua / Avenida">
+                </div>
+                <div class="campo" style="flex: 1; min-width: 90px;">
+                    <label>Número:</label>
+                    <input type="text" name="numero" value="{{ old('numero', auth()->user()->endereco?->numero ?? '') }}" placeholder="Ex: 60 ou S/N">
+                </div>
+                <div class="campo" style="flex: 1.5; min-width: 150px;">
+                    <label>Bairro:</label>
+                    <input type="text" name="bairro" value="{{ old('bairro', auth()->user()->endereco?->bairro ?? '') }}" placeholder="Bairro">
+                </div>
+            </div>
+
+            <div class="form-linha">
+                <div class="campo" style="flex: 2; min-width: 180px;">
+                    <label>Cidade:</label>
+                    <input type="text" name="cidade" value="{{ old('cidade', auth()->user()->endereco?->cidade ?? '') }}" placeholder="Cidade">
+                </div>
+                <div class="campo" style="flex: 0.8; min-width: 80px;">
+                    <label>Estado (UF):</label>
+                    <input type="text" name="estado" maxlength="2" value="{{ old('estado', auth()->user()->endereco?->estado ?? '') }}" placeholder="BA" style="text-transform: uppercase;">
+                </div>
+                <div class="campo" style="flex: 1.2; min-width: 130px;">
+                    <label>CEP:</label>
+                    <input type="text" name="cep" value="{{ old('cep', auth()->user()->endereco?->cep ?? '') }}" placeholder="00000-000">
                 </div>
             </div>
         </fieldset>

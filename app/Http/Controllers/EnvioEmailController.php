@@ -19,13 +19,19 @@ class EnvioEmailController extends Controller
             'objeto' => 'nullable|string|max:255',
             'mensagem' => 'nullable|string|max:3000',
             'email_pessoal' => 'nullable|email|max:255',
-            'endereco' => 'nullable|string|max:255',
             'telefone' => 'nullable|string|max:30',
+            'rua' => 'nullable|string|max:255',
+            'numero' => 'nullable|string|max:20',
+            'bairro' => 'nullable|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|max:2',
+            'cep' => 'nullable|string|max:10',
+            'endereco' => 'nullable|string|max:255',
             'email_adicional' => 'nullable|email',
             'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
         ]);
 
-        //Armazena os dados na tabela 'requerimentos' antes de enviar via e-mail;
+        // Armazena os dados na tabela 'requerimentos' antes de enviar via e-mail;
         $data = $request->all();
         $data['usuario_id'] = auth()->id();
         $requerimento = Requerimento::create($data);
@@ -41,26 +47,50 @@ class EnvioEmailController extends Controller
         $setor = $setores[$chaveSetor];
         $aluno = auth()->user();
 
-        // Atualiza campos editados pelo aluno no preenchimento
+        // 1. Atualiza campos cadastrais do usuário
+        $dadosUsuario = [];
         if ($request->filled('email_pessoal')) {
             $aluno->email_pessoal = $request->input('email_pessoal');
-        }
-        if ($request->filled('endereco')) {
-            $aluno->endereco = $request->input('endereco');
+            $dadosUsuario['email_pessoal'] = $aluno->email_pessoal;
         }
         if ($request->filled('telefone')) {
             $aluno->telefone = $request->input('telefone');
+            $dadosUsuario['telefone'] = $aluno->telefone;
         }
 
-        try {
-            $dadosParaSalvar = [];
-            if ($request->filled('email_pessoal')) $dadosParaSalvar['email_pessoal'] = $request->input('email_pessoal');
-            if ($request->filled('endereco')) $dadosParaSalvar['endereco'] = $request->input('endereco');
-            if (!empty($dadosParaSalvar)) {
-                $aluno->update($dadosParaSalvar);
+        if (!empty($dadosUsuario)) {
+            try {
+                $aluno->update($dadosUsuario);
+            } catch (\Throwable $e) {
+                logger()->info('Não foi possível persistir dados cadastrais do usuário: ' . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            logger()->info('Não foi possível persistir dados do aluno no BD: ' . $e->getMessage());
+        }
+
+        // 2. Atualiza dados de endereço na tabela 'enderecos'
+        $dadosEndereco = [];
+        foreach (['rua', 'numero', 'bairro', 'cidade', 'estado', 'cep'] as $campo) {
+            if ($request->filled($campo)) {
+                $dadosEndereco[$campo] = $request->input($campo);
+            }
+        }
+
+        // Se veio string única 'endereco' no formulário legado e nenhum campo individual foi preenchido
+        if (empty($dadosEndereco) && $request->filled('endereco')) {
+            $parsed = \App\Services\Suap\EnderecoScraper::parse($request->input('endereco'));
+            if ($parsed) {
+                $dadosEndereco = $parsed;
+            } else {
+                $dadosEndereco['rua'] = $request->input('endereco');
+            }
+        }
+
+        if (!empty($dadosEndereco)) {
+            try {
+                $aluno->endereco()->updateOrCreate([], $dadosEndereco);
+                $aluno->load('endereco');
+            } catch (\Throwable $e) {
+                logger()->info('Não foi possível persistir dados de endereço: ' . $e->getMessage());
+            }
         }
 
         $objeto = !empty($request->input('objeto_outro')) 

@@ -64,7 +64,7 @@
         </tr>
         <tr>
             <td><strong>Endereço:</strong></td>
-            <td>{{ $aluno->endereco ?? 'Não informado' }}</td>
+            <td>{{ $aluno->endereco?->formatado ?: 'Não informado' }}</td>
         </tr>
         @if(!empty($aluno->telefone))
         <tr>
