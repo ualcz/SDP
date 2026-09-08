@@ -55,9 +55,10 @@ class SuapSyncService
                         $updates['cpf'] = $cpf;
                     }
 
-                    $endereco = $this->enderecoScraper->extrair($paginaDadosPessoais);
-                    if ($endereco) {
-                        $updates['endereco'] = $endereco;
+                    $dadosEndereco = $this->enderecoScraper->extrair($paginaDadosPessoais);
+                    if ($dadosEndereco) {
+                        $usuario->endereco()->updateOrCreate([], $dadosEndereco);
+                        Log::info("Web Scraping: Endereço sincronizado para {$usuario->matricula}", $dadosEndereco);
                     }
 
                     $nome = $this->nomeScraper->extrair($paginaDadosPessoais);
@@ -86,6 +87,12 @@ class SuapSyncService
                     $cpf = $this->cpfScraper->extrair($paginaServidor);
                     if ($cpf) {
                         $updates['cpf'] = $cpf;
+                    }
+
+                    $dadosEndereco = $this->enderecoScraper->extrair($paginaServidor);
+                    if ($dadosEndereco) {
+                        $usuario->endereco()->updateOrCreate([], $dadosEndereco);
+                        Log::info("Web Scraping: Endereço de servidor sincronizado para {$usuario->matricula}", $dadosEndereco);
                     }
 
                     $telefone = $this->telefoneScraper->extrair($paginaServidor);
