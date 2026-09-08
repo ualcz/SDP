@@ -98,35 +98,40 @@ class EnvioEmailController extends Controller
             ? $request->input('motivo') 
             : (!empty($request->input('mensagem')) ? $request->input('mensagem') : 'Solicitação de ' . $objeto);
 
-        // 1. Montagem da lista de destinatários
-        $destinatarios = [];
+        // 1. Montagem dos destinatários separados por papel
+        // O setor vai no campo "Para:" (to) e os e-mails do aluno vão no "CC:"
+        // Assim, um único e-mail é enviado com todos os destinatários visíveis na mesma mensagem.
 
-        // E-mail(s) do setor selecionado (aceita string ou array de e-mails)
+        $emailsSetor = [];
         if (!empty($setor['email'])) {
-            if (is_array($setor['email'])) {
-                $destinatarios = array_merge($destinatarios, $setor['email']);
-            } else {
-                $destinatarios[] = $setor['email'];
-            }
+            $emailsSetor = is_array($setor['email']) ? $setor['email'] : [$setor['email']];
         }
 
-        // E-mail pessoal do aluno (se existir) e/ou institucional
+        $emailsAluno = [];
         if (!empty($aluno->email_pessoal)) {
-            $destinatarios[] = $aluno->email_pessoal;
+            $emailsAluno[] = $aluno->email_pessoal;
         }
         if (!empty($aluno->email)) {
-            $destinatarios[] = $aluno->email;
+            $emailsAluno[] = $aluno->email;
         }
         if (!empty($request->input('email_adicional'))) {
-            $destinatarios[] = $request->input('email_adicional');
+            $emailsAluno[] = $request->input('email_adicional');
         }
 
-        // Remove duplicados, nulos e espaços em branco da lista
-        $destinatarios = array_values(array_unique(array_filter(array_map('trim', $destinatarios))));
+        // Remove duplicados e valores inválidos de cada lista
+        $emailsSetor = array_values(array_unique(array_filter(array_map('trim', $emailsSetor))));
+        $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
 
-        if (empty($destinatarios)) {
+        // Remove do CC e-mails que já estão no "Para:" para evitar duplicatas
+        $emailsAluno = array_values(array_diff($emailsAluno, $emailsSetor));
+
+        if (empty($emailsSetor) && empty($emailsAluno)) {
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);
         }
+
+        // Se não há e-mail de setor, usa os e-mails do aluno como destinatário principal
+        $toEmails  = !empty($emailsSetor) ? $emailsSetor : $emailsAluno;
+        $ccEmails  = !empty($emailsSetor) ? $emailsAluno  : [];
 
         // 2. Coleta os arquivos enviados no formulário
         $arquivos = $request->file('arquivos', []);
@@ -143,15 +148,21 @@ class EnvioEmailController extends Controller
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
 
-        // 4. Dispara o e-mail
-        Mail::to($destinatarios)->send(new InformacoesAlunoMail(
+        // 4. Dispara um único e-mail com setor no "Para:" e aluno no "CC:"
+        $mailable = new InformacoesAlunoMail(
             aluno: $aluno,
             setorNome: $setor['nome'],
             mensagem: $motivo,
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
             objeto: $objeto,
             setorChave: $chaveSetor
-        ));
+        );
+
+        $mailer = Mail::to($toEmails);
+        if (!empty($ccEmails)) {
+            $mailer = $mailer->cc($ccEmails);
+        }
+        $mailer->send($mailable);
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');
     }
