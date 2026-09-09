@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
@@ -39,9 +40,6 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
 
-    Route::get('/requerimentos/aluno/enviar-email', function () {
-        return redirect()->route('requerimentos.aluno.novo');
-    });
     Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
     Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');
@@ -52,10 +50,19 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
 | PAINEL / REQUERIMENTOS - SERVIDOR
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:professor,admin'])->group(function () {
+Route::middleware(['auth', 'role:professor'])->group(function () {
     Route::get('/requerimentos/servidor', function () {
         return view('requerimentos.servidor');
     })->name('requerimentos.servidor');
+});
+
+/*
+|--------------------------------------------------------------------------
+| PAINEL / REQUERIMENTOS - ADMINISTRADOR
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 /*
