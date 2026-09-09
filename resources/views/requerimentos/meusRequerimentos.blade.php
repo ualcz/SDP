@@ -60,7 +60,7 @@
                     @endif
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
-                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded-lg">
+                    <a href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded-lg">
                         Imprimir comprovante
                     </a>                 
                 </td>

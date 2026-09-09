@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Usuario;
+use App\Models\Requerimento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDF;
 use Illuminate\Http\Request;
@@ -26,6 +27,18 @@ class RequerimentoPdfController extends Controller
             'setorChave' => $setorChave,
             'objeto' => $objeto,
             'mensagem' => $mensagem,
+        ])->setPaper('a4', 'portrait');
+    }
+
+    public static function criarComprovante(
+        Usuario $nomeRequerente,
+        string $numeroTurma,
+        ?string $objeto = null,
+    ): DomPDF {
+        return Pdf::loadView('pdf.comprovante', [
+            'nomeRequerente' => $nomeRequerente,
+            'numeroTurma' => $numeroTurma,
+            'objeto' => $objeto,
         ])->setPaper('a4', 'portrait');
     }
 
@@ -55,6 +68,31 @@ class RequerimentoPdfController extends Controller
         );
 
         $nomeArquivo = 'Requerimento_' . Str::slug($dados['aluno']->nome) . '_' . date('Ymd_His') . '.pdf';
+
+        if ($request->query('download') == '1') {
+            return $pdf->download($nomeArquivo);
+        }
+
+        return $pdf->stream($nomeArquivo);
+    }
+
+    public function gerarComprovante($id, Request $request)
+    {
+        $requerimento = Requerimento::with('usuario')->findOrFail($id);
+
+        $dados = [
+            'nomeRequerente' => $requerimento->usuario, 
+            'numeroTurma'    => $requerimento->usuario->turma_codigo, 
+            'objeto'         => $requerimento->objetoDoRequerimento, 
+        ];
+
+        $pdf = self::criarComprovante(
+            nomeRequerente: $dados['nomeRequerente'],
+            numeroTurma: $dados['numeroTurma'],
+            objeto: $dados['objeto']
+        );
+
+        $nomeArquivo = 'Comprovante_' . Str::slug($dados['nomeRequerente']->nome) . '_' . date('Ymd_His') . '.pdf';
 
         if ($request->query('download') == '1') {
             return $pdf->download($nomeArquivo);

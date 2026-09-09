@@ -5,7 +5,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
-use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,16 +27,6 @@ Route::get('/login', function () {
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-/*
-|--------------------------------------------------------------------------
-| PAINEL ADMINISTRATIVO
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-        ->name('admin.dashboard');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -74,5 +63,6 @@ Route::middleware(['auth', 'role:professor,admin'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/requerimentos/visualizar-blade', [RequerimentoPdfController::class, 'visualizarBlade'])->name('requerimentos.visualizar-blade');
     Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
+    Route::get('/requerimentos/{id}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->name('requerimentos.gerar-comprovante');
 });
 
