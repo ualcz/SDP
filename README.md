@@ -109,6 +109,7 @@ npm run build
 | GET | `/login` | Tela de login |
 | POST | `/login` | Autenticacao |
 | POST | `/logout` | Encerramento da sessao |
+| GET | `/admin/dashboard` | Painel administrativo protegido por papel |
 | GET | `/requerimentos/aluno` | Painel do aluno |
 | GET | `/requerimentos/aluno/novo` | Novo requerimento |
 | POST | `/requerimentos/aluno/enviar-email` | Envio do requerimento |
