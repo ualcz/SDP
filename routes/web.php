@@ -39,6 +39,9 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
 
+    Route::get('/requerimentos/aluno/enviar-email', function () {
+        return redirect()->route('requerimentos.aluno.novo');
+    });
     Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
     Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');

@@ -1,0 +1,200 @@
+@page {
+    margin: 7mm 8mm 6mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: #111;
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 7.5pt;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.topo td {
+    vertical-align: middle; 
+}
+
+.logo {
+    width: 18mm;
+    text-align: center;
+}
+
+.logo img {
+    width: 13mm;
+    height: 13mm;
+}
+
+.instituto {
+    text-align: center;
+    font-size: 8.5pt;
+    font-weight: bold;
+    line-height: 1.25;
+}
+
+.instituto .campus {
+    font-size: 10pt;
+}
+
+.instituto .setor {
+    font-size: 8pt;
+}
+
+.processo {
+    width: 37%;
+    border: 0.5pt solid #555;
+    padding: 1.5mm 1.5mm;
+    vertical-align: middle;
+}
+
+.processo-label {
+    font-size: 6.5pt;
+    font-weight: bold;
+    text-align: right;
+}
+
+.numero-boxes {
+    margin-top: 1mm;
+    text-align: right;
+    white-space: nowrap;
+    font-size: 0;
+}
+
+.numero-boxes span {
+    display: inline-block;
+    width: 3.8mm;
+    height: 4.5mm;
+    border: 0.5pt solid #555;
+    text-align: center;
+    line-height: 4.5mm;
+    font-size: 6.5pt;
+    vertical-align: middle;
+}
+
+.numero-boxes .separador {
+    display: inline-block;
+    width: 2.5mm;
+    text-align: center;
+    font-size: 7pt;
+    line-height: 4.5mm;
+    vertical-align: middle;
+}
+
+.titulo {
+    margin-top: 1.5mm;
+    border: 0.5pt solid #555;
+    padding: 1.3mm 2mm;
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+.titulo .ano {
+    font-size: 10pt;
+}
+
+.secao {
+    margin-top: 2mm;
+    border-top: 0.5pt solid #555;
+    padding-top: 1mm;
+}
+
+.secao-titulo {
+    text-align: center;
+    font-weight: bold;
+    font-size: 8pt;
+    margin-bottom: 1mm;
+}
+
+.campos td {
+    border: 0.5pt solid #777;
+    height: 7mm;
+    padding: 1mm 1.5mm;
+    vertical-align: top;
+}
+
+.campos .rotulo {
+    display: block;
+    font-size: 6pt;
+    font-weight: bold;
+}
+
+.campos .valor {
+    display: block;
+    margin-top: 1mm;
+    min-height: 3mm;
+}
+
+.objeto {
+    border: 0.5pt solid #777;
+    padding: 1.5mm 2mm;
+}
+
+.objeto-grid td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0.5mm 2mm 0.5mm 0;
+}
+
+.check {
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 7pt;
+}
+
+.marcado {
+    font-weight: bold;
+}
+
+.observacoes {
+    margin-top: 1.5mm;
+    font-size: 6.5pt;
+    font-weight: bold;
+    line-height: 1.25;
+}
+
+.linhas {
+    border: 0.5pt solid #777;
+    padding: 1.5mm 2mm 0;
+    height: 27mm;
+}
+
+.linha {
+    height: 6mm;
+    border-bottom: 0.4pt solid #aaa;
+}
+
+.pareceres {
+    margin-top: 2mm;
+}
+
+.pareceres td {
+    width: 50%;
+    padding-right: 4mm;
+    vertical-align: top;
+}
+
+.parecer-titulo {
+    border-bottom: 0.4pt solid #777;
+    padding-bottom: 1mm;
+    font-weight: bold;
+}
+
+.parecer-linhas {
+    height: 15mm;
+    border-bottom: 0.4pt dotted #777;
+}
+
+.assinatura {
+    margin-top: 1mm;
+    border-top: 0.5pt solid #555;
+    padding-top: 1mm;
+    text-align: center;
+    font-size: 6.5pt;
+    font-weight: bold;
+}
