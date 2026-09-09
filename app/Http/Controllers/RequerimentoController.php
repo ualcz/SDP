@@ -36,7 +36,16 @@ class RequerimentoController extends Controller
     {
         //Implementação da lógica de que o usuário logado só pode ver os seus próprios requerimentos;
         //Uso de chave estrangeira na tabela requerimentos;
-        $requerimentos = auth()->user()->requerimentos;
+        $query = auth()->user()->requerimentos();
+        
+        if ($request->filled('objetoDoRequerimento')) {
+            $query->where('objetoDoRequerimento', 'LIKE', '%' . $request->input('objetoDoRequerimento') . '%');
+        }
+        if ($request->filled('situação')) {
+            $query->where('situação', 'LIKE', '%' . $request->input('situação') . '%');
+        }
+
+        $requerimentos = $query->get();
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));  
     }
 }
