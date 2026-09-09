@@ -16,7 +16,7 @@
         <div class="header-inner">
 
             {{-- Logotipo --}}
-            <a href="{{ route('requerimentos.aluno') }}" class="header-brand">
+            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('requerimentos.aluno') }}" class="header-brand">
                 <img src="{{ asset('img/logoVertical.png') }}" alt="Logo IFBA">
                 <div class="header-brand-text">
                     <span class="header-brand-title">SDP</span>
@@ -28,6 +28,12 @@
             <div style="display:flex; align-items:center; gap:4px;">
 
                 <nav class="header-nav">
+                    @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <span>Painel administrativo</span>
+                    </a>
+                    @else
                     <a href="{{ route('requerimentos.aluno.novo') }}"
                        class="nav-link {{ request()->routeIs('requerimentos.aluno.novo') ? 'active' : '' }}">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -43,6 +49,7 @@
                         </svg>
                         <span>Meus Requerimentos</span>
                     </a>
+                    @endif
                 </nav>
 
                 <div class="header-user">
@@ -79,8 +86,12 @@
             </div>
 
             <div class="footer-links">
-                <a href="{{ route('requerimentos.aluno.novo') }}" class="footer-link">Novo Requerimento</a>
-                <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="footer-link">Meus Requerimentos</a>
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="footer-link">Painel administrativo</a>
+                @else
+                    <a href="{{ route('requerimentos.aluno.novo') }}" class="footer-link">Novo Requerimento</a>
+                    <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="footer-link">Meus Requerimentos</a>
+                @endif
             </div>
 
         </div>

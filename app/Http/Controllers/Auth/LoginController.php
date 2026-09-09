@@ -39,6 +39,7 @@ class LoginController extends Controller
 
             if (!Auth::attempt([
                 'email' => $login,
+                'role' => 'admin',
                 'password' => $password,
             ])) {
 
