@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Usuario;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        Usuario::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL', 'admin@sdp.local')],
+            [
+                'nome' => env('ADMIN_NAME', 'Administrador do SDP'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'admin123')),
+                'role' => 'admin',
+                'matricula' => null,
+            ]
+        );
     }
 }
