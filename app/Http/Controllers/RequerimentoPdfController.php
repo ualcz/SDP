@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\Setor;
 
 class RequerimentoPdfController extends Controller
 {
@@ -110,7 +111,7 @@ class RequerimentoPdfController extends Controller
 
         // 2. Modelo e setor
         $setorChave = $request->query('setor', 'cores');
-        $modelos = \App\Models\ModeloRequerimento::obterModelosFormatados();
+        $modelos = Setor::obterSetoresFormatados();
         $setores = config('setores.destinatarios', []);
 
         $modeloAtivo = $modelos[$setorChave] ?? reset($modelos) ?: [];

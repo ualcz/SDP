@@ -9,6 +9,7 @@ class AssuntoRequerimento extends Model
     protected $table = 'assuntos_requerimentos';
 
     protected $fillable = [
+        'setor_id',
         'modelo_requerimento_id',
         'codigo',
         'descricao',
@@ -22,9 +23,20 @@ class AssuntoRequerimento extends Model
         'ordem'  => 'integer',
     ];
 
+    /**
+     * Setor ao qual este assunto pertence.
+     */
+    public function setor()
+    {
+        return $this->belongsTo(Setor::class, 'setor_id');
+    }
+
+    /**
+     * Alias de retrocompatibilidade para o setor.
+     */
     public function modelo()
     {
-        return $this->belongsTo(ModeloRequerimento::class, 'modelo_requerimento_id');
+        return $this->setor();
     }
 
     /**
@@ -44,4 +56,3 @@ class AssuntoRequerimento extends Model
                     ->where('obrigatorio', true);
     }
 }
-

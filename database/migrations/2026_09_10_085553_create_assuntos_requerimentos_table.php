@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('assuntos_requerimentos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('modelo_requerimento_id')->constrained('modelos_requerimentos')->cascadeOnDelete();
+            $table->foreignId('setor_id')->constrained('setores')->cascadeOnDelete();
             $table->string('codigo')->nullable();
             $table->string('descricao');
             $table->text('observacao')->nullable();

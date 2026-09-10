@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Requerimento;
-use App\Models\ModeloRequerimento;
+use App\Models\Setor;
 use Illuminate\Support\Facades\Auth;
 
 class RequerimentoController extends Controller
 {
     public function create(Request $request) {
         $setores = config('setores.destinatarios', []);
-        $modelos = ModeloRequerimento::obterModelosFormatados();
+        $modelos = Setor::obterSetoresFormatados();
 
-        // Modelo selecionado via query string (padrão: cores)
-        $modeloChave = $request->query('modelo', 'cores');
+        // Setor / Modelo selecionado via query string (padrão: cores)
+        $modeloChave = $request->query('setor', $request->query('modelo', 'cores'));
 
         if (!isset($modelos[$modeloChave])) {
             $modeloChave = !empty($modelos) ? array_key_first($modelos) : 'cores';

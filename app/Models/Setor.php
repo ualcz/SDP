@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
-class ModeloRequerimento extends Model
+class Setor extends Model
 {
-    protected $table = 'modelos_requerimentos';
+    protected $table = 'setores';
 
     protected $fillable = [
         'identificador',
@@ -28,35 +28,40 @@ class ModeloRequerimento extends Model
 
     public function assuntos()
     {
-        return $this->hasMany(AssuntoRequerimento::class, 'modelo_requerimento_id')->orderBy('ordem');
+        return $this->hasMany(AssuntoRequerimento::class, 'setor_id')->orderBy('ordem');
     }
 
     public function assuntosAtivos()
     {
-        return $this->hasMany(AssuntoRequerimento::class, 'modelo_requerimento_id')
+        return $this->hasMany(AssuntoRequerimento::class, 'setor_id')
             ->where('ativo', true)
             ->orderBy('ordem');
     }
 
+    public function requerimentos()
+    {
+        return $this->hasMany(Requerimento::class, 'setor_id');
+    }
+
     /**
-     * Retorna os modelos formatados para uso nos controllers e views,
+     * Retorna os setores formatados para uso nos controllers e views,
      * com fallback automático para o config/modelos_requerimentos.php.
      */
-    public static function obterModelosFormatados(): array
+    public static function obterSetoresFormatados(): array
     {
         try {
-            if (!Schema::hasTable('modelos_requerimentos')) {
+            if (!Schema::hasTable('setores')) {
                 return config('modelos_requerimentos.modelos', []);
             }
 
-            $modelosBanco = static::with(['assuntosAtivos.documentos'])->where('ativo', true)->get();
+            $setoresBanco = static::with(['assuntosAtivos.documentos'])->where('ativo', true)->get();
 
-            if ($modelosBanco->isEmpty()) {
+            if ($setoresBanco->isEmpty()) {
                 return config('modelos_requerimentos.modelos', []);
             }
 
             $resultado = [];
-            foreach ($modelosBanco as $mod) {
+            foreach ($setoresBanco as $mod) {
                 $objetos = [];
                 $assuntosDetalhes = [];
                 foreach ($mod->assuntosAtivos as $assunto) {
@@ -98,5 +103,13 @@ class ModeloRequerimento extends Model
         } catch (\Throwable $e) {
             return config('modelos_requerimentos.modelos', []);
         }
+    }
+
+    /**
+     * Alias para compatibilidade com chamadas legadas
+     */
+    public static function obterModelosFormatados(): array
+    {
+        return static::obterSetoresFormatados();
     }
 }

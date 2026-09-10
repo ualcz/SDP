@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AssuntoRequerimento;
-use App\Models\ModeloRequerimento;
+use App\Models\Setor;
 use Illuminate\Database\Seeder;
 
 class ModeloRequerimentoSeeder extends Seeder
@@ -13,7 +13,7 @@ class ModeloRequerimentoSeeder extends Seeder
         $modelosConfig = config('modelos_requerimentos.modelos', []);
 
         foreach ($modelosConfig as $chave => $dados) {
-            $modelo = ModeloRequerimento::updateOrCreate(
+            $modelo = Setor::updateOrCreate(
                 ['identificador' => $dados['identificador'] ?? $chave],
                 [
                     'setor_chave' => $dados['setor_chave'] ?? 'teste1',
@@ -54,7 +54,7 @@ class ModeloRequerimentoSeeder extends Seeder
 
                 AssuntoRequerimento::updateOrCreate(
                     [
-                        'modelo_requerimento_id' => $modelo->id,
+                        'setor_id' => $modelo->id,
                         'codigo' => (string) $codigo,
                     ],
                     [
