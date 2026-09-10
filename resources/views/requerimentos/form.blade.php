@@ -122,7 +122,7 @@
                             {{ $descricao }}
                         </span>
                         @if(!empty($obs))
-                            <small style="color: #b45309; margin-left: 22px; font-size: 0.78rem;">ℹ️ {{ $obs }}</small>
+                            <small style="color: #b45309; margin-left: 22px; font-size: 0.78rem;">{{ $obs }}</small>
                         @endif
                     </label>
                 @endforeach
