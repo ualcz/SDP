@@ -30,6 +30,12 @@
     @endforeach
 </div>
 
+<div style="margin: 15px 0;">
+    <a href="{{ route('admin.modelos.index') }}" style="display: inline-block; padding: 6px 12px; border: 1px solid #000; text-decoration: none; color: #000;">
+        ⚙️ Gerenciar Modelos e Assuntos de Requerimentos
+    </a>
+</div>
+
 <section>
     <h2>Requerimentos recentes</h2>
 
