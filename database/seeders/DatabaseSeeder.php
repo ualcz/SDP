@@ -25,5 +25,7 @@ class DatabaseSeeder extends Seeder
                 'matricula' => null,
             ]
         );
+
+        $this->call(ModeloRequerimentoSeeder::class);
     }
 }
