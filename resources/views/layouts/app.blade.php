@@ -33,9 +33,14 @@
                        class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <span>Painel administrativo</span>
                     </a>
+
                     <a href="{{ route('admin.consultar-requerimentos') }}"
                        class="nav-link {{ request()->routeIs('admin.consultar-requerimentos') ? 'active' : '' }}">
                         <span>Consultar requerimentos</span>
+
+                    <a href="{{ route('admin.modelos.index') }}"
+                       class="nav-link {{ request()->routeIs('admin.modelos.*') ? 'active' : '' }}">
+                        <span>Modelos & Assuntos</span>
                     </a>
                     @else
                     <a href="{{ route('requerimentos.aluno.novo') }}"
