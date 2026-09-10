@@ -3,28 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssuntoRequerimento;
-use App\Models\ModeloRequerimento;
+use App\Models\Setor;
 use Illuminate\Http\Request;
 
 class AdminModeloController extends Controller
 {
     public function index()
     {
-        $modelos = ModeloRequerimento::withCount(['assuntos', 'assuntosAtivos'])->get();
+        $modelos = Setor::withCount(['assuntos', 'assuntosAtivos'])->get();
 
         return view('admin.modelos.index', compact('modelos'));
     }
 
     public function edit($id)
     {
-        $modelo = ModeloRequerimento::with(['assuntos'])->findOrFail($id);
+        $modelo = Setor::with(['assuntos'])->findOrFail($id);
 
         return view('admin.modelos.edit', compact('modelo'));
     }
 
     public function update(Request $request, $id)
     {
-        $modelo = ModeloRequerimento::findOrFail($id);
+        $modelo = Setor::findOrFail($id);
 
         $dados = $request->validate([
             'titulo' => 'required|string|max:255',
@@ -37,7 +37,6 @@ class AdminModeloController extends Controller
             'ativo' => 'nullable|boolean',
         ]);
 
-        // Processa observações enviadas linha a linha
         $observacoes = [];
         if (!empty($dados['observacoes_texto'])) {
             $linhas = preg_split('/\r\n|\r|\n/', $dados['observacoes_texto']);
@@ -61,12 +60,12 @@ class AdminModeloController extends Controller
         ]);
 
         return redirect()->route('admin.modelos.edit', $modelo->id)
-            ->with('success', 'Modelo atualizado com sucesso!');
+            ->with('success', 'Setor atualizado com sucesso!');
     }
 
-    public function storeAssunto(Request $request, $modeloId)
+    public function storeAssunto(Request $request, $setorId)
     {
-        $modelo = ModeloRequerimento::findOrFail($modeloId);
+        $setor = Setor::findOrFail($setorId);
 
         $dados = $request->validate([
             'codigo' => 'nullable|string|max:20',
@@ -75,10 +74,10 @@ class AdminModeloController extends Controller
             'ordem' => 'nullable|integer',
         ]);
 
-        $maxOrdem = $modelo->assuntos()->max('ordem') ?? 0;
+        $maxOrdem = $setor->assuntos()->max('ordem') ?? 0;
 
         AssuntoRequerimento::create([
-            'modelo_requerimento_id' => $modelo->id,
+            'setor_id' => $setor->id,
             'codigo' => $dados['codigo'] ?? null,
             'descricao' => $dados['descricao'],
             'observacao' => $dados['observacao'] ?? null,
@@ -86,7 +85,7 @@ class AdminModeloController extends Controller
             'ativo' => true,
         ]);
 
-        return redirect()->route('admin.modelos.edit', $modelo->id)
+        return redirect()->route('admin.modelos.edit', $setor->id)
             ->with('success', 'Assunto adicionado com sucesso!');
     }
 
@@ -110,17 +109,17 @@ class AdminModeloController extends Controller
             'ativo' => $request->has('ativo'),
         ]);
 
-        return redirect()->route('admin.modelos.edit', $assunto->modelo_requerimento_id)
+        return redirect()->route('admin.modelos.edit', $assunto->setor_id)
             ->with('success', 'Assunto atualizado com sucesso!');
     }
 
     public function destroyAssunto($assuntoId)
     {
         $assunto = AssuntoRequerimento::findOrFail($assuntoId);
-        $modeloId = $assunto->modelo_requerimento_id;
+        $setorId = $assunto->setor_id;
         $assunto->delete();
 
-        return redirect()->route('admin.modelos.edit', $modeloId)
+        return redirect()->route('admin.modelos.edit', $setorId)
             ->with('success', 'Assunto removido com sucesso!');
     }
 }

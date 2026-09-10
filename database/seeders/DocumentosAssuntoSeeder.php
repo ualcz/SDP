@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\AssuntoRequerimento;
 use App\Models\DocumentoAssunto;
-use App\Models\ModeloRequerimento;
+use App\Models\Setor;
 use Illuminate\Database\Seeder;
 
 class DocumentosAssuntoSeeder extends Seeder
@@ -71,7 +71,7 @@ class DocumentosAssuntoSeeder extends Seeder
         $modelos = config('modelos_requerimentos.modelos', []);
 
         foreach ($modelos as $modeloConfig) {
-            $modelo = ModeloRequerimento::updateOrCreate(
+            $modelo = Setor::updateOrCreate(
                 ['identificador' => $modeloConfig['identificador']],
                 [
                     'setor_chave'      => $modeloConfig['setor_chave'],
@@ -88,8 +88,8 @@ class DocumentosAssuntoSeeder extends Seeder
             foreach ($modeloConfig['objetos'] ?? [] as $codigo => $descricao) {
                 AssuntoRequerimento::updateOrCreate(
                     [
-                        'modelo_requerimento_id' => $modelo->id,
-                        'codigo'                 => $codigo,
+                        'setor_id' => $modelo->id,
+                        'codigo'   => $codigo,
                     ],
                     [
                         'descricao' => $descricao,
@@ -104,7 +104,7 @@ class DocumentosAssuntoSeeder extends Seeder
         // 2. Popula os documentos obrigatórios por assunto
         // ---------------------------------------------------------------
         foreach ($this->documentosPorAssunto as $identificadorModelo => $assuntos) {
-            $modelo = ModeloRequerimento::where('identificador', $identificadorModelo)->first();
+            $modelo = Setor::where('identificador', $identificadorModelo)->first();
 
             if (!$modelo) {
                 $this->command->warn("Modelo '{$identificadorModelo}' não encontrado. Pulando...");
@@ -112,7 +112,7 @@ class DocumentosAssuntoSeeder extends Seeder
             }
 
             foreach ($assuntos as $codigoAssunto => $documentos) {
-                $assunto = AssuntoRequerimento::where('modelo_requerimento_id', $modelo->id)
+                $assunto = AssuntoRequerimento::where('setor_id', $modelo->id)
                                               ->where('codigo', $codigoAssunto)
                                               ->first();
 

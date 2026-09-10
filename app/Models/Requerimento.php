@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Usuario;
+use App\Models\Setor;
+use App\Models\AssuntoRequerimento;
 
 class Requerimento extends Model
 {
@@ -11,6 +13,7 @@ class Requerimento extends Model
 
     protected $fillable = [
         'usuario_id',
+        'setor_id',
         'assunto_requerimento_id',
         'objetoDoRequerimento',
         'motivo',
@@ -25,6 +28,14 @@ class Requerimento extends Model
     public function user()
     {
         return $this->usuario();
+    }
+
+    /**
+     * Setor destinatário do requerimento.
+     */
+    public function setor()
+    {
+        return $this->belongsTo(Setor::class, 'setor_id');
     }
 
     /**

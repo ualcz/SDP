@@ -47,13 +47,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.consultar-requerimentos');
 
 
-    // Gerenciamento de Modelos e Assuntos de Requerimentos
+    // Gerenciamento de Modelos/Setores e Assuntos de Requerimentos
     Route::get('/admin/modelos', [AdminModeloController::class, 'index'])->name('admin.modelos.index');
     Route::get('/admin/modelos/{id}/editar', [AdminModeloController::class, 'edit'])->name('admin.modelos.edit');
     Route::put('/admin/modelos/{id}', [AdminModeloController::class, 'update'])->name('admin.modelos.update');
     Route::post('/admin/modelos/{id}/assuntos', [AdminModeloController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
     Route::put('/admin/assuntos/{id}', [AdminModeloController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminModeloController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
+
+    // Alias /admin/setores
+    Route::get('/admin/setores', [AdminModeloController::class, 'index'])->name('admin.setores.index');
+    Route::get('/admin/setores/{id}/editar', [AdminModeloController::class, 'edit'])->name('admin.setores.edit');
+    Route::put('/admin/setores/{id}', [AdminModeloController::class, 'update'])->name('admin.setores.update');
+    Route::post('/admin/setores/{id}/assuntos', [AdminModeloController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
 
 });
 
