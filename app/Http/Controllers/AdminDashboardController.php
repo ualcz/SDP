@@ -16,11 +16,11 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', [
             'totalRequerimentos' => Requerimento::count(),
             'emAnalise' => Requerimento::where(function ($query) {
-                $query->whereNull('situação')
-                    ->orWhere('situação', 'Em análise');
+                $query->whereNull('status')
+                    ->orWhere('status', 'Em Análise');
             })->count(),
-            'deferidos' => Requerimento::where('situação', 'Deferido')->count(),
-            'indeferidos' => Requerimento::where('situação', 'Indeferido')->count(),
+            'deferidos'   => Requerimento::where('status', 'Deferido')->count(),
+            'indeferidos' => Requerimento::where('status', 'Indeferido')->count(),
             'requerimentos' => $requerimentos,
         ]);
     }

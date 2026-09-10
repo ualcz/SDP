@@ -9,12 +9,12 @@ class Requerimento extends Model
 {
     protected $table = 'requerimentos';
 
-    // Indicação dos campos que poderão ser preenchidos;
     protected $fillable = [
         'usuario_id',
+        'assunto_requerimento_id',
         'objetoDoRequerimento',
         'motivo',
-        'situação',
+        'status',
     ];
 
     public function usuario()
@@ -25,5 +25,13 @@ class Requerimento extends Model
     public function user()
     {
         return $this->usuario();
+    }
+
+    /**
+     * Assunto (objetivo) vinculado a este requerimento.
+     */
+    public function assunto()
+    {
+        return $this->belongsTo(AssuntoRequerimento::class, 'assunto_requerimento_id');
     }
 }

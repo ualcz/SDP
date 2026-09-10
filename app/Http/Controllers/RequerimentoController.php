@@ -42,8 +42,8 @@ class RequerimentoController extends Controller
         if ($request->filled('objetoDoRequerimento')) {
             $query->where('objetoDoRequerimento', 'LIKE', '%' . $request->input('objetoDoRequerimento') . '%');
         }
-        if ($request->filled('situação')) {
-            $query->where('situação', 'LIKE', '%' . $request->input('situação') . '%');
+        if ($request->filled('status')) {
+            $query->where('status', 'LIKE', '%' . $request->input('status') . '%');
         }
 
         $requerimentos = $query->get();

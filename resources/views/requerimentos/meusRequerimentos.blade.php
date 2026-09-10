@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <input type="text" name="situação" placeholder="Status" class="border border-gray-300 rounded p-2" />
+            <input type="text" name="status" placeholder="Status" class="border border-gray-300 rounded p-2" />
         </div>
 
         <div>
@@ -49,11 +49,11 @@
                     {{$requerimento['motivo'] ?? $requerimento->motivo}}
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
-                    @if ($requerimento->situação === 'Aprovado')
+                    @if ($requerimento->status === 'Aprovado')
                         <span class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 border border-green-500 rounded-full dark:bg-green-400 border-green-600 text-green-900">
                             Aprovado
                         </span>
-                    @elseif ($requerimento->situação === 'Em análise' || $requerimento->situação === 'Em Análise')
+                    @elseif ($requerimento->status === 'Em análise' || $requerimento->status === 'Em Análise' || is_null($requerimento->status))
                         <span class="inline-block px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 border border-yellow-500 rounded-full">
                             Em análise
                         </span>

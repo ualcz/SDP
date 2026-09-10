@@ -47,7 +47,7 @@
             </thead>
             <tbody>
                 @foreach($requerimentos as $requerimento)
-                    @php($situacao = $requerimento->situação ?: 'Em análise')
+                    @php($situacao = $requerimento->status ?: 'Em Análise')
                     <tr>
                         <td>{{ $requerimento->usuario?->nome ?? 'Usuário removido' }}</td>
                         <td>{{ $requerimento->objetoDoRequerimento }}</td>

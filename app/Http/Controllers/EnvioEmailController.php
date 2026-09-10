@@ -138,11 +138,15 @@ class EnvioEmailController extends Controller
 
         // 3. Salva o registro no banco de dados
         try {
+            // Tenta encontrar o assunto pelo texto selecionado
+            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
+
             Requerimento::create([
-                'usuario_id' => $aluno->id,
-                'objetoDoRequerimento' => $objeto,
-                'motivo' => $motivo,
-                'situação' => 'Em Análise',
+                'usuario_id'             => $aluno->id,
+                'assunto_requerimento_id' => $assunto?->id,
+                'objetoDoRequerimento'   => $objeto,
+                'motivo'                 => $motivo,
+                'status'                 => 'Em Análise',
             ]);
         } catch (\Exception $e) {
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
