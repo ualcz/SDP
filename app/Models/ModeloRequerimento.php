@@ -58,9 +58,17 @@ class ModeloRequerimento extends Model
             $resultado = [];
             foreach ($modelosBanco as $mod) {
                 $objetos = [];
+                $assuntosDetalhes = [];
                 foreach ($mod->assuntosAtivos as $assunto) {
                     $chave = $assunto->codigo ?: str_pad((string) $assunto->id, 2, '0', STR_PAD_LEFT);
                     $objetos[$chave] = $assunto->descricao;
+                    $assuntosDetalhes[] = [
+                        'id' => $assunto->id,
+                        'codigo' => $chave,
+                        'descricao' => $assunto->descricao,
+                        'observacao' => $assunto->observacao,
+                        'ordem' => $assunto->ordem,
+                    ];
                 }
 
                 $resultado[$mod->identificador] = [
@@ -73,6 +81,8 @@ class ModeloRequerimento extends Model
                     'titulo' => $mod->titulo,
                     'processo_prefixo' => $mod->processo_prefixo ?: '23720',
                     'objetos' => $objetos,
+                    'assuntos_detalhes' => $assuntosDetalhes,
+                    'observacoes' => $mod->observacoes ?? [],
                     'rodape_contato' => $mod->rodape_contato,
                 ];
             }

@@ -9,7 +9,7 @@
 </head>
 <body>
     @php
-        $modelos = config('modelos_requerimentos.modelos', []);
+        $modelos = \App\Models\ModeloRequerimento::obterModelosFormatados();
         $modeloAtivo = null;
         foreach ($modelos as $chave => $mod) {
             if (($mod['setor_chave'] ?? '') === $setorChave || $chave === $setorChave) {

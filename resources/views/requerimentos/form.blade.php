@@ -104,10 +104,21 @@
         <fieldset>
             <legend>Objeto do Requerimento</legend>
             <div class="opcoes-objeto">
+                @php
+                    $assuntosMap = collect($modeloAtivo['assuntos_detalhes'] ?? [])->keyBy('descricao');
+                @endphp
                 @foreach($modeloAtivo['objetos'] ?? [] as $codigo => $descricao)
-                    <label>
-                        <input type="radio" name="objetoDoRequerimento" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
-                        {{ $descricao }}
+                    @php
+                        $obs = $assuntosMap[$descricao]['observacao'] ?? null;
+                    @endphp
+                    <label style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 6px;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            <input type="radio" name="objetoDoRequerimento" value="{{ $descricao }}" {{ $loop->first ? 'checked' : '' }}>
+                            {{ $descricao }}
+                        </span>
+                        @if(!empty($obs))
+                            <small style="color: #b45309; margin-left: 22px; font-size: 0.78rem;">ℹ️ {{ $obs }}</small>
+                        @endif
                     </label>
                 @endforeach
             </div>

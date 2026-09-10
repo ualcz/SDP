@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Requerimento;
+use App\Models\ModeloRequerimento;
 use Illuminate\Support\Facades\Auth;
 
 class RequerimentoController extends Controller
 {
     public function create(Request $request) {
         $setores = config('setores.destinatarios', []);
-        $modelos = config('modelos_requerimentos.modelos', []);
+        $modelos = ModeloRequerimento::obterModelosFormatados();
 
         // Modelo selecionado via query string (padrão: cores)
         $modeloChave = $request->query('modelo', 'cores');

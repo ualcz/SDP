@@ -110,7 +110,7 @@ class RequerimentoPdfController extends Controller
 
         // 2. Modelo e setor
         $setorChave = $request->query('setor', 'cores');
-        $modelos = config('modelos_requerimentos.modelos', []);
+        $modelos = \App\Models\ModeloRequerimento::obterModelosFormatados();
         $setores = config('setores.destinatarios', []);
 
         $modeloAtivo = $modelos[$setorChave] ?? reset($modelos) ?: [];
