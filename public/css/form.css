@@ -84,6 +84,11 @@
     font-size: 14px;
     cursor: pointer;
 }
+.opcoes-objeto{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0px 10px;
+}
 .btn-enviar {
     background: #059669;
     color: #fff;
