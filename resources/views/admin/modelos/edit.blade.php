@@ -44,7 +44,7 @@
 <div>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h2>Editar Modelo: {{ $modelo->setor_sigla }} - {{ $modelo->setor_nome }}</h2>
-        <a href="{{ route('admin.modelos.index') }}">← Voltar para lista de modelos</a>
+        <a href="{{ route('admin.modelos.index') }}">Voltar para lista de modelos</a>
     </div>
 
     @if(session('success'))

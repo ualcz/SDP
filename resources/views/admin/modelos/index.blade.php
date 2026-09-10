@@ -31,7 +31,7 @@
 <div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Modelos de Requerimentos</h2>
-        <a href="{{ route('admin.dashboard') }}">← Voltar ao Painel</a>
+        <a href="{{ route('admin.dashboard') }}">Voltar ao Painel</a>
     </div>
 
     @if(session('success'))
@@ -66,9 +66,6 @@
                         @else
                             <span class="status-inativo">Inativo</span>
                         @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.modelos.edit', $modelo->id) }}">Editar / Gerenciar Assuntos</a>
                     </td>
                 </tr>
             @empty

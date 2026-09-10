@@ -28,33 +28,38 @@
             <div style="display:flex; align-items:center; gap:4px;">
 
                 <nav class="header-nav">
-                    @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}"
-                       class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <span>Painel administrativo</span>
-                    </a>
-                    <a href="{{ route('admin.modelos.index') }}"
-                       class="nav-link {{ request()->routeIs('admin.modelos.*') ? 'active' : '' }}">
-                        <span>Modelos & Assuntos</span>
-                    </a>
-                    @else
-                    <a href="{{ route('requerimentos.aluno.novo') }}"
-                       class="nav-link {{ request()->routeIs('requerimentos.aluno.novo') ? 'active' : '' }}">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        <span>Novo Requerimento</span>
-                    </a>
 
-                    <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}"
-                       class="nav-link {{ request()->routeIs('requerimentos.aluno.meusRequerimentos') ? 'active' : '' }}">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span>Meus Requerimentos</span>
-                    </a>
+                    {{-- Opção 1: Se o usuário for admin --}}
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <span>Painel administrativo</span>
+                        </a>
+                        <a href="{{ route('admin.modelos.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.modelos.*') ? 'active' : '' }}">
+                            <span>Modelos & Assuntos</span>
+                        </a>
+                    
+                        {{-- Opção 2: Se o usuário for aluno --}}
+                    @else
+                        <a href="{{ route('requerimentos.aluno.novo') }}"
+                        class="nav-link {{ request()->routeIs('requerimentos.aluno.novo') ? 'active' : '' }}">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span>Novo Requerimento</span>
+                        </a>
+
+                        <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}"
+                        class="nav-link {{ request()->routeIs('requerimentos.aluno.meusRequerimentos') ? 'active' : '' }}">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Meus Requerimentos</span>
+                        </a>
                     @endif
                 </nav>
+
 
                 <div class="header-user">
                     <span class="header-username">{{ explode(' ', auth()->user()->nome)[0] }}</span>
