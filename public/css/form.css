@@ -123,3 +123,27 @@
     max-height: 500px;
     opacity: 1;
 }
+
+/* ===== Navegação entre etapas ===== */
+.step-nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.step-nav .btn-enviar {
+    flex: 1;
+}
+.btn-voltar {
+    background: #6b7280;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+.btn-voltar:hover {
+    background: #4b5563;
+}
