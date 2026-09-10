@@ -49,7 +49,7 @@ class ModeloRequerimento extends Model
                 return config('modelos_requerimentos.modelos', []);
             }
 
-            $modelosBanco = static::with(['assuntosAtivos'])->where('ativo', true)->get();
+            $modelosBanco = static::with(['assuntosAtivos.documentos'])->where('ativo', true)->get();
 
             if ($modelosBanco->isEmpty()) {
                 return config('modelos_requerimentos.modelos', []);
@@ -63,11 +63,18 @@ class ModeloRequerimento extends Model
                     $chave = $assunto->codigo ?: str_pad((string) $assunto->id, 2, '0', STR_PAD_LEFT);
                     $objetos[$chave] = $assunto->descricao;
                     $assuntosDetalhes[] = [
-                        'id' => $assunto->id,
-                        'codigo' => $chave,
-                        'descricao' => $assunto->descricao,
-                        'observacao' => $assunto->observacao,
-                        'ordem' => $assunto->ordem,
+                        'id'                     => $assunto->id,
+                        'codigo'                 => $chave,
+                        'descricao'              => $assunto->descricao,
+                        'observacao'             => $assunto->observacao,
+                        'ordem'                  => $assunto->ordem,
+                        'documentos_obrigatorios' => $assunto->documentos
+                            ->map(fn($d) => [
+                                'nome'          => $d->nome,
+                                'descricao'     => $d->descricao,
+                                'obrigatorio'   => $d->obrigatorio,
+                                'tipos_aceitos' => $d->tipos_aceitos,
+                            ])->values()->toArray(),
                     ];
                 }
 
