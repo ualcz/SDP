@@ -20,7 +20,7 @@
     </div>
 
     <!-- Título do Requerimento -->
-    <div style="text-align: center; margin-bottom: 20px;">
+    <div style="text-align: center; margin-bottom: 20px; font-size: 1.2rem;">
         <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
         <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
     </div>
@@ -125,7 +125,7 @@
                                 {{ $descricao }}
                             </span>
                             @if(!empty($obs))
-                                <small style="color: #b45309; margin-left: 22px; font-size: 0.78rem;">{{ $obs }}</small>
+                                <small style="color: #e6904f; margin-left: 22px; font-size: 0.78rem;">{{ $obs }}</small>
                             @endif
                         </label>
                     @endforeach

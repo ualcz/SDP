@@ -1,4 +1,4 @@
-.form-box { max-width: 800px; margin: 20px auto; background: #fff;
+.form-box { max-width: 1200px; margin: 20px auto; background: #fff;
     padding: 25px;
     border-radius: 8px;
     border: 1px solid #ddd;
@@ -146,4 +146,8 @@
 }
 .btn-voltar:hover {
     background: #4b5563;
+}
+
+form {
+    font-size:1.5rem;
 }
