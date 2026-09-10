@@ -6,6 +6,7 @@ use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminModeloController;
 
 /*
@@ -42,6 +43,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
 
+    Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
+        ->name('admin.consultar-requerimentos');
+
+
     // Gerenciamento de Modelos e Assuntos de Requerimentos
     Route::get('/admin/modelos', [AdminModeloController::class, 'index'])->name('admin.modelos.index');
     Route::get('/admin/modelos/{id}/editar', [AdminModeloController::class, 'edit'])->name('admin.modelos.edit');
@@ -49,6 +54,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/modelos/{id}/assuntos', [AdminModeloController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
     Route::put('/admin/assuntos/{id}', [AdminModeloController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminModeloController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
+
 });
 
 /*
