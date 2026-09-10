@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Painel Administrativo - SDP')
+@section('title', 'Consultar Requerimentos - SDP')
 @section('tag', 'Administração')
 
 @section('content')
