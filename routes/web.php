@@ -6,6 +6,7 @@ use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminConsultaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
+    Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
+        ->name('admin.consultar-requerimentos');
 });
 
 /*
