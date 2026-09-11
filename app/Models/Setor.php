@@ -75,6 +75,7 @@ class Setor extends Model
                         'ordem'                  => $assunto->ordem,
                         'documentos_obrigatorios' => $assunto->documentos
                             ->map(fn($d) => [
+                                'id'            => $d->id,
                                 'nome'          => $d->nome,
                                 'descricao'     => $d->descricao,
                                 'obrigatorio'   => $d->obrigatorio,
