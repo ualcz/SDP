@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('requerimentos', function (Blueprint $table) {
-            $table->string('numero_protocolo')->after('objetoDoRequerimento');
+            $table->string('numero_protocolo')->nullable()->after('objetoDoRequerimento');
         });
     }
 

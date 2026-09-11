@@ -16,6 +16,7 @@ class Requerimento extends Model
         'setor_id',
         'assunto_requerimento_id',
         'objetoDoRequerimento',
+        'numero_protocolo',
         'motivo',
         'status',
     ];
