@@ -1,0 +1,37 @@
+@page {
+    /*  r*/
+    margin: 12mm 12mm 6mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: #111;
+    font-family: 'Times New Roman', sans-serif;
+    font-size: 10pt;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+h4{
+    font-size: 12pt;
+}
+
+.cabecalho{
+    margin-bottom: 20px;
+}
+
+.titulo{
+    text-align: center;
+    font-size: 14pt;
+}
+
+.protocolo, table td{
+    font-size: 12pt;
+}
