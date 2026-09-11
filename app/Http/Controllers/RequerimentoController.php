@@ -43,6 +43,9 @@ class RequerimentoController extends Controller
         if ($request->filled('status')) {
             $query->where('status', 'LIKE', '%' . $request->input('status') . '%');
         }
+        if ($request->filled('numero_protocolo')) {
+            $query->where('numero_protocolo', 'LIKE', '%' . $request->input('numero_protocolo') . '%');
+        }
 
         $requerimentos = $query->get();
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));  
