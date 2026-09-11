@@ -35,12 +35,14 @@ class RequerimentoPdfController extends Controller
         Usuario $nomeRequerente,
         string $numeroTurma,
         ?string $objeto = null,
+        string $numeroProtocolo,
         ?\Carbon\Carbon $dataSolicitacao = null,
     ): DomPDF {
         return Pdf::loadView('pdf.comprovante', [
             'nomeRequerente' => $nomeRequerente,
             'numeroTurma' => $numeroTurma,
             'objeto' => $objeto,
+            'numeroProtocolo' => $numeroProtocolo,
             'dataSolicitacao'=> $dataSolicitacao,
         ])->setPaper('a4', 'portrait');
     }
@@ -83,6 +85,14 @@ class RequerimentoPdfController extends Controller
     {
         $requerimento = Requerimento::with('usuario')->findOrFail($id);
 
+        // Verifica se o numero_protocolo está vazio. Se estiver, gera um número aleatório no formato: anoAtual/sequenciaAleatoriaDeSeisDígitos e salva no banco de dados;
+        if (empty($requerimento->numero_protocolo)) {
+            $ano = date('Y');
+            $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $requerimento->numero_protocolo = $ano . '/' . $sequencia;
+            $requerimento->save();
+        }
+
         $dados = [
             'nomeRequerente' => $requerimento->usuario->nome, 
             'numeroTurma'    => $requerimento->usuario->turma_codigo, 
@@ -93,7 +103,8 @@ class RequerimentoPdfController extends Controller
             nomeRequerente: $requerimento->usuario, 
             numeroTurma: $requerimento->usuario->turma_codigo,
             objeto: $requerimento->objetoDoRequerimento,
-            dataSolicitacao: $requerimento->created_at
+            dataSolicitacao: $requerimento->created_at,
+            numeroProtocolo: $requerimento->numero_protocolo
         );
 
         $nomeArquivo = 'Comprovante_' . Str::slug($requerimento->usuario->nome) . '_' . date('Ymd_His') . '.pdf';

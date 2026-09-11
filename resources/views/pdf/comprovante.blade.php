@@ -25,7 +25,7 @@
     <p><strong>Data da Solicitação:</strong> 
         {{ $dataSolicitacao ? $dataSolicitacao->format('d/m/Y H:i') : date('d/m/Y') }}
     </p>
-    <p><strong>Número do processo:</strong> 23720_ _ _ _ _ _ /2026-_ _</p>
+    <p><strong>Número do protocolo:</strong> {{ $numeroProtocolo }}</p>
 
     <hr>
 
