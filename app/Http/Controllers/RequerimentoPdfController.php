@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use App\Models\Requerimento;
+use App\Models\Setor;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDF;
 use Illuminate\Http\Request;
@@ -115,12 +116,24 @@ class RequerimentoPdfController extends Controller
         $aluno = auth()->user();
 
         // 2. Modelo e setor
-        $setorChave = $request->query('setor', 'cores');
+        $setorParam = $request->query('setor', $request->query('modelo'));
         $modelos = Setor::obterSetoresFormatados();
-        $setores = config('setores.destinatarios', []);
 
-        $modeloAtivo = $modelos[$setorChave] ?? reset($modelos) ?: [];
-        $setorNome = $modeloAtivo['setor_nome'] ?? ($setores[$setorChave]['nome'] ?? 'Coordenação de Registro Escolares');
+        $modeloAtivo = null;
+        if ($setorParam) {
+            if (isset($modelos[$setorParam])) {
+                $modeloAtivo = $modelos[$setorParam];
+            } else {
+                foreach ($modelos as $mod) {
+                    if (strcasecmp($mod['setor_sigla'] ?? '', $setorParam) === 0) {
+                        $modeloAtivo = $mod;
+                        break;
+                    }
+                }
+            }
+        }
+        $modeloAtivo = $modeloAtivo ?: (reset($modelos) ?: []);
+        $setorNome = $modeloAtivo['setor_nome'] ?? 'Setor Responsável';
 
         // 3. Objeto e Mensagem
         $objeto = $request->query('objeto', 'Atestado de Matrícula e/ou Frequência (02)');
@@ -129,7 +142,7 @@ class RequerimentoPdfController extends Controller
         return [
             'aluno' => $aluno,
             'setorNome' => $setorNome,
-            'setorChave' => $setorChave,
+            'setorChave' => (string) ($modeloAtivo['id'] ?? $setorParam),
             'objeto' => $objeto,
             'mensagem' => $mensagem,
         ];

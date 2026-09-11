@@ -11,10 +11,10 @@
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav">
         <strong>Setor:</strong>
-        @foreach($modelos as $chave => $mod)
-            <a href="{{ route('requerimentos.aluno.novo', ['modelo' => $chave]) }}"
-               class="{{ ($modeloChave ?? '') === $chave ? 'active' : '' }} btn-nav">
-                {{ $mod['setor_sigla'] ?? strtoupper($chave) }}
+        @foreach($modelos as $mod)
+            <a href="{{ route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
+               class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav">
+                {{ $mod['setor_sigla'] }}
             </a>
         @endforeach
     </div>
@@ -42,7 +42,8 @@
 
     <form action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <input type="hidden" name="setor" value="{{ $setorChave }}">
+        <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
+        <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
 
         {{-- Etapa 1: Identificação, Objeto e Justificativa --}}
         @include('requerimentos.partials.dados-requerimento')

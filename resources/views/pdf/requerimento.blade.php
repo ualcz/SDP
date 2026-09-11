@@ -11,13 +11,19 @@
     @php
         $modelos = \App\Models\Setor::obterSetoresFormatados();
         $modeloAtivo = null;
-        foreach ($modelos as $chave => $mod) {
-            if (($mod['setor_chave'] ?? '') === $setorChave || $chave === $setorChave) {
-                $modeloAtivo = $mod;
-                break;
+        if (!empty($setorChave)) {
+            if (isset($modelos[$setorChave])) {
+                $modeloAtivo = $modelos[$setorChave];
+            } else {
+                foreach ($modelos as $mod) {
+                    if (strcasecmp($mod['setor_sigla'] ?? '', $setorChave) === 0 || ($mod['id'] ?? '') == $setorChave) {
+                        $modeloAtivo = $mod;
+                        break;
+                    }
+                }
             }
         }
-        $modeloAtivo = $modeloAtivo ?: ($modelos['cores'] ?? reset($modelos) ?? []);
+        $modeloAtivo = $modeloAtivo ?: (reset($modelos) ?: []);
         $setorNomeOficial = $modeloAtivo['setor_nome'] ?? $setorNome ?? 'Setor Responsável';
         $listaObjetos = array_values($modeloAtivo['objetos'] ?? []);
         $colunasObjetos = array_chunk($listaObjetos, (int) ceil(count($listaObjetos) / 2));

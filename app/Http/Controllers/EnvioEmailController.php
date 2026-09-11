@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\InformacoesAlunoMail;
 use App\Models\Requerimento;
+use App\Models\Setor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,7 +16,8 @@ class EnvioEmailController extends Controller
     public function enviar(Request $request)
     {
         $request->validate([
-            'setor'                => 'required|string',
+            'setor'                => 'nullable|string',
+            'setor_id'             => 'nullable',
             'objeto'               => 'nullable|string|max:255',
             'objetoDoRequerimento' => 'nullable|string|max:255',
             'objeto_outro'         => 'nullable|string|max:255',
@@ -35,14 +37,22 @@ class EnvioEmailController extends Controller
             'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
         ]);
 
-        $setores = config('setores.destinatarios', []);
-        $chaveSetor = $request->input('setor');
+        $setorParam = $request->input('setor_id') ?? $request->input('setor');
+        $setor = null;
+        if (is_numeric($setorParam)) {
+            $setor = Setor::find($setorParam);
+        }
+        if (!$setor && !empty($setorParam)) {
+            $setor = Setor::where('setor_sigla', $setorParam)->first();
+        }
+        if (!$setor) {
+            $setor = Setor::where('ativo', true)->first();
+        }
 
-        if (!isset($setores[$chaveSetor])) {
+        if (!$setor) {
             return back()->withErrors(['setor' => 'O setor selecionado é inválido.']);
         }
 
-        $setor = $setores[$chaveSetor];
         $aluno = auth()->user();
 
         // 1. Atualiza campos cadastrais do usuário
@@ -104,8 +114,8 @@ class EnvioEmailController extends Controller
         // Assim, um único e-mail é enviado com todos os destinatários visíveis na mesma mensagem.
 
         $emailsSetor = [];
-        if (!empty($setor['email'])) {
-            $emailsSetor = is_array($setor['email']) ? $setor['email'] : [$setor['email']];
+        if (!empty($setor->email)) {
+            $emailsSetor = is_array($setor->email) ? $setor->email : [$setor->email];
         }
 
         $emailsAluno = [];
@@ -199,11 +209,11 @@ class EnvioEmailController extends Controller
         // 4. Dispara um único e-mail com setor no "Para:" e aluno no "CC:"
         $mailable = new InformacoesAlunoMail(
             aluno: $aluno,
-            setorNome: $setor['nome'],
+            setorNome: $setor->setor_nome,
             mensagem: $motivo,
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
             objeto: $objeto,
-            setorChave: $chaveSetor
+            setorChave: (string) $setor->id
         );
 
         $mailer = Mail::to($toEmails);

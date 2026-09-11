@@ -8,26 +8,36 @@ use App\Models\Setor;
 class RequerimentoController extends Controller
 {
     public function create(Request $request) {
-        $setores = config('setores.destinatarios', []);
         $modelos = Setor::obterSetoresFormatados();
 
-        // Setor / Modelo selecionado via query string (padrão: cores)
-        $modeloChave = $request->query('setor', $request->query('modelo', 'cores'));
+        // Setor selecionado via query string (id ou sigla)
+        $setorParam = $request->query('setor', $request->query('modelo'));
+        $modeloAtivo = null;
 
-        if (!isset($modelos[$modeloChave])) {
-            $modeloChave = !empty($modelos) ? array_key_first($modelos) : 'cores';
+        if ($setorParam) {
+            if (isset($modelos[$setorParam])) {
+                $modeloAtivo = $modelos[$setorParam];
+            } else {
+                foreach ($modelos as $mod) {
+                    if (strcasecmp($mod['setor_sigla'], $setorParam) === 0) {
+                        $modeloAtivo = $mod;
+                        break;
+                    }
+                }
+            }
         }
 
-        $modeloAtivo = $modelos[$modeloChave] ?? null;
+        if (!$modeloAtivo) {
+            $modeloAtivo = !empty($modelos) ? reset($modelos) : null;
+        }
 
-        // Setor de destino do modelo ativo
-        $setorChave = $modeloAtivo['setor_chave'] ?? 'teste1';
-        $setorDestino = $setores[$setorChave] ?? [
+        $modeloChave = $modeloAtivo['id'] ?? null;
+        $setorDestino = [
             'nome' => $modeloAtivo['setor_nome'] ?? 'Setor Responsável',
             'email' => $modeloAtivo['email'] ?? 'protocolos.seabra@ifba.edu.br',
         ];
 
-        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setores', 'setorChave', 'setorDestino'));
+        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setorDestino'));
     }
 
     //Método para mostrar requerimentos que já foram realizados pelo usuário;
