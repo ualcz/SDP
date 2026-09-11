@@ -10,8 +10,6 @@ class Setor extends Model
     protected $table = 'setores';
 
     protected $fillable = [
-        'identificador',
-        'setor_chave',
         'setor_sigla',
         'setor_nome',
         'email',
@@ -78,10 +76,8 @@ class Setor extends Model
                     ];
                 }
 
-                $resultado[$mod->identificador] = [
+                $resultado[$mod->id] = [
                     'id' => $mod->id,
-                    'identificador' => $mod->identificador,
-                    'setor_chave' => $mod->setor_chave,
                     'setor_sigla' => $mod->setor_sigla,
                     'setor_nome' => $mod->setor_nome,
                     'email' => $mod->email,

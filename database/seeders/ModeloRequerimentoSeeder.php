@@ -13,11 +13,10 @@ class ModeloRequerimentoSeeder extends Seeder
         $modelosConfig = config('modelos_requerimentos.modelos', []);
 
         foreach ($modelosConfig as $chave => $dados) {
+            $sigla = $dados['setor_sigla'] ?? strtoupper($chave);
             $modelo = Setor::updateOrCreate(
-                ['identificador' => $dados['identificador'] ?? $chave],
+                ['setor_sigla' => $sigla],
                 [
-                    'setor_chave' => $dados['setor_chave'] ?? 'teste1',
-                    'setor_sigla' => $dados['setor_sigla'] ?? strtoupper($chave),
                     'setor_nome' => $dados['setor_nome'] ?? 'Setor Responsável',
                     'email' => $dados['email'] ?? null,
                     'titulo' => $dados['titulo'] ?? 'Requerimento',

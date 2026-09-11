@@ -71,11 +71,10 @@ class DocumentosAssuntoSeeder extends Seeder
         $modelos = config('modelos_requerimentos.modelos', []);
 
         foreach ($modelos as $modeloConfig) {
+            $sigla = $modeloConfig['setor_sigla'] ?? strtoupper($modeloConfig['identificador'] ?? '');
             $modelo = Setor::updateOrCreate(
-                ['identificador' => $modeloConfig['identificador']],
+                ['setor_sigla' => $sigla],
                 [
-                    'setor_chave'      => $modeloConfig['setor_chave'],
-                    'setor_sigla'      => $modeloConfig['setor_sigla'],
                     'setor_nome'       => $modeloConfig['setor_nome'],
                     'email'            => $modeloConfig['email'] ?? null,
                     'titulo'           => $modeloConfig['titulo'],
@@ -104,7 +103,7 @@ class DocumentosAssuntoSeeder extends Seeder
         // 2. Popula os documentos obrigatórios por assunto
         // ---------------------------------------------------------------
         foreach ($this->documentosPorAssunto as $identificadorModelo => $assuntos) {
-            $modelo = Setor::where('identificador', $identificadorModelo)->first();
+            $modelo = Setor::where('setor_sigla', strtoupper($identificadorModelo))->first();
 
             if (!$modelo) {
                 $this->command->warn("Modelo '{$identificadorModelo}' não encontrado. Pulando...");
