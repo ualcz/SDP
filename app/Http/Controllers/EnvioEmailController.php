@@ -141,13 +141,15 @@ class EnvioEmailController extends Controller
             // Tenta encontrar o assunto pelo texto selecionado
             $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
 
-            Requerimento::create([
+            $requerimento = Requerimento::create([
                 'usuario_id'             => $aluno->id,
                 'assunto_requerimento_id' => $assunto?->id,
                 'objetoDoRequerimento'   => $objeto,
                 'motivo'                 => $motivo,
                 'status'                 => 'Em Análise',
             ]);
+            // Chama método para gerar número de protocolo;
+            $this->gerarNumeroProtocolo($requerimento);
         } catch (\Exception $e) {
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
@@ -169,5 +171,13 @@ class EnvioEmailController extends Controller
         $mailer->send($mailable);
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');
+    }
+
+    public function gerarNumeroProtocolo(Requerimento $requerimento){
+        //Gera um número aleatório no formato: anoAtual/sequenciaAleatoriaDeSeisDígitos e salva no banco de dados;
+        $ano = date('Y');
+        $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $requerimento->numero_protocolo = $ano . '/' . $sequencia;
+        $requerimento->save();      
     }
 }

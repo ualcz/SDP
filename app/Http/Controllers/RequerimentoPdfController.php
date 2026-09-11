@@ -85,14 +85,6 @@ class RequerimentoPdfController extends Controller
     {
         $requerimento = Requerimento::with('usuario')->findOrFail($id);
 
-        // Verifica se o numero_protocolo está vazio. Se estiver, gera um número aleatório no formato: anoAtual/sequenciaAleatoriaDeSeisDígitos e salva no banco de dados;
-        if (empty($requerimento->numero_protocolo)) {
-            $ano = date('Y');
-            $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            $requerimento->numero_protocolo = $ano . '/' . $sequencia;
-            $requerimento->save();
-        }
-
         $dados = [
             'nomeRequerente' => $requerimento->usuario->nome, 
             'numeroTurma'    => $requerimento->usuario->turma_codigo, 
