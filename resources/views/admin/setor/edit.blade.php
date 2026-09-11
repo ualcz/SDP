@@ -142,14 +142,11 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0; color: #111827;">
-                Editar Modelo: {{ $modelo->setor_sigla }} &mdash; {{ $modelo->setor_nome }}
+                Setor: {{ $modelo->setor_sigla }} &mdash; {{ $modelo->setor_nome }}
             </h2>
-            <p style="color: #6b7280; font-size: 0.875rem; margin: 4px 0 0 0;">
-                Atualize as informações do modelo e gerencie os assuntos com suas observações.
-            </p>
         </div>
-        <a href="{{ route('admin.modelos.index') }}" class="btn-voltar">
-            &larr; Voltar para lista de modelos
+        <a href="{{ route('admin.setores.index') }}" class="btn-voltar">
+            &larr; Voltar para lista de setores
         </a>
     </div>
 
@@ -169,12 +166,12 @@
         </div>
     @endif
 
-    {{-- 1. DADOS GERAIS DO MODELO --}}
+    {{-- 1. DADOS GERAIS DO SETOR --}}
     <div class="secao-bloco">
         <h3 style="margin-top: 0; margin-bottom: 14px; font-size: 1.15rem; font-weight: 600; color: #1f2937;">
-            1. Dados Gerais do Modelo
+            1. Dados Gerais 
         </h3>
-        <form action="{{ route('admin.modelos.update', $modelo->id) }}" method="POST">
+        <form action="{{ route('admin.setores.update', $modelo->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -237,9 +234,6 @@
         <h3 style="margin-top: 0; margin-bottom: 6px; font-size: 1.15rem; font-weight: 600; color: #1f2937;">
             2. Assuntos (Objetos do Requerimento)
         </h3>
-        <p style="color: #6b7280; font-size: 0.875rem; margin-top: 0; margin-bottom: 16px;">
-            Altere o código, descrição, observação e status de cada assunto diretamente na tabela abaixo e clique em <strong>Salvar</strong> na linha correspondente:
-        </p>
 
         <div style="overflow-x: auto;">
             <table class="tabela-assuntos">
@@ -296,7 +290,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">Nenhum assunto cadastrado para este modelo.</td>
+                            <td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">Nenhum assunto cadastrado.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -306,9 +300,9 @@
         {{-- FORMULÁRIO PARA ADICIONAR NOVO ASSUNTO --}}
         <div style="background: #f9fafb; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 18px; margin-top: 15px;">
             <h4 style="margin-top: 0; margin-bottom: 12px; font-size: 1rem; font-weight: 600; color: #1f2937;">
-                + Adicionar Novo Assunto a este Modelo
+                Adicionar Novo Assunto
             </h4>
-            <form action="{{ route('admin.modelos.assuntos.store', $modelo->id) }}" method="POST">
+            <form action="{{ route('admin.setores.assuntos.store', $modelo->id) }}" method="POST">
                 @csrf
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
                     <div style="width: 90px;">

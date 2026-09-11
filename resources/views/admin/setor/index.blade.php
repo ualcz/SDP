@@ -87,8 +87,7 @@
 <div class="admin-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <div>
-            <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0; color: #111827;">Modelos de Requerimentos</h2>
-            <p style="color: #6b7280; font-size: 0.875rem; margin: 4px 0 0 0;">Gerencie os modelos dos setores e os assuntos (objetos de requerimento) vinculados a cada um.</p>
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0; color: #111827;">Setores</h2>
         </div>
         <a href="{{ route('admin.dashboard') }}" class="btn-voltar">
             &larr; Voltar ao Dashboard
@@ -106,9 +105,9 @@
             <tr>
                 <th style="width: 100px;">Sigla</th>
                 <th>Setor</th>
-                <th>Título do Formulário</th>
-                <th>E-mail do Setor</th>
-                <th style="width: 170px; text-align: center;">Assuntos (Ativos / Total)</th>
+                <th>Título Formulário</th>
+                <th>E-mail Setor</th>
+                <th style="width: 170px; text-align: center;">Assuntos</th>
                 <th style="width: 100px; text-align: center;">Status</th>
                 <th style="width: 180px; text-align: center;">Ações</th>
             </tr>
@@ -133,17 +132,14 @@
                         @endif
                     </td>
                     <td style="text-align: center;">
-                        <a href="{{ route('admin.modelos.edit', $modelo->id) }}" class="btn-acao">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
+                        <a href="{{ route('admin.setores.edit', $modelo->id) }}" class="btn-acao">
                             Editar / Assuntos
                         </a>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 24px; color: #6b7280;">Nenhum modelo cadastrado.</td>
+                    <td colspan="7" style="text-align: center; padding: 24px; color: #6b7280;">Nenhum setor cadastrado.</td>
                 </tr>
             @endforelse
         </tbody>

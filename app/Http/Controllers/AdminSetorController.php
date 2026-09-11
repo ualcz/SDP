@@ -6,25 +6,27 @@ use App\Models\AssuntoRequerimento;
 use App\Models\Setor;
 use Illuminate\Http\Request;
 
-class AdminModeloController extends Controller
+class AdminSetorController extends Controller
 {
     public function index()
     {
-        $modelos = Setor::withCount(['assuntos', 'assuntosAtivos'])->get();
+        $setores = Setor::withCount(['assuntos', 'assuntosAtivos'])->get();
+        $modelos = $setores; // compatibilidade com as views
 
-        return view('admin.modelos.index', compact('modelos'));
+        return view('admin.setor.index', compact('setores', 'modelos'));
     }
 
     public function edit($id)
     {
-        $modelo = Setor::with(['assuntos'])->findOrFail($id);
+        $setor = Setor::with(['assuntos'])->findOrFail($id);
+        $modelo = $setor; // compatibilidade com as views
 
-        return view('admin.modelos.edit', compact('modelo'));
+        return view('admin.setor.edit', compact('setor', 'modelo'));
     }
 
     public function update(Request $request, $id)
     {
-        $modelo = Setor::findOrFail($id);
+        $setor = Setor::findOrFail($id);
 
         $dados = $request->validate([
             'titulo' => 'required|string|max:255',
@@ -48,7 +50,7 @@ class AdminModeloController extends Controller
             }
         }
 
-        $modelo->update([
+        $setor->update([
             'titulo' => $dados['titulo'],
             'setor_sigla' => $dados['setor_sigla'],
             'setor_nome' => $dados['setor_nome'],
@@ -59,7 +61,7 @@ class AdminModeloController extends Controller
             'ativo' => $request->has('ativo'),
         ]);
 
-        return redirect()->route('admin.modelos.edit', $modelo->id)
+        return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Setor atualizado com sucesso!');
     }
 
@@ -85,7 +87,7 @@ class AdminModeloController extends Controller
             'ativo' => true,
         ]);
 
-        return redirect()->route('admin.modelos.edit', $setor->id)
+        return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Assunto adicionado com sucesso!');
     }
 
@@ -109,7 +111,7 @@ class AdminModeloController extends Controller
             'ativo' => $request->has('ativo'),
         ]);
 
-        return redirect()->route('admin.modelos.edit', $assunto->setor_id)
+        return redirect()->route('admin.setores.edit', $assunto->setor_id)
             ->with('success', 'Assunto atualizado com sucesso!');
     }
 
@@ -119,7 +121,7 @@ class AdminModeloController extends Controller
         $setorId = $assunto->setor_id;
         $assunto->delete();
 
-        return redirect()->route('admin.modelos.edit', $setorId)
+        return redirect()->route('admin.setores.edit', $setorId)
             ->with('success', 'Assunto removido com sucesso!');
     }
 }
