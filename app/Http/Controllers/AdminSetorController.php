@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssuntoRequerimento;
+use App\Models\DocumentoAssunto;
 use App\Models\Setor;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class AdminSetorController extends Controller
 
     public function edit($id)
     {
-        $setor = Setor::with(['assuntos'])->findOrFail($id);
+        $setor = Setor::with(['assuntos.documentos'])->findOrFail($id);
         $modelo = $setor; // compatibilidade com as views
 
         return view('admin.setor.edit', compact('setor', 'modelo'));
@@ -123,5 +124,62 @@ class AdminSetorController extends Controller
 
         return redirect()->route('admin.setores.edit', $setorId)
             ->with('success', 'Assunto removido com sucesso!');
+    }
+
+    public function storeDocumento(Request $request, $assuntoId)
+    {
+        $assunto = AssuntoRequerimento::findOrFail($assuntoId);
+
+        $dados = $request->validate([
+            'nome'          => 'required|string|max:255',
+            'descricao'     => 'nullable|string|max:500',
+            'obrigatorio'   => 'nullable|boolean',
+            'tipos_aceitos' => 'nullable|string|max:100',
+        ]);
+
+        DocumentoAssunto::create([
+            'assunto_requerimento_id' => $assunto->id,
+            'nome'                    => $dados['nome'],
+            'descricao'               => $dados['descricao'] ?? null,
+            'obrigatorio'             => $request->has('obrigatorio'),
+            'tipos_aceitos'           => $dados['tipos_aceitos'] ?: 'pdf,jpg,jpeg,png',
+        ]);
+
+        return redirect()->route('admin.setores.edit', $assunto->setor_id)
+            ->with('success', 'Documento anexado ao assunto com sucesso!');
+    }
+
+    public function updateDocumento(Request $request, $documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+
+        $dados = $request->validate([
+            'nome'          => 'required|string|max:255',
+            'descricao'     => 'nullable|string|max:500',
+            'obrigatorio'   => 'nullable|boolean',
+            'tipos_aceitos' => 'nullable|string|max:100',
+        ]);
+
+        $documento->update([
+            'nome'          => $dados['nome'],
+            'descricao'     => $dados['descricao'] ?? null,
+            'obrigatorio'   => $request->has('obrigatorio'),
+            'tipos_aceitos' => $dados['tipos_aceitos'] ?: 'pdf,jpg,jpeg,png',
+        ]);
+
+        $setorId = $documento->assunto?->setor_id;
+
+        return redirect()->route('admin.setores.edit', $setorId)
+            ->with('success', 'Documento atualizado com sucesso!');
+    }
+
+    public function destroyDocumento($documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $setorId = $documento->assunto?->setor_id;
+        $documento->delete();
+
+        return redirect()->route('admin.setores.edit', $setorId)
+            ->with('success', 'Documento removido com sucesso!');
     }
 }

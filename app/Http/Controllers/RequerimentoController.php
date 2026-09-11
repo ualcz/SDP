@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Requerimento;
 use App\Models\Setor;
-use Illuminate\Support\Facades\Auth;
 
 class RequerimentoController extends Controller
 {

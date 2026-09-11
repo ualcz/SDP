@@ -55,6 +55,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/assuntos/{id}', [AdminSetorController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminSetorController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
 
+    // Gerenciamento de Documentos / Anexos por Assunto
+    Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
+    Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
+    Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
+
     // Alias /admin/modelos (compatibilidade com links legados)
     Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');

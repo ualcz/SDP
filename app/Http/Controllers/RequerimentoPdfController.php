@@ -8,7 +8,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Setor;
 
 class RequerimentoPdfController extends Controller
 {
