@@ -89,9 +89,14 @@
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0; color: #111827;">Setores</h2>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn-voltar">
-            &larr; Voltar ao Dashboard
-        </a>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <a href="{{ route('admin.setores.create') }}" class="btn-acao">
+                ＋ Novo Setor
+            </a>
+            <a href="{{ route('admin.dashboard') }}" class="btn-voltar">
+                &larr; Voltar ao Dashboard
+            </a>
+        </div>
     </div>
 
     @if(session('success'))

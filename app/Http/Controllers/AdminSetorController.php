@@ -17,6 +17,37 @@ class AdminSetorController extends Controller
         return view('admin.setor.index', compact('setores', 'modelos'));
     }
 
+    public function create()
+    {
+        return view('admin.setor.create');
+    }
+
+    public function store(Request $request)
+    {
+        $dados = $request->validate([
+            'titulo'           => 'required|string|max:255',
+            'setor_sigla'      => 'required|string|max:50',
+            'setor_nome'       => 'required|string|max:255',
+            'email'            => 'nullable|email|max:255',
+            'processo_prefixo' => 'nullable|string|max:20',
+            'rodape_contato'   => 'nullable|string|max:255',
+            'ativo'            => 'nullable|boolean',
+        ]);
+
+        $setor = Setor::create([
+            'titulo'           => $dados['titulo'],
+            'setor_sigla'      => $dados['setor_sigla'],
+            'setor_nome'       => $dados['setor_nome'],
+            'email'            => $dados['email'] ?? null,
+            'processo_prefixo' => $dados['processo_prefixo'] ?: '23720',
+            'rodape_contato'   => $dados['rodape_contato'] ?? null,
+            'ativo'            => $request->has('ativo'),
+        ]);
+
+        return redirect()->route('admin.setores.edit', $setor->id)
+            ->with('success', 'Setor criado com sucesso!');
+    }
+
     public function edit($id)
     {
         $setor = Setor::with(['assuntos.documentos'])->findOrFail($id);

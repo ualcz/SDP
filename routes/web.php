@@ -49,6 +49,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Gerenciamento de Setores e Assuntos de Requerimentos
     Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
+    Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
+    Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
     Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
     Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
     Route::post('/admin/setores/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
@@ -75,7 +77,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 */
 Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::get('/requerimentos/aluno', function () {
-        $setores = config('setores.destinatarios', []);
+        $setores = \App\Models\Setor::where('ativo', true)->get();
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
 
