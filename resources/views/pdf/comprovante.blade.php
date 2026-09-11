@@ -22,7 +22,9 @@
     <hr>
 
     <p><strong>COMPROVANTE DE PROTOCOLO DE REQUERIMENTO - {{ date('Y') }}</strong></p>
-    <p><strong>Data da Solicitação:</strong> {{ isset($nomeRequerente->created_at) && $nomeRequerente->created_at ? $nomeRequerente->created_at->format('d/m/Y H:i') : (isset($nomeRequerente['created_at']) && $nomeRequerente['created_at'] ? \Carbon\Carbon::parse($nomeRequerente['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}</p>
+    <p><strong>Data da Solicitação:</strong> 
+        {{ $dataSolicitacao ? $dataSolicitacao->format('d/m/Y H:i') : date('d/m/Y') }}
+    </p>
     <p><strong>Número do processo:</strong> 23720_ _ _ _ _ _ /2026-_ _</p>
 
     <hr>
@@ -36,6 +38,10 @@
         <tr>
             <td><strong>Número da turma:</strong></td>
             <td>{{ $nomeRequerente->turma_codigo ?? 'Não informado' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Objeto do requerimento:</strong></td>
+            <td>{{ $objeto ?? 'Não informado' }}</td>
         </tr>
     </table>
     <hr>

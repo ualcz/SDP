@@ -35,11 +35,13 @@ class RequerimentoPdfController extends Controller
         Usuario $nomeRequerente,
         string $numeroTurma,
         ?string $objeto = null,
+        ?\Carbon\Carbon $dataSolicitacao = null,
     ): DomPDF {
         return Pdf::loadView('pdf.comprovante', [
             'nomeRequerente' => $nomeRequerente,
             'numeroTurma' => $numeroTurma,
             'objeto' => $objeto,
+            'dataSolicitacao'=> $dataSolicitacao,
         ])->setPaper('a4', 'portrait');
     }
 
@@ -82,18 +84,19 @@ class RequerimentoPdfController extends Controller
         $requerimento = Requerimento::with('usuario')->findOrFail($id);
 
         $dados = [
-            'nomeRequerente' => $requerimento->usuario, 
+            'nomeRequerente' => $requerimento->usuario->nome, 
             'numeroTurma'    => $requerimento->usuario->turma_codigo, 
             'objeto'         => $requerimento->objetoDoRequerimento, 
         ];
 
         $pdf = self::criarComprovante(
-            nomeRequerente: $dados['nomeRequerente'],
-            numeroTurma: $dados['numeroTurma'],
-            objeto: $dados['objeto']
+            nomeRequerente: $requerimento->usuario, 
+            numeroTurma: $requerimento->usuario->turma_codigo,
+            objeto: $requerimento->objetoDoRequerimento,
+            dataSolicitacao: $requerimento->created_at
         );
 
-        $nomeArquivo = 'Comprovante_' . Str::slug($dados['nomeRequerente']->nome) . '_' . date('Ymd_His') . '.pdf';
+        $nomeArquivo = 'Comprovante_' . Str::slug($requerimento->usuario->nome) . '_' . date('Ymd_His') . '.pdf';
 
         if ($request->query('download') == '1') {
             return $pdf->download($nomeArquivo);

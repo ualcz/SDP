@@ -29,7 +29,6 @@
         <tr>
             <th class="py-3 px-6 text-center">Data</th>
             <th class="py-3 px-6 text-center">Objeto do requerimento</th>
-            <th class="py-3 px-6 text-center">Motivo</th>
             <!--Campo situação: para indicar qual o status do andamento do requerimento(análise,concluído...)-->
             <th class="py-3 px-6 text-center">Status</th>
             <th class="py-3 px-6 text-center">Ações</th>
@@ -44,9 +43,6 @@
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
                     {{$requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento}}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    {{$requerimento['motivo'] ?? $requerimento->motivo}}
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
                     @if ($requerimento->status === 'Aprovado')
@@ -67,7 +63,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="py-3 px-6 text-center dark:text-white">
+                <td colspan="4" class="py-3 px-6 text-center dark:text-white">
                     Nenhum requerimento encontrado
                 </td>
             </tr>
