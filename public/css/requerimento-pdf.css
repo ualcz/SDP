@@ -151,13 +151,6 @@ table {
     font-weight: bold;
 }
 
-.observacoes {
-    margin-top: 1.5mm;
-    font-size: 6.5pt;
-    font-weight: bold;
-    line-height: 1.25;
-}
-
 .linhas {
     border: 0.5pt solid #777;
     padding: 1.5mm 2mm 0;

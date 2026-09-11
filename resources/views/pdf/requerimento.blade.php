@@ -21,7 +21,6 @@
         $setorNomeOficial = $modeloAtivo['setor_nome'] ?? $setorNome ?? 'Setor Responsável';
         $listaObjetos = array_values($modeloAtivo['objetos'] ?? []);
         $colunasObjetos = array_chunk($listaObjetos, (int) ceil(count($listaObjetos) / 2));
-        $observacoes = $modeloAtivo['observacoes'] ?? [];
         $objSelecionado = trim($objeto ?? '');
         $prefixoProcesso = $modeloAtivo['processo_prefixo'] ?? '23720';
         $emailSetor = $modeloAtivo['rodape_contato'] ?? $modeloAtivo['email'] ?? '';
@@ -110,9 +109,6 @@
                     @endforeach
                 </tr>
             </table>
-            @if(!empty($observacoes))
-                <div class="observacoes">@foreach($observacoes as $observacao){{ $observacao }}<br>@endforeach</div>
-            @endif
         </div>
     </div>
 

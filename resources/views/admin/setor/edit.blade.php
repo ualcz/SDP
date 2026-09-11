@@ -5,6 +5,12 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/admin-setor.css') }}">
+<style>
+    main.container {
+        max-width: 95% !important;
+        width: 95% !important;
+    }
+</style>
 
 <div class="admin-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -38,7 +44,7 @@
     {{-- Seção 1: Dados Gerais do Setor / Modelo --}}
     @include('admin.setor.partials.dados-gerais', ['modelo' => $modelo])
 
-    {{-- Seção 2: Assuntos, Requisitos e Documentos Obrigatórios --}}
+    {{-- Seção 2: Requerimentos e Documentos Obrigatórios --}}
     @include('admin.setor.partials.tabela-assuntos', ['modelo' => $modelo])
 </div>
 

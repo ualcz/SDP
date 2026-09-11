@@ -22,7 +22,6 @@ class Setor extends Model
     ];
 
     protected $casts = [
-        'observacoes' => 'array',
         'ativo' => 'boolean',
     ];
 
@@ -44,20 +43,15 @@ class Setor extends Model
     }
 
     /**
-     * Retorna os setores formatados para uso nos controllers e views,
-     * com fallback automático para o config/modelos_requerimentos.php.
+     * Retorna os setores formatados para uso nos controllers e views.
      */
     public static function obterSetoresFormatados(): array
     {
         try {
-            if (!Schema::hasTable('setores')) {
-                return config('modelos_requerimentos.modelos', []);
-            }
-
             $setoresBanco = static::with(['assuntosAtivos.documentos'])->where('ativo', true)->get();
 
             if ($setoresBanco->isEmpty()) {
-                return config('modelos_requerimentos.modelos', []);
+                return [];
             }
 
             $resultado = [];
@@ -95,14 +89,13 @@ class Setor extends Model
                     'processo_prefixo' => $mod->processo_prefixo ?: '23720',
                     'objetos' => $objetos,
                     'assuntos_detalhes' => $assuntosDetalhes,
-                    'observacoes' => $mod->observacoes ?? [],
                     'rodape_contato' => $mod->rodape_contato,
                 ];
             }
 
             return $resultado;
         } catch (\Throwable $e) {
-            return config('modelos_requerimentos.modelos', []);
+            return [];
         }
     }
 

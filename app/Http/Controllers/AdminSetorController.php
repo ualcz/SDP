@@ -36,20 +36,8 @@ class AdminSetorController extends Controller
             'email' => 'nullable|email|max:255',
             'processo_prefixo' => 'nullable|string|max:20',
             'rodape_contato' => 'nullable|string|max:255',
-            'observacoes_texto' => 'nullable|string',
             'ativo' => 'nullable|boolean',
         ]);
-
-        $observacoes = [];
-        if (!empty($dados['observacoes_texto'])) {
-            $linhas = preg_split('/\r\n|\r|\n/', $dados['observacoes_texto']);
-            foreach ($linhas as $linha) {
-                $linha = trim($linha);
-                if ($linha !== '') {
-                    $observacoes[] = $linha;
-                }
-            }
-        }
 
         $setor->update([
             'titulo' => $dados['titulo'],
@@ -58,7 +46,6 @@ class AdminSetorController extends Controller
             'email' => $dados['email'] ?? null,
             'processo_prefixo' => $dados['processo_prefixo'] ?: '23720',
             'rodape_contato' => $dados['rodape_contato'] ?? null,
-            'observacoes' => $observacoes,
             'ativo' => $request->has('ativo'),
         ]);
 
@@ -89,7 +76,7 @@ class AdminSetorController extends Controller
         ]);
 
         return redirect()->route('admin.setores.edit', $setor->id)
-            ->with('success', 'Assunto adicionado com sucesso!');
+            ->with('success', 'Requerimento adicionado com sucesso!');
     }
 
     public function updateAssunto(Request $request, $assuntoId)
@@ -113,7 +100,7 @@ class AdminSetorController extends Controller
         ]);
 
         return redirect()->route('admin.setores.edit', $assunto->setor_id)
-            ->with('success', 'Assunto atualizado com sucesso!');
+            ->with('success', 'Requerimento atualizado com sucesso!');
     }
 
     public function destroyAssunto($assuntoId)
@@ -123,7 +110,7 @@ class AdminSetorController extends Controller
         $assunto->delete();
 
         return redirect()->route('admin.setores.edit', $setorId)
-            ->with('success', 'Assunto removido com sucesso!');
+            ->with('success', 'Requerimento removido com sucesso!');
     }
 
     public function storeDocumento(Request $request, $assuntoId)
@@ -146,7 +133,7 @@ class AdminSetorController extends Controller
         ]);
 
         return redirect()->route('admin.setores.edit', $assunto->setor_id)
-            ->with('success', 'Documento anexado ao assunto com sucesso!');
+            ->with('success', 'Documento anexado ao requerimento com sucesso!');
     }
 
     public function updateDocumento(Request $request, $documentoId)

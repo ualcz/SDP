@@ -1,4 +1,4 @@
-{{-- LINHA EXPANSÍVEL: GERENCIAMENTO DE DOCUMENTOS DO ASSUNTO --}}
+{{-- LINHA EXPANSÍVEL: GERENCIAMENTO DE DOCUMENTOS DO REQUERIMENTO --}}
 <tr id="{{ $docsRowId }}" class="tr-documentos" style="display: none; background: #f8fafc;">
     <td colspan="7" style="padding: 14px 16px;">
         <div class="box-docs-nested">
@@ -65,14 +65,14 @@
                 </table>
             @else
                 <p style="font-size: 0.8125rem; color: #64748b; margin: 0 0 10px 0;">
-                    <em>Nenhum documento exigido cadastrado para este assunto (os anexos serão livres/opcionais no formulário do aluno).</em>
+                    <em>Nenhum documento exigido cadastrado para este requerimento (os anexos serão livres/opcionais no formulário do aluno).</em>
                 </p>
             @endif
 
-            {{-- Formulário para adicionar documento a este assunto --}}
+            {{-- Formulário para adicionar documento a este requerimento --}}
             <div style="background: #ffffff; border: 1px dashed #94a3b8; border-radius: 6px; padding: 10px 14px; margin-top: 6px;">
                 <strong style="display: block; font-size: 0.8125rem; color: #334155; margin-bottom: 6px;">
-                    + Adicionar Documento / Anexo a este Assunto:
+                    + Adicionar Documento / Anexo a este Requerimento:
                 </strong>
                 <form action="{{ route('admin.documentos.store', $assunto->id) }}" method="POST">
                     @csrf

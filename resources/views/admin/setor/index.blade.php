@@ -107,7 +107,7 @@
                 <th>Setor</th>
                 <th>Título Formulário</th>
                 <th>E-mail Setor</th>
-                <th style="width: 170px; text-align: center;">Assuntos</th>
+                <th style="width: 170px; text-align: center;">Requerimentos</th>
                 <th style="width: 100px; text-align: center;">Status</th>
                 <th style="width: 180px; text-align: center;">Ações</th>
             </tr>
@@ -133,7 +133,7 @@
                     </td>
                     <td style="text-align: center;">
                         <a href="{{ route('admin.setores.edit', $modelo->id) }}" class="btn-acao">
-                            Editar / Assuntos
+                            Editar
                         </a>
                     </td>
                 </tr>

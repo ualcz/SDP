@@ -1,8 +1,8 @@
-{{-- 2. ASSUNTOS DO MODELO COM OBSERVAÇÃO E DOCUMENTOS --}}
+{{-- 2. REQUERIMENTOS DO MODELO COM OBSERVAÇÃO E DOCUMENTOS --}}
 <div class="secao-bloco">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <h3 style="margin: 0; font-size: 1.15rem; font-weight: 600; color: #1f2937;">
-            2. Assuntos e Documentos Exigidos
+            2. Requerimentos e Documentos Exigidos
         </h3>
     </div>
 
@@ -10,13 +10,13 @@
         <table class="tabela-assuntos">
             <thead>
                 <tr>
-                    <th style="width: 70px;">Cód.</th>
-                    <th>Descrição do Assunto</th>
-                    <th>Observação / Requisito</th>
-                    <th style="width: 120px; text-align: center;">Documentos</th>
-                    <th style="width: 65px; text-align: center;">Ordem</th>
-                    <th style="width: 55px; text-align: center;">Ativo</th>
-                    <th style="width: 150px; text-align: center;">Ações</th>
+                    <th class="col-codigo">Cód.</th>
+                    <th class="col-descricao">Descrição do Requerimento</th>
+                    <th class="col-observacao">Observação / Requisito</th>
+                    <th class="col-docs">Documentos</th>
+                    <th class="col-ordem">Ordem</th>
+                    <th class="col-ativo">Ativo</th>
+                    <th class="col-acoes">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,23 +30,23 @@
                         @csrf
                         @method('PUT')
                     </form>
-                    <form id="{{ $formDeleteId }}" action="{{ route('admin.assuntos.destroy', $assunto->id) }}" method="POST" onsubmit="return confirm('Deseja realmente excluir este assunto e seus documentos vinculados?');">
+                    <form id="{{ $formDeleteId }}" action="{{ route('admin.assuntos.destroy', $assunto->id) }}" method="POST" onsubmit="return confirm('Deseja realmente excluir este requerimento e seus documentos vinculados?');">
                         @csrf
                         @method('DELETE')
                     </form>
 
                     <tr>
-                        <td>
-                            <input form="{{ $formUpdateId }}" type="text" name="codigo" value="{{ $assunto->codigo }}" class="input-tabela" placeholder="Ex: 01">
+                        <td style="text-align: center;">
+                            <input form="{{ $formUpdateId }}" type="text" name="codigo" value="{{ $assunto->codigo }}" class="input-tabela input-codigo" placeholder="01">
                         </td>
                         <td>
-                            <input form="{{ $formUpdateId }}" type="text" name="descricao" value="{{ $assunto->descricao }}" required class="input-tabela">
+                            <input form="{{ $formUpdateId }}" type="text" name="descricao" value="{{ $assunto->descricao }}" required class="input-tabela" title="{{ $assunto->descricao }}">
                         </td>
                         <td>
-                            <input form="{{ $formUpdateId }}" type="text" name="observacao" value="{{ $assunto->observacao }}" placeholder="Ex: Necessita atestado médico" class="input-tabela">
+                            <input form="{{ $formUpdateId }}" type="text" name="observacao" value="{{ $assunto->observacao }}" placeholder="Ex: Necessita atestado médico" class="input-tabela" title="{{ $assunto->observacao }}">
                         </td>
                         <td style="text-align: center;">
-                            <button type="button" class="btn-docs {{ $docsCount > 0 ? 'has-docs' : '' }}" onclick="toggleDocumentos('{{ $docsRowId }}')" title="Gerenciar documentos deste assunto">
+                            <button type="button" class="btn-docs {{ $docsCount > 0 ? 'has-docs' : '' }}" onclick="toggleDocumentos('{{ $docsRowId }}')" title="Gerenciar documentos deste requerimento">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -62,10 +62,10 @@
                         </td>
                         <td style="text-align: center;">
                             <div style="display: inline-flex; gap: 4px; align-items: center;">
-                                <button form="{{ $formUpdateId }}" type="submit" class="btn-salvar-sm" title="Salvar alterações deste assunto">
+                                <button form="{{ $formUpdateId }}" type="submit" class="btn-salvar-sm" title="Salvar alterações deste requerimento">
                                     Salvar
                                 </button>
-                                <button form="{{ $formDeleteId }}" type="submit" class="btn-excluir-sm" title="Excluir este assunto">
+                                <button form="{{ $formDeleteId }}" type="submit" class="btn-excluir-sm" title="Excluir este requerimento">
                                     Excluir
                                 </button>
                             </div>
@@ -79,7 +79,7 @@
                     ])
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px; color: #6b7280;">Nenhum assunto cadastrado.</td>
+                        <td colspan="7" style="text-align: center; padding: 20px; color: #6b7280;">Nenhum requerimento cadastrado.</td>
                     </tr>
                 @endforelse
             </tbody>
