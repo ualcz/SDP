@@ -33,26 +33,16 @@
             : '';
     @endphp
 
-    <table class="topo">
-        <tr>
-            <td class="logo"><img src="{{ $logoIfba }}" alt="IFBA"></td>
-            <td class="instituto">
-                INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA<br>
-                <span class="campus">CAMPUS SEABRA</span><br>
-                <span class="setor">{{ strtoupper($setorNomeOficial) }}</span>
-            </td>
-            <td class="processo">
-                <div class="processo-label">Número do Processo</div>
-                <div class="numero-boxes">
-                    @foreach(str_split($prefixoProcesso) as $digito)<span>{{ $digito }}</span>@endforeach
-                    @foreach(range(1, 6) as $i)<span></span>@endforeach
-                    <span class="separador">/</span>
-                    @foreach(str_split(date('Y')) as $digito)<span>{{ $digito }}</span>@endforeach
-                    <span class="separador">-</span><span></span><span></span>
-                </div>
-            </td>
-        </tr>
-    </table>
+    <div class="topo">
+        <div class="container-logo">
+            <img class="logo" src="{{ $logoIfba }}" alt="IFBA">
+        </div>
+        <div class="instituto">
+            INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA<br>
+            <span class="campus">CAMPUS SEABRA</span><br>
+            <span class="setor">{{ strtoupper($setorNomeOficial) }}</span>
+        </div>
+    </div>
 
     <div class="titulo">REQUERIMENTO Nº <span class="ano">{{ date('Y') }}/</span>________________</div>
 
@@ -104,14 +94,16 @@
                                     $baseDescricao = trim(preg_replace('/\s*\(.*?\).*/', '', $descricao));
                                     $selecionado = $objSelecionado === $descricao || ($baseDescricao !== '' && stripos($objSelecionado, $baseDescricao) !== false);
                                 @endphp
-                                <div class="check {{ $selecionado ? 'marcado' : '' }}">[{{ $selecionado ? 'X' : ' ' }}] {{ $descricao }}</div>
+                                @if($selecionado)
+                                    <div class="valor">{{ $descricao }}</div>
+                                @endif
                             @endforeach
                         </td>
                     @endforeach
                 </tr>
             </table>
             @if(!empty($observacoes))
-                <div class="observacoes">@foreach($observacoes as $observacao){{ $observacao }}<br>@endforeach</div>
+                <div class="observacoes" style="font-size: 9pt;">@foreach($observacoes as $observacao){{ $observacao }}<br>@endforeach</div>
             @endif
         </div>
     </div>
@@ -119,7 +111,7 @@
     <div class="secao">
         <div class="secao-titulo">EXPOSIÇÃO DE MOTIVOS</div>
         <div class="linhas">
-            @if(!empty($mensagem))<div style="font-size: 7pt; margin-bottom: 1mm;">{!! nl2br(e($mensagem)) !!}</div>@endif
+            @if(!empty($mensagem))<div style="font-size: 9pt;">{!! nl2br(e($mensagem)) !!}</div>@endif
             <div class="linha"></div><div class="linha"></div><div class="linha"></div><div class="linha"></div>
         </div>
     </div>
