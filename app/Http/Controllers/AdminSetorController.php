@@ -160,7 +160,7 @@ class AdminSetorController extends Controller
             'nome'                    => $dados['nome'],
             'descricao'               => $dados['descricao'] ?? null,
             'obrigatorio'             => $request->has('obrigatorio'),
-            'tipos_aceitos'           => $dados['tipos_aceitos'] ?: 'pdf,jpg,jpeg,png',
+            'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
         ]);
 
         return redirect()->route('admin.setores.edit', $assunto->setor_id)
