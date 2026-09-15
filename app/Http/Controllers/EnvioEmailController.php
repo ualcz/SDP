@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\InformacoesAlunoMail;
 use App\Models\Requerimento;
+use App\Models\Setor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,33 +16,43 @@ class EnvioEmailController extends Controller
     public function enviar(Request $request)
     {
         $request->validate([
-            'setor' => 'required|string',
-            'objeto' => 'nullable|string|max:255',
+            'setor'                => 'nullable|string',
+            'setor_id'             => 'nullable',
+            'objeto'               => 'nullable|string|max:255',
             'objetoDoRequerimento' => 'nullable|string|max:255',
-            'objeto_outro' => 'nullable|string|max:255',
-            'motivo' => 'nullable|string|max:3000',
-            'mensagem' => 'nullable|string|max:3000',
-            'email_pessoal' => 'nullable|email|max:255',
-            'telefone' => 'nullable|string|max:30',
-            'rua' => 'nullable|string|max:255',
-            'numero' => 'nullable|string|max:20',
-            'bairro' => 'nullable|string|max:255',
-            'cidade' => 'nullable|string|max:255',
-            'estado' => 'nullable|string|max:2',
-            'cep' => 'nullable|string|max:10',
-            'endereco' => 'nullable|string|max:255',
-            'email_adicional' => 'nullable|email',
-            'arquivos.*' => 'nullable|file|max:10240', // limite de 10MB por anexo
+            'objeto_outro'         => 'nullable|string|max:255',
+            'motivo'               => 'nullable|string|max:3000',
+            'mensagem'             => 'nullable|string|max:3000',
+            'email_pessoal'        => 'nullable|email|max:255',
+            'telefone'             => 'nullable|string|max:30',
+            'rua'                  => 'nullable|string|max:255',
+            'numero'               => 'nullable|string|max:20',
+            'bairro'               => 'nullable|string|max:255',
+            'cidade'               => 'nullable|string|max:255',
+            'estado'               => 'nullable|string|max:2',
+            'cep'                  => 'nullable|string|max:10',
+            'endereco'             => 'nullable|string|max:255',
+            'email_adicional'      => 'nullable|email',
+            'arquivos.*'           => 'nullable|file|max:51200', // 50MB por arquivo complementar
+            'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
         ]);
 
-        $setores = config('setores.destinatarios', []);
-        $chaveSetor = $request->input('setor');
+        $setorParam = $request->input('setor_id') ?? $request->input('setor');
+        $setor = null;
+        if (is_numeric($setorParam)) {
+            $setor = Setor::find($setorParam);
+        }
+        if (!$setor && !empty($setorParam)) {
+            $setor = Setor::where('setor_sigla', $setorParam)->first();
+        }
+        if (!$setor) {
+            $setor = Setor::where('ativo', true)->first();
+        }
 
-        if (!isset($setores[$chaveSetor])) {
+        if (!$setor) {
             return back()->withErrors(['setor' => 'O setor selecionado é inválido.']);
         }
 
-        $setor = $setores[$chaveSetor];
         $aluno = auth()->user();
 
         // 1. Atualiza campos cadastrais do usuário
@@ -103,8 +114,8 @@ class EnvioEmailController extends Controller
         // Assim, um único e-mail é enviado com todos os destinatários visíveis na mesma mensagem.
 
         $emailsSetor = [];
-        if (!empty($setor['email'])) {
-            $emailsSetor = is_array($setor['email']) ? $setor['email'] : [$setor['email']];
+        if (!empty($setor->email)) {
+            $emailsSetor = is_array($setor->email) ? $setor->email : [$setor->email];
         }
 
         $emailsAluno = [];
@@ -133,17 +144,65 @@ class EnvioEmailController extends Controller
         $toEmails  = !empty($emailsSetor) ? $emailsSetor : $emailsAluno;
         $ccEmails  = !empty($emailsSetor) ? $emailsAluno  : [];
 
-        // 2. Coleta os arquivos enviados no formulário
-        $arquivos = $request->file('arquivos', []);
+        // 2. Validação de documentos obrigatórios e coleta de arquivos
+        $assunto = null;
+        if (empty($request->input('objeto_outro'))) {
+            $objetoTexto = $request->input('objetoDoRequerimento') ?? $request->input('objeto');
+            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objetoTexto)->first();
+
+            if ($assunto) {
+                $docsObrigatorios = $assunto->documentosObrigatorios()->get();
+                $documentosEnviados = $request->file('documentos', []);
+
+                $errosAnexos = [];
+                foreach ($docsObrigatorios as $doc) {
+                    $arquivoDoc = $documentosEnviados[$doc->id] ?? null;
+
+                    if (!$arquivoDoc || !($arquivoDoc instanceof \Illuminate\Http\UploadedFile) || !$arquivoDoc->isValid()) {
+                        $errosAnexos[] = "O documento '{$doc->nome}' é obrigatório para a solicitação de '{$assunto->descricao}'.";
+                    }
+                }
+
+                if (!empty($errosAnexos)) {
+                    return back()->withErrors($errosAnexos)->withInput();
+                }
+            }
+        }
+
+        // Coleta todos os arquivos enviados (específicos de documentos + complementares)
+        $todosArquivosInput = [
+            $request->file('documentos', []),
+            $request->file('arquivos', [])
+        ];
+
+        $arquivos = [];
+        array_walk_recursive($todosArquivosInput, function ($item) use (&$arquivos) {
+            if ($item instanceof \Illuminate\Http\UploadedFile && $item->isValid()) {
+                $arquivos[] = $item;
+            }
+        });
+
+        logger()->info('Requerimento: arquivos coletados', [
+            'total'     => count($arquivos),
+            'nomes'     => array_map(fn($f) => $f->getClientOriginalName(), $arquivos),
+            'documentos_raw' => array_keys($request->file('documentos', [])),
+        ]);
 
         // 3. Salva o registro no banco de dados
         try {
-            Requerimento::create([
-                'usuario_id' => $aluno->id,
-                'objetoDoRequerimento' => $objeto,
-                'motivo' => $motivo,
-                'situação' => 'Em Análise',
+            // Tenta encontrar o assunto pelo texto selecionado
+            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
+
+            $requerimento = Requerimento::create([
+                'usuario_id'             => $aluno->id,
+                'assunto_requerimento_id' => $assunto?->id,
+                'objetoDoRequerimento'   => $objeto,
+                'motivo'                 => $motivo,
+                'status'                 => 'Em Análise',
+                'setor_id'                => $setor->id,
             ]);
+            // Chama método para gerar número de protocolo;
+            $this->gerarNumeroProtocolo($requerimento);
         } catch (\Exception $e) {
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
@@ -151,11 +210,11 @@ class EnvioEmailController extends Controller
         // 4. Dispara um único e-mail com setor no "Para:" e aluno no "CC:"
         $mailable = new InformacoesAlunoMail(
             aluno: $aluno,
-            setorNome: $setor['nome'],
+            setorNome: $setor->setor_nome,
             mensagem: $motivo,
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
             objeto: $objeto,
-            setorChave: $chaveSetor
+            setorChave: (string) $setor->id
         );
 
         $mailer = Mail::to($toEmails);
@@ -165,5 +224,13 @@ class EnvioEmailController extends Controller
         $mailer->send($mailable);
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');
+    }
+
+    public function gerarNumeroProtocolo(Requerimento $requerimento){
+        //Gera um número aleatório no formato: anoAtual/sequenciaAleatoriaDeSeisDígitos e salva no banco de dados;
+        $ano = date('Y');
+        $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $requerimento->numero_protocolo = $ano . '/' . $sequencia;
+        $requerimento->save();      
     }
 }

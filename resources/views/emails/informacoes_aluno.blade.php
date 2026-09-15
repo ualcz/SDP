@@ -5,8 +5,6 @@
     <title>Informações do Aluno</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-    <h2>Informações do Aluno</h2>
-    <p>Este e-mail contém os dados cadastrais do aluno encaminhados via SDP (Sistema de Protocolos).</p>
 
     <p><strong>Setor Selecionado:</strong> {{ $setorNome }}</p>
 
@@ -14,16 +12,6 @@
         <tr style="background-color: #f0f0f0;">
             <th align="left">Campo</th>
             <th align="left">Informação</th>
-        </tr>
-        @if(!empty($objeto))
-        <tr>
-            <td><strong>Objeto do Requerimento</strong></td>
-            <td><strong>{{ $objeto }}</strong></td>
-        </tr>
-        @endif
-        <tr>
-            <td><strong>Data da Solicitação</strong></td>
-            <td>{{ date('d/m/Y H:i') }}</td>
         </tr>
         <tr>
             <td><strong>Nome</strong></td>
@@ -38,49 +26,16 @@
             <td>{{ $aluno->cpf ?? 'Não informado' }}</td>
         </tr>
         <tr>
-            <td><strong>E-mail Institucional</strong></td>
-            <td>{{ $aluno->email }}</td>
-        </tr>
-        <tr>
-            <td><strong>E-mail Pessoal</strong></td>
-            <td>{{ $aluno->email_pessoal ?? 'Não informado' }}</td>
-        </tr>
-        <tr>
             <td><strong>Turma / Curso</strong></td>
             <td>{{ $aluno->turma_codigo ?? 'Não informada' }}</td>
         </tr>
-        <tr>
-            <td><strong>Rua e Número</strong></td>
-            <td>{{ $aluno->endereco?->rua ?: 'Não informado' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Bairro</strong></td>
-            <td>{{ $aluno->endereco?->bairro ?: 'Não informado' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Cidade / UF</strong></td>
-            <td>{{ $aluno->endereco?->cidade ? ($aluno->endereco->cidade . ($aluno->endereco->estado ? ' - ' . $aluno->endereco->estado : '')) : 'Não informado' }}</td>
-        </tr>
-        <tr>
-            <td><strong>CEP</strong></td>
-            <td>{{ $aluno->endereco?->cep ?: 'Não informado' }}</td>
-        </tr>
-        @if(!empty($aluno->telefone))
-        <tr>
-            <td><strong>Telefone</strong></td>
-            <td>{{ $aluno->telefone }}</td>
-        </tr>
-        @endif
     </table>
 
-    @if(!empty($mensagem))
-        <h3>Mensagem / Observações do Aluno:</h3>
-        <p style="background-color: #f9f9f9; padding: 10px; border-left: 3px solid #0056b3;">
-            {!! nl2br(e($mensagem)) !!}
-        </p>
-    @endif
+    <h3>Mensagem / Observações do Aluno:</h3>
+    <p style="background-color: #f9f9f9; padding: 10px; border-left: 3px solid #0056b3;">
+        {!! nl2br(e($mensagem)) !!}
+    </p>
 
-    <hr style="margin-top: 25px; border: 0; border-top: 1px solid #ccc;">
     <p style="font-size: 11px; color: #666;">
         Enviado automaticamente pelo Sistema de Protocolos (SDP) - IFBA Seabra.
     </p>

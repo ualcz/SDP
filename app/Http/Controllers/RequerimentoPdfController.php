@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use App\Models\Requerimento;
+use App\Models\Setor;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDF;
 use Illuminate\Http\Request;
@@ -33,12 +34,18 @@ class RequerimentoPdfController extends Controller
     public static function criarComprovante(
         Usuario $nomeRequerente,
         string $numeroTurma,
+        string $setor,
         ?string $objeto = null,
+        string $numeroProtocolo,
+        ?\Carbon\Carbon $dataSolicitacao = null,
     ): DomPDF {
         return Pdf::loadView('pdf.comprovante', [
             'nomeRequerente' => $nomeRequerente,
             'numeroTurma' => $numeroTurma,
             'objeto' => $objeto,
+            'setor' => $setor,
+            'numeroProtocolo' => $numeroProtocolo,
+            'dataSolicitacao'=> $dataSolicitacao,
         ])->setPaper('a4', 'portrait');
     }
 
@@ -78,21 +85,24 @@ class RequerimentoPdfController extends Controller
 
     public function gerarComprovante($id, Request $request)
     {
-        $requerimento = Requerimento::with('usuario')->findOrFail($id);
+        $requerimento = Requerimento::with('usuario','setor')->findOrFail($id);
 
         $dados = [
-            'nomeRequerente' => $requerimento->usuario, 
+            'nomeRequerente' => $requerimento->usuario->nome, 
             'numeroTurma'    => $requerimento->usuario->turma_codigo, 
             'objeto'         => $requerimento->objetoDoRequerimento, 
         ];
 
         $pdf = self::criarComprovante(
-            nomeRequerente: $dados['nomeRequerente'],
-            numeroTurma: $dados['numeroTurma'],
-            objeto: $dados['objeto']
+            nomeRequerente: $requerimento->usuario, 
+            numeroTurma: $requerimento->usuario->turma_codigo,
+            objeto: $requerimento->objetoDoRequerimento,
+            setor: $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla,
+            dataSolicitacao: $requerimento->created_at,
+            numeroProtocolo: $requerimento->numero_protocolo
         );
 
-        $nomeArquivo = 'Comprovante_' . Str::slug($dados['nomeRequerente']->nome) . '_' . date('Ymd_His') . '.pdf';
+        $nomeArquivo = 'Comprovante_' . Str::slug($requerimento->usuario->nome) . '_' . date('Ymd_His') . '.pdf';
 
         if ($request->query('download') == '1') {
             return $pdf->download($nomeArquivo);
@@ -109,12 +119,24 @@ class RequerimentoPdfController extends Controller
         $aluno = auth()->user();
 
         // 2. Modelo e setor
-        $setorChave = $request->query('setor', 'cores');
-        $modelos = config('modelos_requerimentos.modelos', []);
-        $setores = config('setores.destinatarios', []);
+        $setorParam = $request->query('setor', $request->query('modelo'));
+        $modelos = Setor::obterSetoresFormatados();
 
-        $modeloAtivo = $modelos[$setorChave] ?? reset($modelos) ?: [];
-        $setorNome = $modeloAtivo['setor_nome'] ?? ($setores[$setorChave]['nome'] ?? 'Coordenação de Registro Escolares');
+        $modeloAtivo = null;
+        if ($setorParam) {
+            if (isset($modelos[$setorParam])) {
+                $modeloAtivo = $modelos[$setorParam];
+            } else {
+                foreach ($modelos as $mod) {
+                    if (strcasecmp($mod['setor_sigla'] ?? '', $setorParam) === 0) {
+                        $modeloAtivo = $mod;
+                        break;
+                    }
+                }
+            }
+        }
+        $modeloAtivo = $modeloAtivo ?: (reset($modelos) ?: []);
+        $setorNome = $modeloAtivo['setor_nome'] ?? 'Setor Responsável';
 
         // 3. Objeto e Mensagem
         $objeto = $request->query('objeto', 'Atestado de Matrícula e/ou Frequência (02)');
@@ -123,7 +145,7 @@ class RequerimentoPdfController extends Controller
         return [
             'aluno' => $aluno,
             'setorNome' => $setorNome,
-            'setorChave' => $setorChave,
+            'setorChave' => (string) ($modeloAtivo['id'] ?? $setorParam),
             'objeto' => $objeto,
             'mensagem' => $mensagem,
         ];

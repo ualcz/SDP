@@ -6,6 +6,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminConsultaController;
+use App\Http\Controllers\AdminSetorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,12 +34,51 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
+| PAINEL ADMINISTRATIVO
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return redirect()->route('admin.dashboard');
+    });
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard');
+
+    Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
+        ->name('admin.consultar-requerimentos');
+
+
+    // Gerenciamento de Setores e Assuntos de Requerimentos
+    Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
+    Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
+    Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
+    Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
+    Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
+    Route::post('/admin/setores/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
+    Route::put('/admin/assuntos/{id}', [AdminSetorController::class, 'updateAssunto'])->name('admin.assuntos.update');
+    Route::delete('/admin/assuntos/{id}', [AdminSetorController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
+
+    // Gerenciamento de Documentos / Anexos por Assunto
+    Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
+    Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
+    Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
+
+    // Alias /admin/modelos (compatibilidade com links legados)
+    Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
+    Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');
+    Route::put('/admin/modelos/{id}', [AdminSetorController::class, 'update'])->name('admin.modelos.update');
+    Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
+
+});
+
+/*
+|--------------------------------------------------------------------------
 | PAINEL / REQUERIMENTOS - ALUNO
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::get('/requerimentos/aluno', function () {
-        $setores = config('setores.destinatarios', []);
+        $setores = \App\Models\Setor::where('ativo', true)->get();
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
 

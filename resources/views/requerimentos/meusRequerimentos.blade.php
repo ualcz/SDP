@@ -11,7 +11,11 @@
         </div>
 
         <div>
-            <input type="text" name="situação" placeholder="Status" class="border border-gray-300 rounded p-2" />
+            <input type="text" name="status" placeholder="Status" class="border border-gray-300 rounded p-2" />
+        </div>
+
+        <div>
+            <input type="text" name="numero_protocolo" placeholder="Número do protocolo" class="border border-gray-300 rounded p-2" />
         </div>
 
         <div>
@@ -28,8 +32,9 @@
     <thead class="bg-gray-100">
         <tr>
             <th class="py-3 px-6 text-center">Data</th>
+            <th class="py-3 px-6 text-center">Número do protocolo</th>
+            <th class="py-3 px-6 text-center">Setor</th>
             <th class="py-3 px-6 text-center">Objeto do requerimento</th>
-            <th class="py-3 px-6 text-center">Motivo</th>
             <!--Campo situação: para indicar qual o status do andamento do requerimento(análise,concluído...)-->
             <th class="py-3 px-6 text-center">Status</th>
             <th class="py-3 px-6 text-center">Ações</th>
@@ -43,17 +48,20 @@
                     {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
+                    {{$requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo}}
+                </td>
+                <td class="py-3 px-6 text-center dark:text-white">
+                    {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
+                </td>
+                <td class="py-3 px-6 text-center dark:text-white">
                     {{$requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento}}
                 </td>
                 <td class="py-3 px-6 text-center dark:text-white">
-                    {{$requerimento['motivo'] ?? $requerimento->motivo}}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    @if ($requerimento->situação === 'Aprovado')
+                    @if ($requerimento->status === 'Aprovado')
                         <span class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 border border-green-500 rounded-full dark:bg-green-400 border-green-600 text-green-900">
                             Aprovado
                         </span>
-                    @elseif ($requerimento->situação === 'Em análise' || $requerimento->situação === 'Em Análise')
+                    @elseif ($requerimento->status === 'Em análise' || $requerimento->status === 'Em Análise' || is_null($requerimento->status))
                         <span class="inline-block px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 border border-yellow-500 rounded-full">
                             Em análise
                         </span>
@@ -67,7 +75,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" class="py-3 px-6 text-center dark:text-white">
+                <td colspan="6" class="py-3 px-6 text-center dark:text-white">
                     Nenhum requerimento encontrado
                 </td>
             </tr>
