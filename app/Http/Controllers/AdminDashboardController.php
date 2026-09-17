@@ -1,47 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Requerimento;
-use App\Models\Setor;
 use Illuminate\Http\Request;
+use App\Models\Requerimento;
+
 
 class AdminDashboardController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Requerimento::with(['usuario', 'assunto.setor']);
-
-        // Filtro por Aluno (nome ou matrícula)
-        if ($request->filled('aluno')) {
-            $aluno = trim($request->input('aluno'));
-            $query->whereHas('usuario', function ($q) use ($aluno) {
-                $q->where('nome', 'LIKE', "%{$aluno}%")
-                  ->orWhere('matricula', 'LIKE', "%{$aluno}%");
-            });
+    public function index(Request $request){
+        $periodo = $request->get('periodo', 'mes');
+        $totalRequerimentos = Requerimento::whereYear('created_at', now()->year)->count();
+        $totalAnalise = Requerimento::where('status', 'Em análise')->count();
+        if ($periodo === 'semana') {
+            $totalRecebidos = Requerimento::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek()
+            ])->count();
+        } else { 
+            $totalRecebidos = Requerimento::whereBetween('created_at', [
+                now()->startOfMonth(),
+                now()->endOfMonth()
+            ])->count();
         }
-
-        // Filtro por Setor
-        if ($request->filled('setor')) {
-            $setorFiltro = $request->input('setor');
-            $query->where(function ($q) use ($setorFiltro) {
-                $q->whereHas('assunto', function ($aq) use ($setorFiltro) {
-                    $aq->where('setor_id', $setorFiltro);
-                })
-                ->orWhereIn('objetoDoRequerimento', function ($sub) use ($setorFiltro) {
-                    $sub->select('descricao')
-                        ->from('assuntos_requerimentos')
-                        ->where('setor_id', $setorFiltro);
-                });
-            });
-        }
-
-        $requerimentos = $query->latest()->get();
-        $setores = Setor::where('ativo', true)->orderBy('setor_sigla')->get();
-
-        return view('admin.dashboard', [
-            'requerimentos' => $requerimentos,
-            'setores'       => $setores,
-        ]);
+        return view('admin.dashboard', compact('totalRequerimentos', 'totalAnalise', 'totalRecebidos', 'periodo'))->with('notFound','Nenhum registro encontrado.');
     }
 }

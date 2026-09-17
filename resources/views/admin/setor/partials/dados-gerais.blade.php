@@ -30,21 +30,9 @@
             </div>
 
             {{-- E-mail de Recebimento --}}
-            <div class="form-group col-span-6">
+            <div class="form-group col-span-12">
                 <label for="email">E-mail Oficial do Setor:*</label>
                 <input type="email" id="email" name="email" value="{{ old('email', $modelo->email) }}" placeholder="protocolos.seabra@ifba.edu.br">
-            </div>
-
-            {{-- Prefixo do Processo --}}
-            <div class="form-group col-span-3">
-                <label for="processo_prefixo">Prefixo do Processo:</label>
-                <input type="text" id="processo_prefixo" name="processo_prefixo" value="{{ old('processo_prefixo', $modelo->processo_prefixo) }}" placeholder="23720">
-            </div>
-
-            {{-- Contato no Rodapé do PDF --}}
-            <div class="form-group col-span-3">
-                <label for="rodape_contato">Contato no Rodapé do PDF:</label>
-                <input type="text" id="rodape_contato" name="rodape_contato" value="{{ old('rodape_contato', $modelo->rodape_contato) }}" placeholder="Ex: Ramal ou e-mail">
             </div>
 
             {{-- Status Ativo --}}

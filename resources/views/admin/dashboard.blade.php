@@ -4,192 +4,100 @@
 @section('tag', 'Administração')
 
 @section('content')
-<style>
-    .dash-filter-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 14px 18px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
+    <style>
+        {!! file_get_contents(public_path('css/dashboard.css')) !!}
+    </style>
 
-    .dash-filter-form {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .input-filtro {
-        width: 100%;
-        padding: 8px 12px;
-        font-size: 0.875rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        background: #ffffff;
-        color: #1e293b;
-        box-sizing: border-box;
-    }
-
-    .input-filtro:focus {
-        outline: none;
-        border-color: #059669;
-        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
-    }
-
-    .btn-filtrar {
-        background-color: #059669;
-        color: #ffffff;
-        padding: 8px 18px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.15s;
-    }
-
-    .btn-filtrar:hover {
-        background-color: #047857;
-    }
-
-    .btn-limpar {
-        background: #f1f5f9;
-        color: #475569;
-        padding: 8px 14px;
-        font-size: 0.875rem;
-        border-radius: 6px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        transition: background-color 0.15s;
-    }
-
-    .btn-limpar:hover {
-        background: #e2e8f0;
-        color: #1e293b;
-    }
-
-    .dash-section {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 20px 24px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    }
-
-    .dash-section-title {
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin: 0 0 16px 0;
-    }
-
-    .dash-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.875rem;
-    }
-
-    .dash-table th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 600;
-        text-align: left;
-        padding: 10px 14px;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .dash-table td {
-        padding: 12px 14px;
-        border-bottom: 1px solid #f1f5f9;
-        color: #1e293b;
-    }
-
-    .dash-table tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    .badge-setor {
-        background: #ecfdf5;
-        color: #047857;
-        font-weight: 600;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-    }
-</style>
-
-{{-- Filtro de Pesquisa por Aluno ou Setor --}}
-<div class="dash-filter-card">
-    <form method="GET" action="{{ route('admin.dashboard') }}" class="dash-filter-form">
-        <div style="flex: 2; min-width: 220px;">
-            <input type="text" name="aluno" value="{{ request('aluno') }}" placeholder="Buscar por aluno..." class="input-filtro">
+<div class="cards">
+    <div class="card_individual total shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)]">
+        <div class="linha1">Total de requerimentos</div>
+        <div class="linha2">{{ $totalRequerimentos }}</div>
+        <div class="linha3">
+            <p class="info">Em {{ date('Y') }}</p>
         </div>
-        <div style="flex: 1; min-width: 180px;">
-            <select name="setor" class="input-filtro">
-                <option value="">Todos os setores</option>
-                @foreach($setores as $s)
-                    <option value="{{ $s->id }}" {{ request('setor') == $s->id ? 'selected' : '' }}>
-                        {{ $s->setor_sigla }} &mdash; {{ $s->setor_nome }}
-                    </option>
-                @endforeach
-            </select>
+        <div class="coluna_mesclada">
+            <div class="icone_total">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 384 512" 
+                    width="32" height="32" 
+                    fill="#ffffff">
+                <path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 
+                        13.3 10.7 24 24 24h336c13.3 0 24-10.7 
+                        24-24V160H248c-13.3 0-24-10.7-24-24zm64 
+                        236c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 
+                        5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 
+                        6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 
+                        5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 
+                        6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 
+                        5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zM377 
+                        105L279.1 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6c0-6.4-2.5-12.5-7-17z"/>
+                </svg>
+            </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-            <button type="submit" class="btn-filtrar">
-                Buscar
-            </button>
-            @if(request()->filled('aluno') || request()->filled('setor'))
-                <a href="{{ route('admin.dashboard') }}" class="btn-limpar">
-                    Limpar
-                </a>
-            @endif
+    </div>
+
+    <div name="analise" class="card_individual analise shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)]">
+        <div class="linha1">Requerimentos em análise</div>
+        <div class="linha2">
+            <p class="numero">{{ $totalAnalise }}</p>
         </div>
-    </form>
+        <div class="linha3">
+            <p class="info">Em análise atualmente</p>
+        </div>
+        <div class="coluna_mesclada">
+            <div class="icone_analise">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 512 512" 
+                    width="32" height="32" 
+                    fill="#ffffff">
+                <path d="M256 8C119 8 8 119 8 256s111 248 248 
+                        248 248-111 248-248S393 8 256 8zm0 
+                        448c-110.5 0-200-89.5-200-200S145.5 
+                        56 256 56s200 89.5 200 200-89.5 
+                        200-200 200zm61.8-104.4l-84.9-61.8c-3.1-2.3-5-5.9-5-9.8V128c0-6.6 
+                        5.4-12 12-12h24c6.6 0 12 5.4 
+                        12 12v128l70.6 51.4c5.4 3.9 
+                        6.5 11.4 2.6 16.8l-14.3 
+                        19.6c-3.9 5.4-11.4 6.5-16.8 2.6z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div name="recebidos" class="card_individual recebidos shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)]">
+        <div class="linha1">
+            Requerimentos recebidos
+        </div>
+        <div class="linha2">{{ $totalRecebidos }}</div>
+        <div class="linha3">
+            <p class="info">{{ $periodo === 'semana' ? 'Esta semana' : 'Este mês' }}</p>
+        </div>
+        <div class="coluna_mesclada">
+            <div class="icone_recebidos">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 448 512" 
+                    width="32" height="32" 
+                    fill="#ffffff">
+                <path d="M96 0C78.3 0 64 14.3 64 32v448c0 17.7 
+                        14.3 32 32 32h288c17.7 0 32-14.3 
+                        32-32V32c0-17.7-14.3-32-32-32H96zm0 
+                        64h288v384H96V64zm32 64c-8.8 0-16 
+                        7.2-16 16s7.2 16 16 16h224c8.8 0 
+                        16-7.2 16-16s-7.2-16-16-16H128zm0 
+                        96c-8.8 0-16 7.2-16 16s7.2 16 
+                        16 16h224c8.8 0 16-7.2 16-16s-7.2-16-16-16H128z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="menu-container">
+            <div class="menu-icon">⋮</div>
+            <ul class="menu-options">
+                <li><a href="{{ route('admin.dashboard', ['periodo' => 'semana']) }}">Esta semana</a></li>
+                <li><a href="{{ route('admin.dashboard', ['periodo' => 'mes']) }}">Este mês</a></li>
+            </ul>
+        </div>
+        
+    </div>
 </div>
-
-<section class="dash-section">
-    <h3 class="dash-section-title">Requerimentos recentes</h3>
-
-    @if($requerimentos->isEmpty())
-        <p style="color: #64748b; font-size: 0.875rem; margin: 0; padding: 12px 0;">
-            @if(request()->filled('aluno') || request()->filled('setor'))
-                Nenhum requerimento encontrado para esta busca.
-            @else
-                Nenhum requerimento cadastrado.
-            @endif
-        </p>
-    @else
-        <div style="overflow-x: auto;">
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>Solicitante</th>
-                        <th>Requerimento</th>
-                        <th style="width: 120px; text-align: center;">Setor</th>
-                        <th style="width: 140px;">Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($requerimentos as $requerimento)
-                        <tr>
-                            <td>{{ $requerimento->usuario?->nome ?? 'Usuário removido' }}</td>
-                            <td>{{ $requerimento->objetoDoRequerimento }}</td>
-                            <td style="text-align: center;">
-                                <span class="badge badge-setor" title="{{ $requerimento->setor_nome }}">
-                                    {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
-                                </span>
-                            </td>
-                            <td style="color: #64748b; font-size: 0.8125rem;">
-                                {{ $requerimento->created_at?->format('d/m/Y H:i') }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-</section>
 @endsection

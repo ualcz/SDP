@@ -399,3 +399,21 @@ form {
     color: #6b7280;
     font-weight: normal;
 }
+
+
+/* Responsividade */
+
+
+@media (max-width: 600px) {
+    .opcoes-objeto {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .setores-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+}

@@ -253,3 +253,189 @@ main.container:has(.admin-card) {
     color: #475569;
     border-bottom: 1px solid #e2e8f0;
 }
+
+/* ==========================================================================
+   PAINEL DE REQUERIMENTOS E ASSUNTOS (tabela-assuntos.blade.php)
+   ========================================================================== */
+.tr-assunto-linha td {
+    font-size: 0.8125rem;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 260px;
+}
+.badge-docs {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+.badge-docs.has-docs {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+.btn-editar-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+.btn-editar-sm:hover {
+    background: #dbeafe;
+    color: #1e40af;
+}
+.tr-painel-assunto > td {
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+}
+.painel-edicao-assunto {
+    padding: 14px 18px 16px;
+}
+.painel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.btn-fechar-painel {
+    font-size: 0.75rem;
+    color: #64748b;
+    background: #e2e8f0;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-fechar-painel:hover {
+    background: #cbd5e1;
+}
+.painel-campos {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.label-campo {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 3px;
+}
+
+/* ==========================================================================
+   DOCUMENTOS E ANEXOS DE ASSUNTOS (item-assunto-documentos.blade.php)
+   ========================================================================== */
+.docs-secao {
+    margin-top: 4px;
+}
+.docs-secao-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.btn-add-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-add-doc:hover {
+    background: #dcfce7;
+}
+.add-doc-panel {
+    margin-top: 10px;
+    padding: 10px 0 4px;
+    border-top: 1px solid #e2e8f0;
+}
+.add-doc-campos {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+.btn-delete-doc-sm {
+    background: transparent;
+    border: 1px solid #fee2e2;
+    color: #ef4444;
+    padding: 3px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+.btn-delete-doc-sm:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   CRIAR NOVO REQUERIMENTO (criar-assunto.blade.php)
+   ========================================================================== */
+.card-criar-requerimento {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    margin: 0 auto 30px;
+}
+.btn-destaque-anexo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #16a34a;
+    color: #ffffff;
+    border: 1px solid #15803d;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.28);
+    transition: all 0.2s ease;
+}
+.btn-destaque-anexo:hover {
+    background: #15803d;
+    border-color: #166534;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.4);
+    transform: translateY(-1px);
+}
+.btn-destaque-anexo:active {
+    transform: translateY(0);
+}

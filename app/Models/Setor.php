@@ -14,8 +14,6 @@ class Setor extends Model
         'setor_nome',
         'email',
         'titulo',
-        'processo_prefixo',
-        'rodape_contato',
         'ativo',
     ];
 
@@ -57,11 +55,10 @@ class Setor extends Model
                 $objetos = [];
                 $assuntosDetalhes = [];
                 foreach ($mod->assuntosAtivos as $assunto) {
-                    $chave = $assunto->codigo ?: str_pad((string) $assunto->id, 2, '0', STR_PAD_LEFT);
+                    $chave = str_pad((string) $assunto->id, 2, '0', STR_PAD_LEFT);
                     $objetos[$chave] = $assunto->descricao;
                     $assuntosDetalhes[] = [
                         'id'                     => $assunto->id,
-                        'codigo'                 => $chave,
                         'descricao'              => $assunto->descricao,
                         'observacao'             => $assunto->observacao,
                         'ordem'                  => $assunto->ordem,
@@ -82,10 +79,8 @@ class Setor extends Model
                     'setor_nome' => $mod->setor_nome,
                     'email' => $mod->email,
                     'titulo' => $mod->titulo,
-                    'processo_prefixo' => $mod->processo_prefixo ?: '23720',
                     'objetos' => $objetos,
                     'assuntos_detalhes' => $assuntosDetalhes,
-                    'rodape_contato' => $mod->rodape_contato,
                 ];
             }
 

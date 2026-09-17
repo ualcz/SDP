@@ -1,0 +1,234 @@
+
+.dash-filter-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.dash-filter-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.input-filtro {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+}
+
+.input-filtro:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+}
+
+.btn-filtrar {
+    background-color: #059669;
+    color: #ffffff;
+    padding: 8px 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.btn-filtrar:hover {
+    background-color: #047857;
+}
+
+.btn-limpar {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.15s;
+}
+
+.btn-limpar:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.dash-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dash-section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 16px 0;
+}
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.dash-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dash-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}
+
+.dash-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.badge-setor {
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.cards{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5%;
+}
+
+.card_individual {
+    position: relative; /* necessário para ancorar o menu dentro */
+    display: grid;
+    grid-template-areas: 
+        "linha1 coluna_mesclada"
+        "linha2 coluna_mesclada"
+        "linha3 coluna_mesclada";
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5%;
+}
+
+.total{
+    border-left: 4px solid #047857;
+}
+.icone_total{
+    background-color: rgba(4, 120, 87, 0.5); 
+}
+.icone_analise{
+    background-color: rgba(143, 69, 79, 0.5); 
+}
+.icone_recebidos{
+  background-color: rgba(29, 78, 216, 0.5);
+}
+.icone_total, .icone_analise, .icone_recebidos{
+    padding: 15% 15% 15% 15%;
+    border-radius: 5px;
+}
+.analise{
+    border-left: 4px solid #8F454F;
+}
+.recebidos{
+    border-left: 4px solid #1d4ed8;
+}
+
+.linha1 { 
+    grid-area: linha1;
+    text-align: start;
+    font-size: 16px;
+    font-weight: 700;
+    color: #374151;
+    }
+.linha2 {
+    grid-area: linha2;
+    font-size: 25px;
+    font-weight: 700;
+    color: #374151;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.linha3 {
+    grid-area: linha3;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    text-align: start;
+}
+.coluna_mesclada { 
+    grid-area: coluna_mesclada;
+    display: flex;
+    text-align: center;
+    justify-content: center;  
+    align-items: center;
+}
+
+
+.menu-container {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.menu-icon {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px;
+}
+
+.menu-options {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.menu-options li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    white-space: nowrap; 
+}
+
+.menu-options li:hover {
+    background-color: #f3f4f6;
+}
+
+.menu-container:hover .menu-options {
+    display: block;
+}

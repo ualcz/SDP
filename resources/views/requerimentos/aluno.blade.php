@@ -4,7 +4,7 @@
 @section('tag', 'Aluno')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 
 {{-- Banner de Boas-Vindas --}}
 <div class="banner">

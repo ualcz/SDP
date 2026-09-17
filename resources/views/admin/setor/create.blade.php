@@ -153,33 +153,13 @@
             </div>
 
             {{-- E-mail --}}
-            <div class="form-group col-span-6">
+            <div class="form-group col-span-12">
                 <label for="email">E-mail Oficial</label>
                 <input type="email"
                        id="email"
                        name="email"
                        value="{{ old('email') }}"
                        placeholder="setor@ifba.edu.br">
-            </div>
-
-            {{-- Prefixo do Processo --}}
-            <div class="form-group col-span-3">
-                <label for="processo_prefixo">Prefixo do Processo</label>
-                <input type="text"
-                       id="processo_prefixo"
-                       name="processo_prefixo"
-                       value="{{ old('processo_prefixo', '23720') }}"
-                       placeholder="23720">
-            </div>
-
-            {{-- Rodapé PDF --}}
-            <div class="form-group col-span-3">
-                <label for="rodape_contato">Contato no Rodapé (PDF)</label>
-                <input type="text"
-                       id="rodape_contato"
-                       name="rodape_contato"
-                       value="{{ old('rodape_contato') }}"
-                       placeholder="Ex: Ramal ou e-mail">
             </div>
 
             {{-- Status Ativo --}}

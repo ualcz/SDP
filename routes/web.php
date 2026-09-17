@@ -15,8 +15,10 @@ use App\Http\Controllers\AdminSetorController;
 | REDIRECIONAMENTO INICIAL
 |--------------------------------------------------------------------------
 */
-Route::redirect('/', '/login');
-
+// Route::redirect('/', '/login');
+Route::get('/', function () {
+    return view('home');
+})->name('home');
 /*
 |--------------------------------------------------------------------------
 | LOGIN & AUTENTICAÇÃO
@@ -54,6 +56,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
     Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
     Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
+    Route::get('/admin/setores/{id}/assuntos/criar', [AdminSetorController::class, 'createAssunto'])->name('admin.setores.assuntos.create');
     Route::post('/admin/setores/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
     Route::put('/admin/assuntos/{id}', [AdminSetorController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminSetorController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');

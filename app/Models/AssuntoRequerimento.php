@@ -11,7 +11,6 @@ class AssuntoRequerimento extends Model
     protected $fillable = [
         'setor_id',
         'modelo_requerimento_id',
-        'codigo',
         'descricao',
         'observacao',
         'ordem',

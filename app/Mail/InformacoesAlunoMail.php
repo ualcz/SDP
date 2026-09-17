@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Http\Controllers\RequerimentoPdfController;
 use App\Models\Usuario;
+use App\Services\Pdf\PdfMergerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
@@ -66,11 +67,12 @@ class InformacoesAlunoMail extends Mailable
     }
 
     /**
-     * Anexa dinamicamente o PDF do requerimento e qualquer outro arquivo enviado.
+     * Anexa dinamicamente o PDF unificado (Requerimento + Anexos mesclados).
      */
     public function attachments(): array
     {
         $anexos = [];
+        $arquivosNaoMesclados = [];
 
         // 1. Gera o PDF do requerimento através do controller especializado
         try {
@@ -82,16 +84,25 @@ class InformacoesAlunoMail extends Mailable
                 mensagem: $this->mensagem,
             );
 
+            $pdfConteudo = $pdf->output();
+
+            // Se houver anexos enviados, mescla tudo (requerimento + imagens/PDFs) em um único PDF
+            if (!empty($this->arquivos)) {
+                $merger = app(PdfMergerService::class);
+                $pdfConteudo = $merger->mesclarComAnexos($pdfConteudo, $this->arquivos, $arquivosNaoMesclados);
+            }
+
             $nomePdf = 'Requerimento_' . Str::slug($this->aluno->nome) . '_' . date('Ymd_His') . '.pdf';
 
-            $anexos[] = Attachment::fromData(fn () => $pdf->output(), $nomePdf)
+            $anexos[] = Attachment::fromData(fn () => $pdfConteudo, $nomePdf)
                 ->withMime('application/pdf');
         } catch (\Throwable $e) {
-            logger()->error('Erro ao gerar PDF do requerimento: ' . $e->getMessage());
+            logger()->error('Erro ao gerar/mesclar PDF do requerimento: ' . $e->getMessage());
+            $arquivosNaoMesclados = $this->arquivos;
         }
 
-        // 2. Anexa arquivos enviados manualmente pelo aluno
-        foreach ($this->arquivos as $arquivo) {
+        // 2. Anexa separadamente apenas eventuais arquivos que não puderam ser convertidos/mesclados (ex: docx, zip)
+        foreach ($arquivosNaoMesclados as $arquivo) {
             if ($arquivo instanceof \Illuminate\Http\UploadedFile) {
                 $anexos[] = Attachment::fromPath($arquivo->getRealPath())
                     ->as($arquivo->getClientOriginalName())

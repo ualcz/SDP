@@ -6,6 +6,7 @@ use App\Models\AssuntoRequerimento;
 use App\Models\DocumentoAssunto;
 use App\Models\Setor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminSetorController extends Controller
 {
@@ -29,8 +30,6 @@ class AdminSetorController extends Controller
             'setor_sigla'      => 'required|string|max:50',
             'setor_nome'       => 'required|string|max:255',
             'email'            => 'nullable|email|max:255',
-            'processo_prefixo' => 'nullable|string|max:20',
-            'rodape_contato'   => 'nullable|string|max:255',
             'ativo'            => 'nullable|boolean',
         ]);
 
@@ -39,8 +38,6 @@ class AdminSetorController extends Controller
             'setor_sigla'      => $dados['setor_sigla'],
             'setor_nome'       => $dados['setor_nome'],
             'email'            => $dados['email'] ?? null,
-            'processo_prefixo' => $dados['processo_prefixo'] ?: '23720',
-            'rodape_contato'   => $dados['rodape_contato'] ?? null,
             'ativo'            => $request->has('ativo'),
         ]);
 
@@ -65,8 +62,6 @@ class AdminSetorController extends Controller
             'setor_sigla' => 'required|string|max:50',
             'setor_nome' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'processo_prefixo' => 'nullable|string|max:20',
-            'rodape_contato' => 'nullable|string|max:255',
             'ativo' => 'nullable|boolean',
         ]);
 
@@ -75,8 +70,6 @@ class AdminSetorController extends Controller
             'setor_sigla' => $dados['setor_sigla'],
             'setor_nome' => $dados['setor_nome'],
             'email' => $dados['email'] ?? null,
-            'processo_prefixo' => $dados['processo_prefixo'] ?: '23720',
-            'rodape_contato' => $dados['rodape_contato'] ?? null,
             'ativo' => $request->has('ativo'),
         ]);
 
@@ -84,27 +77,54 @@ class AdminSetorController extends Controller
             ->with('success', 'Setor atualizado com sucesso!');
     }
 
+    public function createAssunto($setorId)
+    {
+        $setor = Setor::findOrFail($setorId);
+        $modelo = $setor;
+
+        return view('admin.setor.criar-assunto', compact('setor', 'modelo'));
+    }
+
     public function storeAssunto(Request $request, $setorId)
     {
         $setor = Setor::findOrFail($setorId);
 
         $dados = $request->validate([
-            'codigo' => 'nullable|string|max:20',
-            'descricao' => 'required|string|max:255',
-            'observacao' => 'nullable|string|max:500',
-            'ordem' => 'nullable|integer',
+            'descricao'                => 'required|string|max:255',
+            'observacao'               => 'nullable|string|max:500',
+            'ordem'                    => 'nullable|integer',
+            'documentos'               => 'nullable|array',
+            'documentos.*.nome'        => 'nullable|string|max:255',
+            'documentos.*.descricao'   => 'nullable|string|max:500',
+            'documentos.*.obrigatorio' => 'nullable',
         ]);
 
         $maxOrdem = $setor->assuntos()->max('ordem') ?? 0;
 
-        AssuntoRequerimento::create([
-            'setor_id' => $setor->id,
-            'codigo' => $dados['codigo'] ?? null,
-            'descricao' => $dados['descricao'],
-            'observacao' => $dados['observacao'] ?? null,
-            'ordem' => $dados['ordem'] ?? ($maxOrdem + 1),
-            'ativo' => true,
-        ]);
+        DB::transaction(function () use ($setor, $dados, $maxOrdem) {
+            $assunto = AssuntoRequerimento::create([
+                'setor_id'   => $setor->id,
+                'descricao'  => trim($dados['descricao']),
+                'observacao' => !empty($dados['observacao']) ? trim($dados['observacao']) : null,
+                'ordem'      => $dados['ordem'] ?? ($maxOrdem + 1),
+                'ativo'      => true,
+            ]);
+
+            if (!empty($dados['documentos']) && is_array($dados['documentos'])) {
+                foreach ($dados['documentos'] as $docData) {
+                    $nome = isset($docData['nome']) ? trim($docData['nome']) : '';
+                    if ($nome !== '') {
+                        DocumentoAssunto::create([
+                            'assunto_requerimento_id' => $assunto->id,
+                            'nome'                    => $nome,
+                            'descricao'               => !empty($docData['descricao']) ? trim($docData['descricao']) : null,
+                            'obrigatorio'             => !empty($docData['obrigatorio']),
+                            'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
+                        ]);
+                    }
+                }
+            }
+        });
 
         return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Requerimento adicionado com sucesso!');
@@ -112,26 +132,79 @@ class AdminSetorController extends Controller
 
     public function updateAssunto(Request $request, $assuntoId)
     {
-        $assunto = AssuntoRequerimento::findOrFail($assuntoId);
+        $assunto = AssuntoRequerimento::with('documentos')->findOrFail($assuntoId);
 
         $dados = $request->validate([
-            'codigo' => 'nullable|string|max:20',
-            'descricao' => 'required|string|max:255',
-            'observacao' => 'nullable|string|max:500',
-            'ordem' => 'required|integer',
-            'ativo' => 'nullable|boolean',
+            'descricao'                     => 'required|string|max:255',
+            'observacao'                    => 'nullable|string|max:500',
+            'ordem'                         => 'required|integer',
+            'ativo'                         => 'nullable|boolean',
+            'documentos'                    => 'nullable|array',
+            'documentos.*.nome'             => 'required|string|max:255',
+            'documentos.*.descricao'        => 'nullable|string|max:500',
+            'documentos.*.obrigatorio'      => 'nullable',
+            'novos_documentos'              => 'nullable|array',
+            'novos_documentos.*.nome'       => 'nullable|string|max:255',
+            'novos_documentos.*.descricao'  => 'nullable|string|max:500',
+            'novos_documentos.*.obrigatorio'=> 'nullable',
+            'novo_documento.nome'           => 'nullable|string|max:255',
+            'novo_documento.descricao'      => 'nullable|string|max:500',
+            'novo_documento.obrigatorio'    => 'nullable',
         ]);
 
-        $assunto->update([
-            'codigo' => $dados['codigo'] ?? null,
-            'descricao' => $dados['descricao'],
-            'observacao' => $dados['observacao'] ?? null,
-            'ordem' => $dados['ordem'],
-            'ativo' => $request->has('ativo'),
-        ]);
+        DB::transaction(function () use ($assunto, $request, $dados) {
+            // Atualiza o requerimento (assunto)
+            $assunto->update([
+                'descricao'  => $dados['descricao'],
+                'observacao' => $dados['observacao'] ?? null,
+                'ordem'      => $dados['ordem'],
+                'ativo'      => $request->has('ativo'),
+            ]);
+
+            // Atualiza todos os documentos existentes vinculados
+            if (!empty($dados['documentos']) && is_array($dados['documentos'])) {
+                foreach ($dados['documentos'] as $docId => $docData) {
+                    $doc = $assunto->documentos->firstWhere('id', $docId);
+                    if ($doc && !empty($docData['nome'])) {
+                        $doc->update([
+                            'nome'        => $docData['nome'],
+                            'descricao'   => $docData['descricao'] ?? null,
+                            'obrigatorio' => !empty($docData['obrigatorio']),
+                        ]);
+                    }
+                }
+            }
+
+            // Salva múltiplos novos documentos criados durante a edição
+            if (!empty($dados['novos_documentos']) && is_array($dados['novos_documentos'])) {
+                foreach ($dados['novos_documentos'] as $novoDoc) {
+                    $nome = isset($novoDoc['nome']) ? trim($novoDoc['nome']) : '';
+                    if ($nome !== '') {
+                        DocumentoAssunto::create([
+                            'assunto_requerimento_id' => $assunto->id,
+                            'nome'                    => $nome,
+                            'descricao'               => !empty($novoDoc['descricao']) ? trim($novoDoc['descricao']) : null,
+                            'obrigatorio'             => !empty($novoDoc['obrigatorio']),
+                            'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
+                        ]);
+                    }
+                }
+            }
+
+            // Se preenchido novo documento único (retrocompatibilidade)
+            if (!empty($dados['novo_documento']['nome'])) {
+                DocumentoAssunto::create([
+                    'assunto_requerimento_id' => $assunto->id,
+                    'nome'                    => trim($dados['novo_documento']['nome']),
+                    'descricao'               => $dados['novo_documento']['descricao'] ?? null,
+                    'obrigatorio'             => !empty($dados['novo_documento']['obrigatorio']),
+                    'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
+                ]);
+            }
+        });
 
         return redirect()->route('admin.setores.edit', $assunto->setor_id)
-            ->with('success', 'Requerimento atualizado com sucesso!');
+            ->with('success', 'Requerimento e alterações salvas com sucesso!');
     }
 
     public function destroyAssunto($assuntoId)

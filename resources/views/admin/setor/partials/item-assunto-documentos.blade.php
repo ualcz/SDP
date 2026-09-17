@@ -1,90 +1,178 @@
-{{-- LINHA EXPANSÍVEL: GERENCIAMENTO DE DOCUMENTOS DO REQUERIMENTO --}}
-<tr id="{{ $docsRowId }}" class="tr-documentos" style="display: none; background: #f8fafc;">
-    <td colspan="7" style="padding: 10px 16px 14px 16px;">
-        <div class="box-docs-nested">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h5 style="margin: 0; font-size: 0.875rem; font-weight: 600; color: #1e293b;">
-                    Documentos exigidos: <span style="color: #059669;">"{{ $assunto->descricao }}"</span>
-                </h5>
-                <button type="button" onclick="toggleDocumentos('{{ $docsRowId }}')" class="btn-voltar" style="padding: 2px 8px; font-size: 0.75rem;">
-                    Fechar &times;
-                </button>
-            </div>
+{{-- SEÇÃO DE DOCUMENTOS DENTRO DO PAINEL DE EDIÇÃO DO ASSUNTO --}}
+@php($hasDocs = $assunto->documentos->isNotEmpty())
+@php($tbodyDocsId = 'tbody-docs-' . $assunto->id)
+@php($tabelaDocsId = 'tabela-docs-' . $assunto->id)
+@php($emptyDocsId = 'empty-docs-' . $assunto->id)
 
-            @if($assunto->documentos->isNotEmpty())
-                <table class="tabela-docs-nested">
-                    <thead>
-                        <tr>
-                            <th>Documento</th>
-                            <th>Orientações</th>
-                            <th style="width: 85px; text-align: center;">Obrigatório</th>
-                            <th style="width: 110px; text-align: center;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($assunto->documentos as $doc)
-                            @php($formDocUpdateId = 'form-doc-update-' . $doc->id)
-                            @php($formDocDeleteId = 'form-doc-delete-' . $doc->id)
+<div class="docs-secao">
 
-                            <form id="{{ $formDocUpdateId }}" action="{{ route('admin.documentos.update', $doc->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="tipos_aceitos" value="{{ $doc->tipos_aceitos ?? 'pdf,jpg,jpeg,png' }}">
-                            </form>
-                            <form id="{{ $formDocDeleteId }}" action="{{ route('admin.documentos.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Deseja excluir este documento?');">
-                                @csrf
-                                @method('DELETE')
-                            </form>
+    {{-- Cabeçalho da Seção com Botão de Adicionar Anexo --}}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; margin-bottom: 10px;">
+        <span style="font-size: 0.8125rem; font-weight: 700; color: #334155;">
+            Documentos e Anexos Exigidos ({{ $assunto->documentos->count() }})
+        </span>
+        <button type="button"
+                class="btn-destaque-anexo"
+                onclick="adicionarLinhaNovoAnexoEdicao('{{ $assunto->id }}', '{{ $formUpdateId }}')"
+                style="padding: 5px 14px; font-size: 0.8rem;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Adicionar Anexo
+        </button>
+    </div>
 
-                            <tr>
-                                <td>
-                                    <input form="{{ $formDocUpdateId }}" type="text" name="nome" value="{{ $doc->nome }}" required class="input-tabela" style="font-size: 0.8125rem;">
-                                </td>
-                                <td>
-                                    <input form="{{ $formDocUpdateId }}" type="text" name="descricao" value="{{ $doc->descricao }}" class="input-tabela" style="font-size: 0.8125rem;" placeholder="Orientações opcionais...">
-                                </td>
-                                <td style="text-align: center;">
-                                    <input form="{{ $formDocUpdateId }}" type="checkbox" name="obrigatorio" value="1" {{ $doc->obrigatorio ? 'checked' : '' }} title="Obrigatório">
-                                </td>
-                                <td style="text-align: center;">
-                                    <div style="display: inline-flex; gap: 4px; align-items: center;">
-                                        <button form="{{ $formDocUpdateId }}" type="submit" class="btn-salvar-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Salvar">
-                                            Salvar
-                                        </button>
-                                        <button form="{{ $formDocDeleteId }}" type="submit" class="btn-excluir-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Excluir">
-                                            Excluir
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+    {{-- Tabela com documentos existentes e novos dinâmicos --}}
+    <table id="{{ $tabelaDocsId }}" class="tabela-docs-nested" style="margin-top: 4px; {{ $hasDocs ? '' : 'display: none;' }}">
+        <thead>
+            <tr>
+                <th>Documento *</th>
+                <th>Orientações</th>
+                <th style="width: 80px; text-align: center;">Obrigatório</th>
+                <th style="width: 50px; text-align: center;">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="{{ $tbodyDocsId }}">
+            {{-- Documentos existentes já salvos no banco --}}
+            @foreach($assunto->documentos as $doc)
+                @php($formDocDeleteId = 'form-doc-delete-' . $doc->id)
 
-            {{-- Formulário para adicionar documento a este requerimento --}}
-            <form action="{{ route('admin.documentos.store', $assunto->id) }}" method="POST" style="margin-top: {{ $assunto->documentos->isNotEmpty() ? '8px' : '4px' }};">
-                @csrf
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end;">
-                    <div style="flex: 2; min-width: 170px;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 2px;">Documento *</label>
-                        <input type="text" name="nome" placeholder="Ex: Histórico Escolar" required class="input-tabela" style="font-size: 0.8125rem;">
-                    </div>
-                    <div style="flex: 3; min-width: 200px;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 2px;">Orientações (opcional)</label>
-                        <input type="text" name="descricao" placeholder="Ex: Emitido pela biblioteca..." class="input-tabela" style="font-size: 0.8125rem;">
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 4px; padding-bottom: 6px;">
-                        <input type="checkbox" name="obrigatorio" value="1" checked id="obrig-{{ $assunto->id }}">
-                        <label for="obrig-{{ $assunto->id }}" style="font-size: 0.75rem; font-weight: 600; color: #475569; cursor: pointer;">Obrigatório</label>
-                    </div>
-                    <div>
-                        <button type="submit" class="btn-salvar-sm" style="padding: 6px 12px; font-size: 0.8125rem;">
-                            + Adicionar
+                {{-- Form de exclusão do documento individual se necessário --}}
+                <form id="{{ $formDocDeleteId }}" action="{{ route('admin.documentos.destroy', $doc->id) }}" method="POST"
+                      onsubmit="return confirm('Deseja excluir este anexo?');">
+                    @csrf
+                    @method('DELETE')
+                </form>
+
+                <tr>
+                    <td>
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="text"
+                               name="documentos[{{ $doc->id }}][nome]"
+                               value="{{ $doc->nome }}"
+                               required
+                               class="input-tabela"
+                               style="font-size: 0.8125rem;">
+                    </td>
+                    <td>
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="text"
+                               name="documentos[{{ $doc->id }}][descricao]"
+                               value="{{ $doc->descricao }}"
+                               class="input-tabela"
+                               style="font-size: 0.8125rem;"
+                               placeholder="Orientações opcionais...">
+                    </td>
+                    <td style="text-align: center;">
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="checkbox"
+                               name="documentos[{{ $doc->id }}][obrigatorio]"
+                               value="1"
+                               {{ $doc->obrigatorio ? 'checked' : '' }}
+                               style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
+                    </td>
+                    <td style="text-align: center;">
+                        <button form="{{ $formDocDeleteId }}"
+                                type="submit"
+                                class="btn-delete-doc-sm"
+                                title="Excluir este anexo">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
                         </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </td>
-</tr>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{-- Estado vazio exibido quando não há anexos --}}
+    <div id="{{ $emptyDocsId }}" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 6px; display: {{ $hasDocs ? 'none' : 'flex' }}; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8125rem; color: #64748b;">Nenhum anexo cadastrado ainda.</span>
+        <button type="button" class="btn-destaque-anexo" onclick="adicionarLinhaNovoAnexoEdicao('{{ $assunto->id }}', '{{ $formUpdateId }}')" style="padding: 4px 10px; font-size: 0.75rem;">
+            + Adicionar Anexo
+        </button>
+    </div>
+</div>
+
+<script>
+if (typeof window.contadorNovosDocsEdicao === 'undefined') {
+    window.contadorNovosDocsEdicao = 0;
+}
+
+function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
+    const tbody = document.getElementById('tbody-docs-' + assuntoId);
+    const tabela = document.getElementById('tabela-docs-' + assuntoId);
+    const emptyBox = document.getElementById('empty-docs-' + assuntoId);
+
+    if (!tbody) return;
+
+    const idx = window.contadorNovosDocsEdicao++;
+    const tr = document.createElement('tr');
+    tr.className = 'tr-novo-doc-edicao';
+    tr.innerHTML = `
+        <td>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <input form="${formUpdateId}"
+                       type="text"
+                       name="novos_documentos[${idx}][nome]"
+                       required
+                       class="input-tabela"
+                       placeholder="Ex: Histórico Escolar"
+                       style="font-size: 0.8125rem;">
+                <span style="font-size: 0.65rem; background: #dcfce7; color: #15803d; font-weight: 700; padding: 2px 5px; border-radius: 4px; white-space: nowrap;">Novo</span>
+            </div>
+        </td>
+        <td>
+            <input form="${formUpdateId}"
+                   type="text"
+                   name="novos_documentos[${idx}][descricao]"
+                   class="input-tabela"
+                   placeholder="Orientações opcionais..."
+                   style="font-size: 0.8125rem;">
+        </td>
+        <td style="text-align: center;">
+            <input form="${formUpdateId}"
+                   type="checkbox"
+                   name="novos_documentos[${idx}][obrigatorio]"
+                   value="1"
+                   checked
+                   style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
+        </td>
+        <td style="text-align: center;">
+            <button type="button"
+                    class="btn-delete-doc-sm"
+                    title="Remover este anexo"
+                    onclick="removerLinhaDocEdicao(this, '${assuntoId}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </button>
+        </td>
+    `;
+    tbody.appendChild(tr);
+
+    if (tabela) tabela.style.display = 'table';
+    if (emptyBox) emptyBox.style.display = 'none';
+
+    const input = tr.querySelector('input[type="text"]');
+    if (input) setTimeout(() => input.focus(), 50);
+}
+
+function removerLinhaDocEdicao(btn, assuntoId) {
+    const tr = btn.closest('tr');
+    if (tr) tr.remove();
+
+    const tbody = document.getElementById('tbody-docs-' + assuntoId);
+    const tabela = document.getElementById('tabela-docs-' + assuntoId);
+    const emptyBox = document.getElementById('empty-docs-' + assuntoId);
+
+    if (tbody && !tbody.querySelector('tr')) {
+        if (tabela) tabela.style.display = 'none';
+        if (emptyBox) emptyBox.style.display = 'flex';
+    }
+}
+</script>
