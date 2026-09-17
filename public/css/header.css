@@ -165,8 +165,20 @@
         white-space: nowrap;
     }
 
+    .header-nav .nav-link svg {
+        width: 22px;
+        height: 22px;
+    }
+
     .header-username {
-        display: none;
+        display: inline-flex;
+        padding: 6px 10px;
+        font-size: 0;
+    }
+
+    .header-username svg {
+        width: 22px;
+        height: 22px;
     }
 
     .header-user {

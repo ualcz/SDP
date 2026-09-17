@@ -80,6 +80,9 @@
                         </a>
                         @else
                             <a class="profile header-username nav-link {{ request()->routeIs('requerimentos.aluno') ? 'active' : '' }}" href="{{ route("requerimentos.aluno") }}">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8zm7 8a7 7 0 00-14 0"/>
+                                </svg>
                                 {{ explode(' ', auth()->user()->nome)[0] }}
                             </a>
                         @endif

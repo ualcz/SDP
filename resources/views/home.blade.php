@@ -19,9 +19,15 @@
                     O Sistema de Requerimentos e Protocolos (SDP) foi desenvolvido para facilitar o envio, tramitação e acompanhamento de solicitações acadêmicas e administrativas, garantindo transparência e agilidade ao processo.
                 </p>
                 <div class="hero-actions">
-                    <a href="{{ route('login') }}" class="btn-primary">
-                        Acessar Sistema →
-                    </a>
+                    @auth
+                        <a href="{{ route('requerimentos.aluno.novo') }}" class="btn-primary">
+                            Novo Requerimento →
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-primary">
+                            Acessar Sistema →
+                        </a>
+                    @endauth
                 </div>
             </div>
             <div class="hero-image">

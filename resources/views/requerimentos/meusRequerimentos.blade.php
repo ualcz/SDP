@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Novo Requerimento')
+@section('title', 'Meus Requerimentos')
 @section('tag', 'Aluno')
 
 @section('content')
 
     <form method="GET" action="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="flex flex-wrap gap-2 items-center mb-5">
         <div>
-            <input type="text" name="objetoDoRequerimento" placeholder="Objeto do Requerimento" class="border border-gray-300 rounded p-2" />             
+            <input type="text" name="objetoDoRequerimento" placeholder="Objeto do Requerimento" class="border border-gray-300 rounded p-2" />
         </div>
 
         <div>
@@ -27,60 +27,60 @@
         </div>
     </form>
 
-    <div class="overflow-x-auto rounded-lg shadow">
+    <div class="overflow-x-auto rounded-lg shadow mb-10">
         <table class="table w-full text-sm text-gray-600">
-    <thead class="bg-gray-100">
-        <tr>
-            <th class="py-3 px-6 text-center">Data</th>
-            <th class="py-3 px-6 text-center">Número do protocolo</th>
-            <th class="py-3 px-6 text-center">Setor</th>
-            <th class="py-3 px-6 text-center">Objeto do requerimento</th>
-            <!--Campo situação: para indicar qual o status do andamento do requerimento(análise,concluído...)-->
-            <th class="py-3 px-6 text-center">Status</th>
-            <th class="py-3 px-6 text-center">Ações</th>
-        </tr>
-    </thead>
-
-    <tbody class="bg-white dark:bg-gray-800">
-        @forelse($requerimentos as $requerimento)
-            <tr class="border-b" style="height:45px">
-                <td class="py-3 px-6 text-center dark:text-white">
-                    {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    {{$requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo}}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    {{$requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento}}
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    @if ($requerimento->status === 'Aprovado')
-                        <span class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 border border-green-500 rounded-full dark:bg-green-400 border-green-600 text-green-900">
-                            Aprovado
-                        </span>
-                    @elseif ($requerimento->status === 'Em análise' || $requerimento->status === 'Em Análise' || is_null($requerimento->status))
-                        <span class="inline-block px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 border border-yellow-500 rounded-full">
-                            Em análise
-                        </span>
-                    @endif
-                </td>
-                <td class="py-3 px-6 text-center dark:text-white">
-                    <a href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded-lg">
-                        Imprimir comprovante
-                    </a>                 
-                </td>
-            </tr>
-        @empty
+        <thead class="bg-gray-300">
             <tr>
-                <td colspan="6" class="py-3 px-6 text-center dark:text-white">
-                    Nenhum requerimento encontrado
-                </td>
+                <th class="py-3 px-6 text-center">Data</th>
+                <th class="py-3 px-6 text-center">Número do protocolo</th>
+                <th class="py-3 px-6 text-center">Setor</th>
+                <th class="py-3 px-6 text-center">Objeto do requerimento</th>
+                <!--Campo situação: para indicar qual o status do andamento do requerimento(análise,concluído...)-->
+                <th class="py-3 px-6 text-center">Status</th>
+                <th class="py-3 px-6 text-center">Ações</th>
             </tr>
-        @endforelse
-    </tbody>
-</table>
+        </thead>
+
+        <tbody class="bg-white">
+            @forelse($requerimentos as $requerimento)
+                <tr class="border-b" style="height:45px">
+                    <td class="py-3 px-6 text-center">
+                        {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        {{$requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo}}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        {{$requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento}}
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        @if ($requerimento->status === 'Aprovado')
+                            <span class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 border border-green-500 rounded-full border-green-600 text-green-900">
+                                Aprovado
+                            </span>
+                        @elseif ($requerimento->status === 'Em análise' || $requerimento->status === 'Em Análise' || is_null($requerimento->status))
+                            <span class="inline-block px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 border border-yellow-500 rounded-full">
+                                Em análise
+                            </span>
+                        @endif
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        <a href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-4 rounded-lg">
+                            Imprimir comprovante
+                        </a>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="py-3 px-6 text-center">
+                        Nenhum requerimento encontrado
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection

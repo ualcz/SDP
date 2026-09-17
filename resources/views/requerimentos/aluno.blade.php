@@ -9,8 +9,6 @@
 {{-- Banner de Boas-Vindas --}}
 <div class="banner">
     <h2>Olá, {{ auth()->user()->nome }}!</h2>
-    <p class="banner-boasvindas">Seja bem-vindo(a) ao Sistema de Protocolos e Requerimentos do IFBA Seabra.</p>
-    <p class="banner-aviso">Antes de iniciar um novo requerimento, por favor, verifique se seus dados abaixo estão corretos.</p>
 </div>
 
 @if (session('sucesso'))
