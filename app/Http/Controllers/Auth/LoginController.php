@@ -79,6 +79,10 @@ if (!$jwt) {
 
     Auth::login($usuario);
 
+    if ($usuario->ehResponsavel()) {
+                return redirect()->route('setor.responsavel.dashboard');
+            }
+
     if ($usuario->isProfessor()) {
         return redirect('/requerimentos/servidor');
     }
@@ -127,18 +131,18 @@ if (!$jwt) {
             [
                 'matricula' => $dados['matricula'],
             ],
-        
+
             [
                 'nome' => $dados['nome_usual']
                     ?? $dados['vinculo']['nome']
                     ?? 'Usuário SUAP',
-        
+
                 'email' => $email,
-        
+
                 'password' => Hash::make($password),
-        
+
                 'senha_suap' => Crypt::encryptString($password),
-        
+
                 'role' => $role,
             ]
         );
@@ -196,4 +200,3 @@ if (!$jwt) {
         return redirect('/login');
     }
 }
-?>

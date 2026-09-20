@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Setor extends Model
 {
@@ -38,13 +39,21 @@ class Setor extends Model
         return $this->hasMany(Requerimento::class, 'setor_id');
     }
 
+    public function responsaveis(): BelongsToMany
+    {
+        return $this->belongsToMany(Usuario::class, 'setor_responsavel', 'setor_id', 'usuario_id');
+    }
+
     /**
      * Retorna os setores formatados para uso nos controllers e views.
      */
     public static function obterSetoresFormatados(): array
     {
         try {
-            $setoresBanco = static::with(['assuntosAtivos.documentos'])->where('ativo', true)->get();
+            // Incluído 'responsaveis' no Eager Loading para evitar queries N+1
+            $setoresBanco = static::with(['responsaveis', 'assuntosAtivos.documentos'])
+                ->where('ativo', true)
+                ->get();
 
             if ($setoresBanco->isEmpty()) {
                 return [];
@@ -54,6 +63,7 @@ class Setor extends Model
             foreach ($setoresBanco as $mod) {
                 $objetos = [];
                 $assuntosDetalhes = [];
+
                 foreach ($mod->assuntosAtivos as $assunto) {
                     $chave = str_pad((string) $assunto->id, 2, '0', STR_PAD_LEFT);
                     $objetos[$chave] = $assunto->descricao;
@@ -74,14 +84,19 @@ class Setor extends Model
                 }
 
                 $resultado[$mod->id] = [
-                    'id' => $mod->id,
-                    'setor_sigla' => $mod->setor_sigla,
-                    'setor_nome' => $mod->setor_nome,
-                    'email' => $mod->email,
-                    'titulo' => $mod->titulo,
-                    'objetos' => $objetos,
-                    'assuntos_detalhes' => $assuntosDetalhes,
-                ];
+                    'id'            => $mod->id,
+                    'setor_sigla'   => $mod->setor_sigla,
+                    'setor_nome'    => $mod->setor_nome,
+                    'email'         => $mod->email,
+                    'titulo'        => $mod->titulo,
+                    'responsaveis'  => $mod->responsaveis->map(fn($r) => [
+                        'id'    => $r->id,
+                        'nome'  => $r->nome ?? $r->name,
+                        'email' => $r->email,
+                    ])->toArray(),
+                        'objetos'           => $objetos,
+                        'assuntos_detalhes' => $assuntosDetalhes,
+                    ];
             }
 
             return $resultado;

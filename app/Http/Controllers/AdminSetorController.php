@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AssuntoRequerimento;
 use App\Models\DocumentoAssunto;
 use App\Models\Setor;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,26 +21,38 @@ class AdminSetorController extends Controller
 
     public function create()
     {
-        return view('admin.setor.create');
+        $usuarios = Usuario::orderBy('nome')->get();
+        // $usuarios = Usuario::where('role', '!=', 'aluno')
+        // ->orderBy('nome')
+        // ->get();             AQUIIIIIIIIII
+
+        return view('admin.setor.create', compact('usuarios'));
     }
 
     public function store(Request $request)
     {
         $dados = $request->validate([
-            'titulo'           => 'required|string|max:255',
-            'setor_sigla'      => 'required|string|max:50',
-            'setor_nome'       => 'required|string|max:255',
-            'email'            => 'nullable|email|max:255',
-            'ativo'            => 'nullable|boolean',
+            'titulo'         => 'required|string|max:255',
+            'setor_sigla'    => 'required|string|max:50',
+            'setor_nome'     => 'required|string|max:255',
+            'email'          => 'nullable|email|max:255',
+            'ativo'          => 'nullable|boolean',
+            'responsaveis'   => 'nullable|array',
+            'responsaveis.*' => 'exists:usuarios,id',
         ]);
 
         $setor = Setor::create([
-            'titulo'           => $dados['titulo'],
-            'setor_sigla'      => $dados['setor_sigla'],
-            'setor_nome'       => $dados['setor_nome'],
-            'email'            => $dados['email'] ?? null,
-            'ativo'            => $request->has('ativo'),
+            'titulo'      => $dados['titulo'],
+            'setor_sigla' => $dados['setor_sigla'],
+            'setor_nome'  => $dados['setor_nome'],
+            'email'       => $dados['email'] ?? null,
+            'ativo'       => $request->has('ativo'),
         ]);
+
+
+        if ($request->has('responsaveis')) {
+            $setor->responsaveis()->sync($request->input('responsaveis'));
+        }
 
         return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Setor criado com sucesso!');
@@ -47,10 +60,17 @@ class AdminSetorController extends Controller
 
     public function edit($id)
     {
-        $setor = Setor::with(['assuntos.documentos'])->findOrFail($id);
-        $modelo = $setor; // compatibilidade com as views
+        // Carrega o setor junto com os assuntos, documentos e os responsáveis já vinculados
+        $setor = Setor::with(['assuntos.documentos', 'responsaveis'])->findOrFail($id);
+        $modelo = $setor;
 
-        return view('admin.setor.edit', compact('setor', 'modelo'));
+        // Busca a lista de todos os usuários para o formulário de seleção
+        $usuarios = Usuario::orderBy('nome')->get();
+        // $usuarios = Usuario::where('role', '!=', 'aluno')
+        // ->orderBy('nome')
+        // ->get();
+
+        return view('admin.setor.edit', compact('setor', 'modelo', 'usuarios'));
     }
 
     public function update(Request $request, $id)
@@ -58,20 +78,25 @@ class AdminSetorController extends Controller
         $setor = Setor::findOrFail($id);
 
         $dados = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'setor_sigla' => 'required|string|max:50',
-            'setor_nome' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'ativo' => 'nullable|boolean',
+            'titulo'         => 'required|string|max:255',
+            'setor_sigla'    => 'required|string|max:50',
+            'setor_nome'     => 'required|string|max:255',
+            'email'          => 'nullable|email|max:255',
+            'ativo'          => 'nullable|boolean',
+            'responsaveis'   => 'nullable|array',
+            'responsaveis.*' => 'exists:usuarios,id',
         ]);
 
         $setor->update([
-            'titulo' => $dados['titulo'],
+            'titulo'      => $dados['titulo'],
             'setor_sigla' => $dados['setor_sigla'],
-            'setor_nome' => $dados['setor_nome'],
-            'email' => $dados['email'] ?? null,
-            'ativo' => $request->has('ativo'),
+            'setor_nome'  => $dados['setor_nome'],
+            'email'       => $dados['email'] ?? null,
+            'ativo'       => $request->has('ativo'),
         ]);
+
+        // Sincroniza os responsáveis (adiciona novos e remove os desmarcados)
+        $setor->responsaveis()->sync($request->input('responsaveis', []));
 
         return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Setor atualizado com sucesso!');
@@ -153,7 +178,6 @@ class AdminSetorController extends Controller
         ]);
 
         DB::transaction(function () use ($assunto, $request, $dados) {
-            // Atualiza o requerimento (assunto)
             $assunto->update([
                 'descricao'  => $dados['descricao'],
                 'observacao' => $dados['observacao'] ?? null,
@@ -161,7 +185,6 @@ class AdminSetorController extends Controller
                 'ativo'      => $request->has('ativo'),
             ]);
 
-            // Atualiza todos os documentos existentes vinculados
             if (!empty($dados['documentos']) && is_array($dados['documentos'])) {
                 foreach ($dados['documentos'] as $docId => $docData) {
                     $doc = $assunto->documentos->firstWhere('id', $docId);
@@ -175,7 +198,6 @@ class AdminSetorController extends Controller
                 }
             }
 
-            // Salva múltiplos novos documentos criados durante a edição
             if (!empty($dados['novos_documentos']) && is_array($dados['novos_documentos'])) {
                 foreach ($dados['novos_documentos'] as $novoDoc) {
                     $nome = isset($novoDoc['nome']) ? trim($novoDoc['nome']) : '';
@@ -191,7 +213,6 @@ class AdminSetorController extends Controller
                 }
             }
 
-            // Se preenchido novo documento único (retrocompatibilidade)
             if (!empty($dados['novo_documento']['nome'])) {
                 DocumentoAssunto::create([
                     'assunto_requerimento_id' => $assunto->id,

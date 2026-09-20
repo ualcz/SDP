@@ -35,6 +35,32 @@
                 <input type="email" id="email" name="email" value="{{ old('email', $modelo->email) }}" placeholder="protocolos.seabra@ifba.edu.br">
             </div>
 
+           {{-- Responsáveis pelo Setor --}}
+            <div class="form-group col-span-12">
+                <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #334155;">
+                    Responsáveis pelo Setor:
+                </label>
+
+                @php
+                    $selecionados = old('responsaveis', isset($modelo->responsaveis) ? $modelo->responsaveis->pluck('id')->toArray() : []);
+                @endphp
+
+                <input type="text" id="buscar-usuario" placeholder="🔍 Digite para buscar um usuário..."
+                    style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+
+                <div id="lista-responsaveis" style="max-height: 200px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; background-color: #f8fafc;">
+                    @foreach($usuarios as $usuario)
+                        @php $checked = in_array($usuario->id, $selecionados); @endphp
+                        <label class="usuario-item" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='transparent'">
+                            <input type="checkbox" name="responsaveis[]" value="{{ $usuario->id }}" {{ $checked ? 'checked' : '' }} style="width: 16px; height: 16px; accent-color: #2563eb;">
+                            <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
+                                <strong>{{$usuario->nome }}</strong> <span style="color: #64748b;">({{ $usuario->matricula ?? $usuario->email }})</span>
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
             {{-- Status Ativo --}}
             <div class="form-group col-span-12" style="margin-top: 4px;">
                 <label class="card-toggle-ativo">
@@ -58,3 +84,19 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('buscar-usuario').addEventListener('input', function() {
+        const termo = this.value.toLowerCase();
+        const itens = document.querySelectorAll('.usuario-item');
+
+        itens.forEach(item => {
+            const texto = item.querySelector('.usuario-texto').textContent.toLowerCase();
+            if (texto.includes(termo)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+</script>
