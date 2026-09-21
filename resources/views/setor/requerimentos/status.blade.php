@@ -151,7 +151,9 @@
                 <p>{{ $requerimento->usuario->nome ?? $requerimento->user->name }}</p>
                 <p>{{ $requerimento->usuario->matricula ?? $requerimento->user->matricula }}</p>
                 <p>{{ $requerimento->created_at->format('d/m/Y H:i') }}</p>
-                <p>Ação</p>
+                <a href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}">
+                    Ver Mais
+                </a>
             </div>
         @endforeach
     </div>

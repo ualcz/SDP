@@ -80,9 +80,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'responsavel'])->group(function () {
     Route::get('/setor/{setor_id}/dashboard', [ResponsavelSetorController::class, 'index'])
         ->name('setor.responsavel.dashboard');
+    Route::get('setor/{setor}/requerimentos/{requerimento}', [ResponsavelSetorController::class, 'show'])
+    ->whereNumber('requerimento')
+    ->name('setor.requerimentos.show');
     Route::get('/setor/{id}/requerimentos/{status}', [ResponsavelSetorController::class, 'porStatus'])
     ->name('setor.requerimento.status');
-
 });
 
 /*

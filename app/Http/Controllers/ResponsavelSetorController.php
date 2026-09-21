@@ -98,6 +98,14 @@ class ResponsavelSetorController extends Controller
             'statusAtual'            => $statusBanco ?? 'Todos',
         ]);
     }
+
+    public function show(Setor $setor, Requerimento $requerimento)
+    {
+        // Carrega o usuário junto com o endereço dele, além do assunto
+        $requerimento->load(['usuario.endereco', 'assunto']);
+
+        return view('setor.requerimentos.show', compact('setor', 'requerimento'));
+    }
 }
 
 
