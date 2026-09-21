@@ -83,10 +83,11 @@ class RequerimentoPdfController extends Controller
         return $pdf->stream($nomeArquivo);
     }
 
-    public function gerarComprovante($id, Request $request)
+    public function gerarComprovante($numeroProtocolo, Request $request)
     {
-        $requerimento = Requerimento::with('usuario','setor')->findOrFail($id);
-
+        $requerimento = Requerimento::with('usuario','setor')
+            ->where('numero_protocolo', $numeroProtocolo)
+            ->firstOrFail();
         $dados = [
             'nomeRequerente' => $requerimento->usuario->nome, 
             'numeroTurma'    => $requerimento->usuario->turma_codigo, 

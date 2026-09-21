@@ -28,15 +28,15 @@ return [
     */
 
     'colors' => [
-        LarapexChart::COLOR_OCEAN_BLUE,
         LarapexChart::COLOR_MINT_GREEN,
-        LarapexChart::COLOR_AMBER_ORANGE,
+        LarapexChart::COLOR_ROYAL_BLUE,
         LarapexChart::COLOR_CORAL_RED,
+        LarapexChart::COLOR_OCEAN_BLUE,
+        LarapexChart::COLOR_AMBER_ORANGE,
         LarapexChart::COLOR_AMETHYST_PURPLE,
         LarapexChart::COLOR_CYAN_SKY,
         LarapexChart::COLOR_NAVY_BLUE,
         LarapexChart::COLOR_ROSE_PINK,
-        LarapexChart::COLOR_ROYAL_BLUE,
         LarapexChart::COLOR_SILVER_GRAY,
         LarapexChart::COLOR_AZURE_BLUE,
         LarapexChart::COLOR_TEAL_TURQUOISE,
