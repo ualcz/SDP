@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
 </head>
 
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-zinc-100">
 
     @auth
         <header class="site-header">
