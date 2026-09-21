@@ -50,30 +50,52 @@ class ResponsavelSetorController extends Controller
         ));
     }
 
-    public function porStatus($id, string $status)
+   public function porStatus(Request $request, $id, string $status)
     {
         $setor = Setor::findOrFail($id);
 
-        // Mapeamento de Slugs da URL para o valor real salvo no Banco de Dados
         $statusMap = [
+            'todos'     => null,
+            'aberto'    => 'Aberto',
             'analise'   => 'Em Análise',
-            'aberto' => 'Aberto',
-            'concluidos'=> 'Concluído',
+            'concluido' => 'Concluído',
         ];
 
-        // Se o status vier pela URL em slug, converte; caso contrário, usa o parâmetro direto
         $statusBanco = $statusMap[$status] ?? ucwords(str_replace('-', ' ', $status));
 
-        $requerimentosAgrupados = Requerimento::with('user')
-            ->where('setor_id', $setor->id)
-            ->where('status', $statusBanco)
-            ->get()
-            ->groupBy('objetoDoRequerimento');
+        // Instancia a Query base
+        $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
+
+        // 1. Filtro por Status (se aplicável)
+        if ($statusBanco) {
+            $query->where('status', $statusBanco);
+        }
+
+        // 2. Filtro por Busca Textual (Protocolo, Nome ou Matrícula)
+        if ($request->filled('busca')) {
+            $termo = $request->input('busca');
+            $query->where(function ($q) use ($termo) {
+                $q->where('numero_protocolo', 'like', "%{$termo}%")
+                ->orWhereHas('usuario', function ($qUser) use ($termo) {
+                    $qUser->where('nome', 'like', "%{$termo}%")
+                            ->orWhere('matricula', 'like', "%{$termo}%");
+                });
+            });
+        }
+
+        // 3. Filtro por Período de Datas
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('created_at', '>=', $request->input('data_inicio'));
+        }
+        if ($request->filled('data_fim')) {
+            $query->whereDate('created_at', '<=', $request->input('data_fim'));
+        }
+        $requerimentosAgrupados = $query->get()->groupBy('objetoDoRequerimento');
 
         return view('setor.requerimentos.status', [
             'setor'                  => $setor,
             'requerimentosAgrupados' => $requerimentosAgrupados,
-            'statusAtual'            => $statusBanco, // Útil para exibir no título da View!
+            'statusAtual'            => $statusBanco ?? 'Todos',
         ]);
     }
 }
