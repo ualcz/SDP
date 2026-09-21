@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ asset('css/setorDashboard.css') }}">
 
 @section('content')
+<x-btn-voltar />
 <div class="cards">
 
     <a href="" name="analise" class="card_individual analise">

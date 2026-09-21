@@ -51,15 +51,7 @@
 </style>
 
 @section('content')
-<a href="javascript:history.back()" class="btn-voltar">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2" stroke-linecap="round"
-         stroke-linejoin="round">
-        <path d="M19 12H5"/>
-        <path d="M12 19l-7-7 7-7"/>
-    </svg>
-    Voltar
-</a>
+<x-btn-voltar />
 
 <h1 style="text-align: center; font-weight: bold;">{{ $setor->setor_sigla }} - Em Análise</h1>
 <br>
