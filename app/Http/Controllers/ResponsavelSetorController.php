@@ -25,7 +25,7 @@ class ResponsavelSetorController extends Controller
         $totalRequerimentos = (clone $requerimentos)->count();
 
         $totalAnalise = (clone $requerimentos)
-            ->where('status', 'em_analise')
+            ->where('status', 'Em Análise')
             ->count();
 
         $totalConcluidos = (clone $requerimentos)
@@ -44,6 +44,21 @@ class ResponsavelSetorController extends Controller
             'totalConcluidos',
             'totalRecebidos'
         ));
+    }
+
+    public function analise($id)
+    {
+        $setor = Setor::findOrFail($id);
+        $requerimentosAgrupados = Requerimento::with('user')
+            ->where('setor_id', $setor->id)
+            ->where('status', 'Em Análise')
+            ->get()
+            ->groupBy('objetoDoRequerimento');
+
+        return view('setor.requerimentos.emAnalise', [
+            'setor' => $setor,
+            'requerimentosAgrupados' => $requerimentosAgrupados,
+        ]);
     }
 }
 
