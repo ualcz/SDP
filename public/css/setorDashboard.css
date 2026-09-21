@@ -1,7 +1,7 @@
 /* Container Principal - Grid Responsivo dos Cards */
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     padding: 1rem 0;
 }
@@ -80,11 +80,14 @@
 
 /* Cores Distintas por Categoria de Card */
 .icone_total {
-    background-color: #2563eb; /* Azul */
+    background-color: #2563eb;
 }
 
+.icone_aberto {
+    background-color: #fbc78b; /* Amarelo/Laranja */
+}
 .icone_analise {
-    background-color: #d97706; /* Amarelo/Laranja */
+    background-color: #fbc78b; /* Amarelo/Laranja */
 }
 
 .icone_recebidos {

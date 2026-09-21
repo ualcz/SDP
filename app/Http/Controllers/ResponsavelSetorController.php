@@ -24,6 +24,12 @@ class ResponsavelSetorController extends Controller
 
         $totalRequerimentos = (clone $requerimentos)->count();
 
+
+        $totalRecebidos = (clone $requerimentos)
+        ->whereMonth('created_at', now()->month)
+        ->whereYear('created_at', now()->year)
+        ->count();
+
         $totalAnalise = (clone $requerimentos)
             ->where('status', 'Em Análise')
             ->count();
@@ -32,32 +38,42 @@ class ResponsavelSetorController extends Controller
             ->where('status', 'concluido')
             ->count();
 
-        $totalRecebidos = (clone $requerimentos)
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+        $totalAberto = (clone $requerimentos)->where('status', 'aberto')->count();
 
         return view('setor.responsavel.dashboard', compact(
             'setor',
             'totalRequerimentos',
             'totalAnalise',
             'totalConcluidos',
-            'totalRecebidos'
+            'totalRecebidos',
+            'totalAberto'
         ));
     }
 
-    public function analise($id)
+    public function porStatus($id, string $status)
     {
         $setor = Setor::findOrFail($id);
+
+        // Mapeamento de Slugs da URL para o valor real salvo no Banco de Dados
+        $statusMap = [
+            'analise'   => 'Em Análise',
+            'aberto' => 'Aberto',
+            'concluidos'=> 'Concluído',
+        ];
+
+        // Se o status vier pela URL em slug, converte; caso contrário, usa o parâmetro direto
+        $statusBanco = $statusMap[$status] ?? ucwords(str_replace('-', ' ', $status));
+
         $requerimentosAgrupados = Requerimento::with('user')
             ->where('setor_id', $setor->id)
-            ->where('status', 'Em Análise')
+            ->where('status', $statusBanco)
             ->get()
             ->groupBy('objetoDoRequerimento');
 
-        return view('setor.requerimentos.emAnalise', [
-            'setor' => $setor,
+        return view('setor.requerimentos.status', [
+            'setor'                  => $setor,
             'requerimentosAgrupados' => $requerimentosAgrupados,
+            'statusAtual'            => $statusBanco, // Útil para exibir no título da View!
         ]);
     }
 }

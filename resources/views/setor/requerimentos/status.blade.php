@@ -53,8 +53,9 @@
 @section('content')
 <x-btn-voltar />
 
-<h1 style="text-align: center; font-weight: bold;">{{ $setor->setor_sigla }} - Em Análise</h1>
-<br>
+<h1 style="text-align: center; font-weight: bold;">
+    {{ $setor->setor_sigla }} - {{ $statusAtual }}
+</h1>
 
 {{-- Laço Principal: Percorre cada grupo pelo nome do objeto --}}
 @forelse ($requerimentosAgrupados as $tipoRequerimento => $itens)
@@ -83,7 +84,7 @@
         @endforeach
     </div>
 @empty
-    <p style="text-align: center; color: #6b7280;">Nenhum requerimento em análise para este setor.</p>
+    <p style="text-align: center; color: #6b7280;">Nenhum requerimento {{ $statusAtual }} para este setor.</p>
 @endforelse
 
 @endsection
