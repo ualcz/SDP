@@ -47,6 +47,14 @@ class RequerimentoController extends Controller
         //Uso de chave estrangeira na tabela requerimentos;
         $query = auth()->user()->requerimentos();
         
+        if ($request->filled('busca')) {
+            $busca = $request->input('busca');
+            $query->where(function($q) use ($busca) {
+                $q->where('objetoDoRequerimento', 'LIKE', '%' . $busca . '%')
+                  ->orWhere('numero_protocolo', 'LIKE', '%' . $busca . '%')
+                  ->orWhere('status', 'LIKE', '%' . $busca . '%');
+            });
+        }
         if ($request->filled('objetoDoRequerimento')) {
             $query->where('objetoDoRequerimento', 'LIKE', '%' . $request->input('objetoDoRequerimento') . '%');
         }

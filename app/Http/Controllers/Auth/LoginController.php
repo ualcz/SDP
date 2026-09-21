@@ -193,7 +193,7 @@ if (!$jwt) {
 
         session()->forget('suap_jwt');
 
-        return redirect('/login');
+        return redirect()->route('home');
     }
 }
 ?>

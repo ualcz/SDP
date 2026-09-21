@@ -1,0 +1,307 @@
+/* ==========================================================================
+   Meus Requerimentos - SDP IFBA Seabra (Clean & Balanced Design)
+   ========================================================================== */
+
+.req-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px 40px 16px;
+    box-sizing: border-box;
+}
+
+/* ── Barra de Filtro Simples ─────────────────────────────────────────────── */
+
+.req-filter-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.req-filter-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.req-input {
+    flex: 1;
+    width: 100%;
+    padding: 9px 14px;
+    font-size: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.req-input:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+}
+
+.req-btn-filtrar {
+    background-color: #059669;
+    color: #ffffff;
+    padding: 9px 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.req-btn-filtrar:hover {
+    background-color: #047857;
+}
+
+.req-btn-limpar {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 9px 14px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.req-btn-limpar:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* ── Tabela (Desktop) ────────────────────────────────────────────────────── */
+
+.req-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.req-table-scroll {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.req-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+    table-layout: auto;
+}
+
+.req-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    padding: 12px 18px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.req-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.req-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.req-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Larguras e Alinhamentos das Colunas */
+.req-col-data {
+    width: 16%;
+    color: #64748b;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+}
+
+.req-col-protocolo {
+    width: 16%;
+    white-space: nowrap;
+}
+
+.req-col-setor {
+    width: 12%;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.req-col-objeto {
+    width: 38%;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.req-col-acoes {
+    width: 18%;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Identificadores e Botões */
+.req-badge-protocolo {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 0.75rem;
+    font-family: monospace;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+}
+
+.req-text-setor {
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+.req-btn-imprimir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.req-btn-imprimir:hover {
+    background: #1d4ed8;
+}
+
+/* ── Cards no Celular (Mobile) ────────────────────────────────────────────── */
+
+.req-mobile-cards {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.req-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.req-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+
+.req-card-date {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.req-card-objeto {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+.req-card-actions {
+    display: flex;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 10px;
+}
+
+.req-card-btn-imprimir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+}
+
+.req-card-btn-imprimir:hover {
+    background: #1d4ed8;
+}
+
+/* ── Estado Vazio (Empty State) ───────────────────────────────────────────── */
+
+.req-empty-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 36px 16px;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.req-empty-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 4px 0;
+}
+
+/* ── Responsividade / Media Queries ──────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .req-filter-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .req-input {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .req-btn-filtrar {
+        flex: 1;
+    }
+
+    .req-table-card {
+        display: none;
+    }
+
+    .req-mobile-cards {
+        display: flex;
+    }
+}

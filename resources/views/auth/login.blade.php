@@ -4,110 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - IFBA</title>
+    <title>Login - SDP IFBA Seabra</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-    <div class="background-verde"></div>
+    <div class="login-wrapper">
 
-    <div class="container">
+        <!-- Logo / Marca -->
+        <a href="{{ route('home') }}" class="login-brand">
+            <img src="{{ asset('img/logoVertical.png') }}" alt="Logo IFBA">
+            <div class="login-brand-text">
+                <span class="login-brand-title">SDP</span>
+                <span class="login-brand-subtitle">Sistema de Protocolos</span>
+            </div>
+        </a>
 
-        <!-- Logo -->
-        <div class="logo-area">
-        <img src="{{ asset('img/logo-ifba.png') }}" alt="Logo IFBA">
-        </div>
-
-        <!-- Card Login -->
+        <!-- Card de Login -->
         <div class="login-card">
 
-            <h1>Login</h1>
-
-            <p class="subtitulo">
-                Informe sua matrícula (SUAP) ou e-mail (Administrador) e sua senha.
+            <h1>Acesse sua conta</h1>
+            <p class="login-subtitulo">
+                Informe sua matrícula (SUAP) e senha.
             </p>
 
-            <!-- Exibição de erros Laravel -->
+            <!-- Erros -->
             @if($errors->any())
-                <div class="erro-login">
-                    {{ $errors->first() }}
+                <div class="login-erro">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>{{ $errors->first() }}</span>
                 </div>
             @endif
 
-            <!-- Formulário Laravel -->
-            <form method="POST" action="/login">
-
+            <!-- Formulário -->
+            <form method="POST" action="{{ route('login') }}">
                 @csrf
 
-                <!-- Matrícula ou E-mail -->
+                <!-- Matrícula -->
                 <div class="campo">
-                    <label for="login">
-                        Matrícula (SUAP) ou E-mail (Administrador)
-                    </label>
-
+                    <label for="login">Matrícula (SUAP)</label>
                     <div class="input-icon">
-                        
-                        <i class="fa-solid fa-user"></i>
-                              
+                        <i class="fa-solid fa-user icon-prefix"></i>
                         <input
                             type="text"
                             id="login"
                             name="login"
-                            placeholder="Digite sua matrícula ou e-mail"
-                            required>
-                        
+                            value="{{ old('login') }}"
+                            placeholder="Digite sua matrícula"
+                            required
+                            autofocus
+                        >
                     </div>
                 </div>
 
                 <!-- Senha -->
                 <div class="campo">
                     <label for="senha">Senha</label>
-
                     <div class="input-icon">
-
-                        <i class="fa-solid fa-lock"></i>
-
+                        <i class="fa-solid fa-lock icon-prefix"></i>
                         <input
                             type="password"
                             id="senha"
                             name="password"
                             placeholder="Digite sua senha"
-                            required>
-
-                        <i
-                            class="fa-solid fa-eye mostrar"
-                            id="toggleSenha">
-                        </i>
-
+                            required
+                        >
+                        <i class="fa-solid fa-eye mostrar-senha" id="toggleSenha" title="Mostrar/ocultar senha"></i>
                     </div>
                 </div>
 
-                <!-- Botão -->
-                <button type="submit">
-                    Entrar
-                    <i class="fa-solid fa-right-to-bracket"></i>
+                <!-- Botão de Entrar -->
+                <button type="submit" class="btn-entrar">
+                    <span>Entrar</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-
             </form>
-
-            <a href="#" class="esqueceu">
-                Esqueceu sua senha?
-            </a>
-
         </div>
 
     </div>
-
-<div class="background-verde">
-    <div class="creditos">
-    </div>
-</div>
-
-</div>
-
     <script src="{{ asset('js/login.js') }}"></script>
 
 </body>
