@@ -79,7 +79,7 @@
                                 </td>
                                 <td class="req-col-acoes">
                                     <a
-                                        href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}"
+                                        href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
                                         target="_blank"
                                         class="req-btn-imprimir"
                                     >
@@ -120,7 +120,7 @@
 
                     <div class="req-card-actions">
                         <a
-                            href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}"
+                            href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
                             target="_blank"
                             class="req-card-btn-imprimir"
                         >

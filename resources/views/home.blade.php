@@ -115,7 +115,7 @@
             </div>
             <div class="card-dev">
                 <div class="avatar">
-                    <img loading="lazy" src="{{ asset('img/perfil/larissa.png') }}" alt="Larissa Souza Rocha">
+                    <img loading="lazy" src="{{ asset('img/perfil/larissa.jpg') }}" alt="Larissa Souza Rocha">
                 </div>
                 <h3>Larissa Souza Rocha</h3>
                 <p class="role">Discente IFBA</p>

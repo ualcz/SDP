@@ -123,5 +123,5 @@ Route::middleware(['auth', 'role:professor,admin'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/requerimentos/visualizar-blade', [RequerimentoPdfController::class, 'visualizarBlade'])->name('requerimentos.visualizar-blade');
     Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
-    Route::get('/requerimentos/{id}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->name('requerimentos.gerar-comprovante');
+    Route::get('/requerimentos/{numero_protocolo}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->where('numero_protocolo', '.*')->name('requerimentos.gerar-comprovante');
 });
