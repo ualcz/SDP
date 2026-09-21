@@ -118,6 +118,7 @@ class AdminSetorController extends Controller
             'descricao'                => 'required|string|max:255',
             'observacao'               => 'nullable|string|max:500',
             'ordem'                    => 'nullable|integer',
+            'curso_acesso'             => 'required|string|max:10',
             'documentos'               => 'nullable|array',
             'documentos.*.nome'        => 'nullable|string|max:255',
             'documentos.*.descricao'   => 'nullable|string|max:500',
@@ -132,6 +133,7 @@ class AdminSetorController extends Controller
                 'descricao'  => trim($dados['descricao']),
                 'observacao' => !empty($dados['observacao']) ? trim($dados['observacao']) : null,
                 'ordem'      => $dados['ordem'] ?? ($maxOrdem + 1),
+                'curso_acesso' => $dados['curso_acesso'],
                 'ativo'      => true,
             ]);
 

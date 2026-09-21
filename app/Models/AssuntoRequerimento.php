@@ -14,6 +14,7 @@ class AssuntoRequerimento extends Model
         'descricao',
         'observacao',
         'ordem',
+        'curso_acesso',
         'ativo',
     ];
 
