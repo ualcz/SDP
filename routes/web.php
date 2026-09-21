@@ -8,6 +8,7 @@ use App\Http\Controllers\RequerimentoPdfController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminSetorController;
+use App\Http\Controllers\ResponsavelSetorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +49,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
         ->name('admin.consultar-requerimentos');
 
-
     // Gerenciamento de Setores e Assuntos de Requerimentos
     Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
@@ -70,7 +70,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');
     Route::put('/admin/modelos/{id}', [AdminSetorController::class, 'update'])->name('admin.modelos.update');
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
+});
 
+/*
+|--------------------------------------------------------------------------
+| PAINEL / SETOR - RESPONSÁVEL
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'responsavel'])->group(function () {
+    Route::get('/setor/{setor_id}/dashboard', [ResponsavelSetorController::class, 'index'])
+        ->name('setor.responsavel.dashboard');
 });
 
 /*
@@ -113,4 +122,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
     Route::get('/requerimentos/{id}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->name('requerimentos.gerar-comprovante');
 });
-
