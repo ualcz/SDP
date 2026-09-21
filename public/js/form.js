@@ -109,3 +109,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Estado inicial
     verificarDocumentosObrigatorios();
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+const form = document.getElementById('formRequerimento');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const loadingText = document.getElementById('loadingText');
+
+// Mensagens exibidas em sequência enquanto o servidor processa
+const mensagens = [
+    "Enviando requerimento...",
+    "Validando informações...",
+    "Conferindo documentos...",
+    "Processando anexos...",
+    "Preparando protocolo...",
+    "Registrando solicitação...",
+    "Gerando número de protocolo...",
+    "Encaminhando ao setor responsável...",
+    "Atualizando o sistema...",
+    "Enviando notificações...",
+    "Finalizando solicitação...",
+    "Quase lá! Só mais um instante...",
+];
+
+if (form) {
+    form.addEventListener('submit', function () {
+        if (form.checkValidity()) {
+            // Exibe o overlay
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.setAttribute('aria-hidden', 'false');
+
+            // Desativa o botão de envio
+            const btnSubmit = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+            }
+
+            // Alterna as mensagens a cada 2.5 segundos (2500ms)
+            let index = 0;
+            setInterval(() => {
+                index = (index + 1) % mensagens.length;
+
+                // Transição suave de opacidade
+                loadingText.style.opacity = '0';
+                setTimeout(() => {
+                    loadingText.textContent = mensagens[index];
+                    loadingText.style.opacity = '1';
+                }, 200);
+            }, 2000);
+        }
+    });
+}
+});
