@@ -36,10 +36,12 @@
                         class="nav-link {{ request()->routeIs('admin.dashboard', 'servidor.dashboard') ? 'active' : '' }}">
                             <span>Dashboard</span>
                         </a>
-                        <a href="{{ route('admin.consultar-requerimentos') }}"
-                        class="nav-link {{ request()->routeIs('admin.consultar-requerimentos') ? 'active' : '' }}">
-                            <span>Consultar requerimentos</span>
-                        </a>
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.consultar-requerimentos') }}"
+                            class="nav-link {{ request()->routeIs('admin.consultar-requerimentos') ? 'active' : '' }}">
+                                <span>Consultar requerimentos</span>
+                            </a>
+                        @endif
                         @else
                             {{-- vou adicionar uma página home que terá informações do sistema e devs --}}
 
