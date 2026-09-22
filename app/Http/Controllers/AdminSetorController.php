@@ -21,10 +21,10 @@ class AdminSetorController extends Controller
 
     public function create()
     {
-        $usuarios = Usuario::orderBy('nome')->get();
-        // $usuarios = Usuario::where('role', '!=', 'aluno')
-        // ->orderBy('nome')
-        // ->get();             AQUIIIIIIIIII
+
+        $usuarios = Usuario::where('role', '!=', 'aluno')
+        ->orderBy('nome')
+        ->get();
 
         return view('admin.setor.create', compact('usuarios'));
     }
@@ -65,10 +65,9 @@ class AdminSetorController extends Controller
         $modelo = $setor;
 
         // Busca a lista de todos os usuários para o formulário de seleção
-        $usuarios = Usuario::orderBy('nome')->get();
-        // $usuarios = Usuario::where('role', '!=', 'aluno')
-        // ->orderBy('nome')
-        // ->get();
+        $usuarios = Usuario::where('role', '!=', 'aluno')
+        ->orderBy('nome')
+        ->get();
 
         return view('admin.setor.edit', compact('setor', 'modelo', 'usuarios'));
     }
