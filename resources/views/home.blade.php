@@ -99,7 +99,7 @@
             </div>
             <div class="card-dev">
                 <div class="avatar">
-                    <img loading="lazy" src="{{ asset('img/perfil/claudeilson.png') }}" alt="Claudeilson Souza Assuncão">
+                    <img loading="lazy" src="{{ asset('img/perfil/clau.jpg') }}" alt="Claudeilson Souza Assuncão">
                 </div>
                 <h3>Claudeilson Souza Assuncão</h3>
                 <p class="role">Discente IFBA</p>
