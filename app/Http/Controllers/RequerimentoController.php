@@ -7,10 +7,45 @@ use App\Models\Setor;
 
 class RequerimentoController extends Controller
 {
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $modelos = Setor::obterSetoresFormatados();
 
-        // Setor selecionado via query string (id ou sigla)
+        $matricula = strtoupper($request->user()->matricula ?? '');
+        $coordenacaoPermitida = null;
+
+        // Remove os 5 primeiros caracteres (4 dígitos do ano + 1 do período)
+        // Exemplo: '20211180001' vira '180001'
+        $sufixoMatricula = substr($matricula, 5);
+
+        // Identifica o setor com base no início do código do curso
+        if (str_starts_with($sufixoMatricula, '18')) {
+            $coordenacaoPermitida = 'COINF';
+        } elseif (str_starts_with($sufixoMatricula, 'SEAADS')) {
+            $coordenacaoPermitida = 'COADS';
+        } elseif (str_starts_with($sufixoMatricula, '28')) {
+            $coordenacaoPermitida = 'COMAM';
+        } else {
+            $coordenacaoPermitida = 'COLIC';
+        }
+
+        // Siglas de todas as coordenações que dependem do curso do aluno
+        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COLIC'];
+
+        // 1. Filtra a lista de modelos
+        $modelos = array_filter($modelos, function ($mod) use ($coordenacaoPermitida, $coordenacoesRestritas) {
+            $sigla = strtoupper($mod['setor_sigla'] ?? '');
+
+            // Se o setor for uma coordenação de curso, só mantém se for a do aluno
+            if (in_array($sigla, $coordenacoesRestritas)) {
+                return $sigla === $coordenacaoPermitida;
+            }
+
+            // Outros setores (ex: Biblioteca, SRA, DAE) aparecem normalmente
+            return true;
+        });
+
+        // 2. Define o setor selecionado via query string (?setor=...)
         $setorParam = $request->query('setor', $request->query('modelo'));
         $modeloAtivo = null;
 
@@ -27,6 +62,7 @@ class RequerimentoController extends Controller
             }
         }
 
+        // 3. Se o setor selecionado for inválido/indisponível para o aluno, pega o primeiro da lista filtrada
         if (!$modeloAtivo) {
             $modeloAtivo = !empty($modelos) ? reset($modelos) : null;
         }
@@ -46,7 +82,7 @@ class RequerimentoController extends Controller
         //Implementação da lógica de que o usuário logado só pode ver os seus próprios requerimentos;
         //Uso de chave estrangeira na tabela requerimentos;
         $query = auth()->user()->requerimentos();
-        
+
         if ($request->filled('busca')) {
             $busca = $request->input('busca');
             $query->where(function($q) use ($busca) {
@@ -66,6 +102,6 @@ class RequerimentoController extends Controller
         }
 
         $requerimentos = $query->get();
-        return view('requerimentos.meusRequerimentos', compact('requerimentos'));  
+        return view('requerimentos.meusRequerimentos', compact('requerimentos'));
     }
 }
