@@ -61,31 +61,6 @@
             </div>
         </div>
 
-        <div class="form-group col-span-12" style="margin-bottom:15px">
-                <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #334155;">
-                    Curso que pode acessar esse requerimento:
-                </label>
-
-                <div id="lista-cursos" style="max-height: 200px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; background-color: #f8fafc;">
-                        <label class="curso-item" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='transparent'">
-                            <input type="radio" name="curso_acesso" value="geral" style="width: 16px; height: 16px; accent-color: #2563eb;">
-                            <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
-                                <strong>Todos os cursos</strong> <span style="color: #64748b;">(geral)</span>
-                            </span>
-                            <!-- Value 1: curso de informática identificado como 18 -->
-                            <input type="radio" name="curso_acesso" value="1" style="width: 16px; height: 16px; accent-color: #2563eb;">
-                            <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
-                                <strong>Apenas Curso Técnico em Informática</strong>  
-                           <!-- Value 2: curso de meio ambiente identificado como 28 -->
-                          </span>
-                            <input type="radio" name="curso_acesso" value="2" style="width: 16px; height: 16px; accent-color: #2563eb;">
-                            <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
-                                <strong>Apenas Curso Técnico em Meio Ambiente</strong>      
-                            </span>
-                        </label>
-                </div>
-            </div>
-
         {{-- Anexos --}}
         <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin-bottom: 22px; background: #fafafa;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -144,31 +119,31 @@ function adicionarAnexoRow() {
     tr.id = `anexo-row-${index}`;
     tr.innerHTML = `
         <td>
-            <input type="text" 
-                   name="documentos[${index}][nome]" 
-                   placeholder="Ex: Histórico Escolar" 
-                   required 
-                   class="input-tabela" 
+            <input type="text"
+                   name="documentos[${index}][nome]"
+                   placeholder="Ex: Histórico Escolar"
+                   required
+                   class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>
         <td>
-            <input type="text" 
-                   name="documentos[${index}][descricao]" 
-                   placeholder="Opcional..." 
-                   class="input-tabela" 
+            <input type="text"
+                   name="documentos[${index}][descricao]"
+                   placeholder="Opcional..."
+                   class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>
         <td style="text-align: center;">
-            <input type="checkbox" 
-                   name="documentos[${index}][obrigatorio]" 
-                   value="1" 
-                   checked 
+            <input type="checkbox"
+                   name="documentos[${index}][obrigatorio]"
+                   value="1"
+                   checked
                    style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center;">
-            <button type="button" 
-                    class="btn-delete-doc-sm" 
-                    title="Remover" 
+            <button type="button"
+                    class="btn-delete-doc-sm"
+                    title="Remover"
                     onclick="removerAnexoRow(${index})">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
