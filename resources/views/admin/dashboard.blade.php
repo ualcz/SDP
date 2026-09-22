@@ -102,11 +102,11 @@
 </div>
 
 <div class="graficos">
-    <div class="p-3 bg-white rounded shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)] grafico-linha">
+    <div class="p-3 rounded shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)] grafico-linha">
         {!! $chart->container() !!}
     </div>
 
-    <div class="p-3  bg-white rounded shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)] grafico-pizza">
+    <div class="p-3 rounded shadow-[0_2px_2px_0_rgba(0,0,0,0.14),_0_3px_1px_-2px_rgba(0,0,0,0.2),_0_1px_5px_0_rgba(0,0,0,0.12)] grafico-pizza">
          {!! $pieChart->container() !!}
     </div>
 </div>
