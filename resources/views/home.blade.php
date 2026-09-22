@@ -91,7 +91,7 @@
         <div class="devs-grid">
             <div class="card-dev">
                 <div class="avatar">
-                    <img loading="lazy" src="{{ asset('img/perfil/caio.png') }}" alt="Caio Souza dos Anjos">
+                    <img loading="lazy" src="{{ asset('img/perfil/caio.webp') }}" alt="Caio Souza dos Anjos">
                 </div>
                 <h3>Caio Souza dos Anjos</h3>
                 <p class="role">Discente IFBA</p>
@@ -107,7 +107,7 @@
             </div>
             <div class="card-dev">
                 <div class="avatar">
-                    <img loading="lazy" src="{{ asset('img/perfil/graziele.png') }}" alt="Graziele Brandão Silva">
+                    <img loading="lazy" src="{{ asset('img/perfil/graziele.webp') }}" alt="Graziele Brandão Silva">
                 </div>
                 <h3>Graziele Brandão Silva</h3>
                 <p class="role">Discente IFBA</p>
@@ -124,7 +124,7 @@
 
             <div class="card-dev">
                 <div class="avatar">
-                    <img loading="lazy" src="{{ asset('img/perfil/Charles.png') }}" alt="Monck Charles Albuquerque">
+                    <img loading="lazy" src="{{ asset('img/perfil/perfil_Charles.webp') }}" alt="Monck Charles Albuquerque">
                 </div>
                 <h3>Monck Charles Albuquerque</h3>
                 <p class="role">Docente / Orientador</p>
