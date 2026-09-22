@@ -5,7 +5,7 @@ namespace App\Charts;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use App\Models\Requerimento;
 
-class qtdRequerimentoMeses
+class QtdRequerimentoMeses
 {
    public function build(): \ArielMejiaDev\LarapexCharts\LineChart
     {
