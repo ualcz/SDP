@@ -123,7 +123,7 @@
 .card_individual {
     position: relative; /* necessário para ancorar o menu dentro */
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         "linha1 coluna_mesclada"
         "linha2 coluna_mesclada"
         "linha3 coluna_mesclada";
@@ -138,10 +138,10 @@
     border-left: 4px solid #047857;
 }
 .icone_total{
-    background-color: rgba(4, 120, 87, 0.5); 
+    background-color: rgba(4, 120, 87, 0.5);
 }
 .icone_analise{
-    background-color: rgba(143, 69, 79, 0.5); 
+    background-color: rgba(143, 69, 79, 0.5);
 }
 .icone_recebidos{
   background-color: rgba(29, 78, 216, 0.5);
@@ -157,7 +157,7 @@
     border-left: 4px solid #1d4ed8;
 }
 
-.linha1 { 
+.linha1 {
     grid-area: linha1;
     text-align: start;
     font-size: 16px;
@@ -181,11 +181,11 @@
     color: #374151;
     text-align: start;
 }
-.coluna_mesclada { 
+.coluna_mesclada {
     grid-area: coluna_mesclada;
     display: flex;
     text-align: center;
-    justify-content: center;  
+    justify-content: center;
     align-items: center;
 }
 
@@ -222,7 +222,7 @@
     cursor: pointer;
     font-size: 14px;
     color: #374151;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .menu-options li:hover {
@@ -238,10 +238,12 @@
     gap:3%;
     display: grid;
     grid-template-columns: 4fr 3fr;
+
 }
 
 .grafico-linha{
     text-align: start;
+
 }
 .grafico-pizza{
     text-align: end;

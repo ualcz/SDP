@@ -46,7 +46,8 @@ class QtdRequerimentoMeses
         ->setTitle('Requerimentos por mês')
         ->setSubtitle('Cada linha representa um objeto')
         ->setDataset($series)
-        ->setXAxis($meses);
+        ->setXAxis($meses)
+        ->setHeight(350);
 
         return $chart;
     }
