@@ -101,12 +101,12 @@ class EnvioEmailController extends Controller
             }
         }
 
-        $objeto = !empty($request->input('objeto_outro')) 
-            ? 'Outros: ' . $request->input('objeto_outro') 
+        $objeto = !empty($request->input('objeto_outro'))
+            ? 'Outros: ' . $request->input('objeto_outro')
             : ($request->input('objetoDoRequerimento') ?? $request->input('objeto', 'Requerimento Geral'));
 
-        $motivo = !empty($request->input('motivo')) 
-            ? $request->input('motivo') 
+        $motivo = !empty($request->input('motivo'))
+            ? $request->input('motivo')
             : (!empty($request->input('mensagem')) ? $request->input('mensagem') : 'Solicitação de ' . $objeto);
 
         // 1. Montagem dos destinatários separados por papel
@@ -198,7 +198,7 @@ class EnvioEmailController extends Controller
                 'assunto_requerimento_id' => $assunto?->id,
                 'objetoDoRequerimento'   => $objeto,
                 'motivo'                 => $motivo,
-                'status'                 => 'Em Análise',
+                'status'                 => 'aberto',
                 'setor_id'                => $setor->id,
             ]);
             // Chama método para gerar número de protocolo;
@@ -231,6 +231,6 @@ class EnvioEmailController extends Controller
         $ano = date('Y');
         $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $requerimento->numero_protocolo = $ano . '/' . $sequencia;
-        $requerimento->save();      
+        $requerimento->save();
     }
 }

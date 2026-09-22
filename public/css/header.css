@@ -135,6 +135,12 @@
     background: #fef2f2;
 }
 
+/* ________________ conteudo ________________ */
+
+.container {
+    margin-bottom: 40px;
+}
+
 /* ── Responsividade ───────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
@@ -190,4 +196,33 @@
     .btn-logout {
         padding: 6px 10px;
     }
+
+    .container {
+        margin-bottom: 40px;
+    }
 }
+
+
+@media (max-width: 380px) {
+    .header-inner {
+        padding: 6px 10px;
+        gap: 6px;
+    }
+
+    .nav-link,
+    .header-username,
+    .btn-logout {
+        padding: 4px 8px;
+    }
+
+    .header-nav .nav-link svg,
+    .header-username svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .container {
+        margin-bottom: 20px;
+    }
+}
+

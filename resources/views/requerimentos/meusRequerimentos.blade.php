@@ -1,86 +1,160 @@
 @extends('layouts.app')
 
-@section('title', 'Meus Requerimentos')
+@section('title', 'Meus Requerimentos - SDP')
 @section('tag', 'Aluno')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/meusRequerimentos.css') }}">
 
-    <form method="GET" action="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="flex flex-wrap gap-2 items-center mb-5">
-        <div>
-            <input type="text" name="objetoDoRequerimento" placeholder="Objeto do Requerimento" class="border border-gray-300 rounded p-2" />
-        </div>
+<div class="req-container">
 
-        <div>
-            <input type="text" name="status" placeholder="Status" class="border border-gray-300 rounded p-2" />
-        </div>
+    {{-- Filtro de Pesquisa com Campo Único --}}
+    <div class="req-filter-card">
+        <form method="GET" action="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="req-filter-form">
+            <input
+                type="text"
+                name="busca"
+                value="{{ request('busca') }}"
+                placeholder="Buscar por objeto do requerimento, protocolo ou status..."
+                class="req-input"
+            />
 
-        <div>
-            <input type="text" name="numero_protocolo" placeholder="Número do protocolo" class="border border-gray-300 rounded p-2" />
-        </div>
-
-        <div>
-            <button type="submit" class="btn btn-primary flex items-center gap-1 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="28" height="28" viewBox="0 0 50 50">
-                    <path fill="gray" d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"></path>
-                </svg>
+            <button type="submit" class="req-btn-filtrar">
+                Buscar
             </button>
+
+            @if(request()->filled('busca'))
+                <a href="{{ route('requerimentos.aluno.meusRequerimentos') }}" class="req-btn-limpar">
+                    Limpar
+                </a>
+            @endif
+        </form>
+    </div>
+
+    {{-- Conteúdo / Tabela ou Cards --}}
+    @if($requerimentos->isEmpty())
+        <div class="req-empty-card">
+            <p class="req-empty-title">Nenhum requerimento encontrado.</p>
+            <p style="margin-top: 4px;">
+                @if(request()->filled('busca'))
+                    Tente buscar por outro termo.
+                @else
+                    Você ainda não realizou nenhum requerimento.
+                @endif
+            </p>
         </div>
-    </form>
+    @else
 
-    <div class="overflow-x-auto rounded-lg shadow mb-10">
-        <table class="table w-full text-sm text-gray-600">
-        <thead class="bg-gray-300">
-            <tr>
-                <th class="py-3 px-6 text-center">Data</th>
-                <th class="py-3 px-6 text-center">Número do protocolo</th>
-                <th class="py-3 px-6 text-center">Setor</th>
-                <th class="py-3 px-6 text-center">Objeto do requerimento</th>
-                <!--Campo situação: para indicar qual o status do andamento do requerimento(análise,concluído...)-->
-                <th class="py-3 px-6 text-center">Status</th>
-                <th class="py-3 px-6 text-center">Ações</th>
-            </tr>
-        </thead>
+        {{-- Visualização em Tabela (Desktop) --}}
+        <div class="req-table-card">
+            <div class="req-table-scroll">
+                <table class="req-table">
+                    <thead>
+                        <tr>
+                            <th class="req-col-data">Data</th>
+                            <th class="req-col-protocolo">Protocolo</th>
+                            <th class="req-col-setor">Setor</th>
+                            <th class="req-col-objeto">Objeto do Requerimento</th>
+                            <th class="req-col-objeto">Status</th>
+                            <th class="req-col-acoes">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($requerimentos as $requerimento)
+                            <tr>
+                                <td class="req-col-data">
+                                    {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
+                                </td>
+                                <td class="req-col-protocolo">
+                                    <span class="req-badge-protocolo">
+                                        #{{ $requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo ?? 'S/N' }}
+                                    </span>
+                                </td>
+                                <td class="req-col-setor">
+                                    <span class="req-text-setor">
+                                        {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla ?? 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="req-col-objeto">
+                                    {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
+                                </td>
+                                @if($requerimento->status == 'Aberto')
+                                    <td class="req-col-objeto aberto">
+                                        <span>
+                                            {{ $requerimento->status ?? '-'}}
+                                        </span>
+                                    </td>
+                                @elseif ($requerimento->status == 'Em Análise')
+                                    <td class="req-col-objeto analise">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @else
+                                    <td class="req-col-objeto concluido">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @endif
+                                <td class="req-col-acoes">
+                                    <a
+                                        href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
+                                        target="_blank"
+                                        class="req-btn-imprimir"
+                                    >
+                                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                        </svg>
+                                        Imprimir comprovante
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-        <tbody class="bg-white">
-            @forelse($requerimentos as $requerimento)
-                <tr class="border-b" style="height:45px">
-                    <td class="py-3 px-6 text-center">
-                        {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        {{$requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo}}
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        {{$requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento}}
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        @if ($requerimento->status === 'Aprovado')
-                            <span class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 border border-green-500 rounded-full border-green-600 text-green-900">
-                                Aprovado
+        {{-- Visualização em Cards (Celular) --}}
+        <div class="req-mobile-cards">
+            @foreach($requerimentos as $requerimento)
+                <div class="req-card">
+                    <div class="req-card-top">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span class="req-badge-protocolo">
+                                #{{ $requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo ?? 'S/N' }}
                             </span>
-                        @elseif ($requerimento->status === 'Em análise' || $requerimento->status === 'Em Análise' || is_null($requerimento->status))
-                            <span class="inline-block px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 border border-yellow-500 rounded-full">
-                                Em análise
+                            <span class="req-text-setor">
+                                {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla ?? 'N/A' }}
                             </span>
-                        @endif
-                    </td>
-                    <td class="py-3 px-6 text-center">
-                        <a href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-4 rounded-lg">
+                        </div>
+                        <span class="req-card-date">
+                            {{ isset($requerimento->created_at) && $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : (isset($requerimento['created_at']) && $requerimento['created_at'] ? \Carbon\Carbon::parse($requerimento['created_at'])->format('d/m/Y H:i') : date('d/m/Y')) }}
+                        </span>
+                    </div>
+
+                    <div class="req-card-objeto">
+                        {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
+                    </div>
+
+                    <div class="req-card-actions">
+                        <a
+                            href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
+                            target="_blank"
+                            class="req-card-btn-imprimir"
+                        >
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                            </svg>
                             Imprimir comprovante
                         </a>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="py-3 px-6 text-center">
-                        Nenhum requerimento encontrado
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+    @endif
+
 </div>
 @endsection

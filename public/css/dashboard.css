@@ -232,3 +232,17 @@
 .menu-container:hover .menu-options {
     display: block;
 }
+
+.graficos{
+    margin-top: 4%;
+    gap:3%;
+    display: grid;
+    grid-template-columns: 4fr 3fr;
+}
+
+.grafico-linha{
+    text-align: start;
+}
+.grafico-pizza{
+    text-align: end;
+}

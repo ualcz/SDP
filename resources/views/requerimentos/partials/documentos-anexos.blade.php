@@ -39,8 +39,8 @@
                                     <span style="color: #6b7280; font-weight: normal;">(Opcional)</span>
                                 @endif
                             </label>
-                            @if(!empty($doc['descricao']))
-                                <small style="display: block; color: #666; margin-bottom: 6px; font-size: 12px;">{{ $doc['descricao'] }}</small>
+                            @if(!empty(trim($doc['descricao'] ?? '')))
+                                <small style="display: block; background: #fffbeb; color: #78350f; padding: 5px 10px; margin-bottom: 8px; font-size: 12px; border-radius: 0 4px 4px 0;">{{ $doc['descricao'] }}</small>
                             @endif
                             <input type="file" 
                                    name="documentos[{{ $doc['id'] ?? $loop->index }}]" 

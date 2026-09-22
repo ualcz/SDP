@@ -7,13 +7,20 @@
 <link rel="stylesheet" href="{{ asset('css/form.css') }}">
 
 <div class="form-box">
+    <!-- Overlay de Carregamento -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-hidden="true">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <p id="loadingText" class="loading-text">Enviando requerimento, por favor aguarde...</p>
+        </div>
+    </div>
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav">
         <strong>Setor:</strong>
         @foreach($modelos as $mod)
             <a href="{{ route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
-               class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav">
+               class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
                 {{ $mod['setor_sigla'] }}
             </a>
         @endforeach
@@ -40,7 +47,7 @@
         </div>
     @endif
 
-    <form action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
+    <form id="formRequerimento" action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
         <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
@@ -53,6 +60,7 @@
     </form>
 
     <script src="{{ asset('js/form.js') }}"></script>
+
     @if ($errors->any())
         <script>
             document.addEventListener('DOMContentLoaded', () => {
