@@ -119,6 +119,25 @@
         border-radius: 4px;
         font-size: 0.75rem;
     }
+
+    .aberto span{
+        color: rgb(245, 148, 30);
+        background-color: rgb(255, 232, 204);
+        padding: 5px 10px 5px 10px;
+        border-radius: 4px;
+    }
+    .analise span{
+        color: rgb(78, 25, 102);
+        background-color: rgb(241, 204, 255);
+        padding: 5px 10px 5px 10px;
+        border-radius: 4px;
+    }
+    .concluido span{
+        color: rgb(18, 106, 14);
+        background-color: rgb(202, 255, 200);
+        padding: 5px 10px 5px 10px;
+        border-radius: 4px;
+    }
 </style>
 
 {{-- Filtro de Pesquisa por Aluno ou Setor --}}
@@ -169,6 +188,7 @@
                         <th>Solicitante</th>
                         <th>Requerimento</th>
                         <th style="width: 120px; text-align: center;">Setor</th>
+                        <th style="text-align: center;">Status</th>
                         <th style="width: 140px;">Data</th>
                     </tr>
                 </thead>
@@ -182,6 +202,25 @@
                                     {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
                                 </span>
                             </td>
+                         @if($requerimento->status == 'Aberto')
+                                    <td class="req-col-objeto aberto" style="text-align: center;">
+                                        <span>
+                                            {{ $requerimento->status ?? '-'}}
+                                        </span>
+                                    </td>
+                                @elseif ($requerimento->status == 'Em Análise')
+                                    <td class="req-col-objeto analise" style="text-align: center;">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @else
+                                    <td class="req-col-objeto concluido" style="text-align: center;">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @endif
                             <td style="color: #64748b; font-size: 0.8125rem;">
                                 {{ $requerimento->created_at?->format('d/m/Y H:i') }}
                             </td>
