@@ -55,6 +55,7 @@
                             <th class="req-col-protocolo">Protocolo</th>
                             <th class="req-col-setor">Setor</th>
                             <th class="req-col-objeto">Objeto do Requerimento</th>
+                            <th class="req-col-objeto">Status</th>
                             <th class="req-col-acoes">Ações</th>
                         </tr>
                     </thead>
@@ -77,6 +78,25 @@
                                 <td class="req-col-objeto">
                                     {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
                                 </td>
+                                @if($requerimento->status == 'Aberto')
+                                    <td class="req-col-objeto aberto">
+                                        <span>
+                                            {{ $requerimento->status ?? '-'}}
+                                        </span>
+                                    </td>
+                                @elseif ($requerimento->status == 'Em Análise')
+                                    <td class="req-col-objeto analise">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @else
+                                    <td class="req-col-objeto concluido">
+                                         <span>
+                                             {{ $requerimento->status ?? '-'}}
+                                         </span>
+                                    </td>
+                                @endif
                                 <td class="req-col-acoes">
                                     <a
                                         href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"

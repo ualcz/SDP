@@ -85,6 +85,8 @@ Route::middleware(['auth', 'responsavel'])->group(function () {
     ->name('setor.requerimentos.show');
     Route::get('/setor/{id}/requerimentos/{status}', [ResponsavelSetorController::class, 'porStatus'])
     ->name('setor.requerimento.status');
+    Route::patch('/setor/{setor}/requerimentos/{requerimento}/atualizarStatus', [ResponsavelSetorController::class, 'atualizarStatus'])
+    ->name('setor.requerimentos.atualizarStatus');
 });
 
 /*

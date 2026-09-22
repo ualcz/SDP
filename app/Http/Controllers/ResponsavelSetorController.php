@@ -106,6 +106,21 @@ class ResponsavelSetorController extends Controller
 
         return view('setor.requerimentos.show', compact('setor', 'requerimento'));
     }
+
+    public function atualizarStatus(Request $request, Setor $setor, Requerimento $requerimento)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:Aberto,Em Análise,Concluído',
+        ]);
+
+        $requerimento->update([
+            'status' => $validated['status']
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Status do requerimento atualizado para "' . $requerimento->status . '" com sucesso!');
+    }
 }
 
 
