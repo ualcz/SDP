@@ -23,34 +23,32 @@
                     <strong style="font-size: 16px; color: #047857;">{{ $assuntoItem['descricao'] }}</strong>
                 </div>
                 @if(count($docs) > 0)
-                    <div style="background: rgb(249, 235, 235); padding: 20px; border-radius: 6px; border: 1px solid rgb(255, 203, 203); ">
-                        <h3 style="font-size: 1.25rem; text-align: center">Documentos Obrigatórios</h3>
-                        @foreach($docs as $doc)
-                            @php
-                                $tiposAceitos = !empty($doc['tipos_aceitos'])
-                                    ? '.' . str_replace(',', ',.', str_replace([' ', '.'], ['', ''], strtolower($doc['tipos_aceitos'])))
-                                    : '.pdf,.doc,.docx,.png,.jpg,.jpeg';
-                            @endphp
-                            <div class="campo" style="margin-bottom: 16px;">
-                                <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
-                                    {{ $doc['nome'] }}
-                                    @if($doc['obrigatorio'])
-                                        <span style="color: #dc2626; font-weight: normal;">(Obrigatório)</span>
-                                    @else
-                                        <span style="color: #6b7280; font-weight: normal;">(Opcional)</span>
-                                    @endif
-                                </label>
-                                @if(!empty(trim($doc['descricao'] ?? '')))
-                                    <small style="display: block; background: #fffbeb; color: #78350f; padding: 5px 10px; margin-bottom: 8px; font-size: 12px; border-radius: 0 4px 4px 0;">{{ $doc['descricao'] }}</small>
+                    <h3 style="font-size: 1.25rem; text-align: center; margin-bottom: 12px;">Documentos Obrigatórios</h3>
+                    @foreach($docs as $doc)
+                        @php
+                            $tiposAceitos = !empty($doc['tipos_aceitos'])
+                                ? '.' . str_replace(',', ',.', str_replace([' ', '.'], ['', ''], strtolower($doc['tipos_aceitos'])))
+                                : '.pdf,.doc,.docx,.png,.jpg,.jpeg';
+                        @endphp
+                        <div class="campo" style="background: rgb(249, 235, 235); padding: 20px; border-radius: 6px; border: 1px solid rgb(255, 203, 203); margin-bottom: 16px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
+                                {{ $doc['nome'] }}
+                                @if($doc['obrigatorio'])
+                                    <span style="color: #dc2626; font-weight: normal;">(Obrigatório)</span>
+                                @else
+                                    <span style="color: #6b7280; font-weight: normal;">(Opcional)</span>
                                 @endif
-                                <input type="file"
-                                    name="documentos[{{ $doc['id'] ?? $loop->index }}]"
-                                    data-obrigatorio="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
-                                    data-nome="{{ $doc['nome'] }}"
-                                    accept="{{ $tiposAceitos }}">
-                            </div>
-                        @endforeach
-                    </div>
+                            </label>
+                            @if(!empty(trim($doc['descricao'] ?? '')))
+                                <div style="display: block; background: #fffbeb; color: #78350f; padding: 10px 14px; margin: 8px 0 12px; font-size: 15px; font-weight: 600; line-height: 1.5; border: 1px solid #fcd34d;">{{ $doc['descricao'] }}</div>
+                            @endif
+                            <input type="file"
+                                name="documentos[{{ $doc['id'] ?? $loop->index }}]"
+                                data-obrigatorio="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
+                                data-nome="{{ $doc['nome'] }}"
+                                accept="{{ $tiposAceitos }}">
+                        </div>
+                    @endforeach
                 @else
                     <p style="color: #666; font-size: 14px; margin-bottom: 12px;">
                         Este assunto não possui documentos obrigatórios.
