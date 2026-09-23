@@ -6,7 +6,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
@@ -73,6 +72,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
 });
 
+Route::middleware(['auth', 'role:professor'])->group(function () {
+    Route::get('/servidor/dashboard', [AdminDashboardController::class, 'index'])
+        ->name('servidor.dashboard');
+});
+
 /*
 |--------------------------------------------------------------------------
 | PAINEL / SETOR - RESPONSÁVEL
@@ -115,15 +119,6 @@ Route::middleware(['auth', 'role:professor'])->group(function () {
     Route::get('/requerimentos/servidor', function () {
         return view('requerimentos.servidor');
     })->name('requerimentos.servidor');
-});
-
-/*
-|--------------------------------------------------------------------------
-| PAINEL / REQUERIMENTOS - ADMINISTRADOR
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:admin'])->group(function () {
-        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 /*

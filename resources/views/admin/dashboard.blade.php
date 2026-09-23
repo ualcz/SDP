@@ -4,6 +4,7 @@
 @section('tag', 'Administração')
 
 @section('content')
+    @php($dashboardRoute = auth()->user()->isAdmin() ? 'admin.dashboard' : 'servidor.dashboard')
     <style>
         {!! file_get_contents(public_path('css/dashboard.css')) !!}
     </style>
@@ -93,8 +94,8 @@
         <div class="menu-container">
             <div class="menu-icon">⋮</div>
             <ul class="menu-options">
-                <li><a href="{{ route('admin.dashboard', ['periodo' => 'semana']) }}">Esta semana</a></li>
-                <li><a href="{{ route('admin.dashboard', ['periodo' => 'mes']) }}">Este mês</a></li>
+                <li><a href="{{ route($dashboardRoute, ['periodo' => 'semana']) }}">Esta semana</a></li>
+                <li><a href="{{ route($dashboardRoute, ['periodo' => 'mes']) }}">Este mês</a></li>
             </ul>
         </div>
 
