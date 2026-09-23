@@ -90,6 +90,10 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Requerimento::class, 'usuario_id');
     }
+    public function historicos()
+    {
+        return $this->hasMany(HistoricoRequerimento::class, 'user_id');
+    }
 
     public function endereco()
     {

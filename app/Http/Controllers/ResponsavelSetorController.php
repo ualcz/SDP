@@ -18,10 +18,7 @@ class ResponsavelSetorController extends Controller
 
     public function index(Request $request, $id)
     {
-        $usuario = Auth::user();
-
         $setor = Setor::findOrFail($id);
-
 
         $this->autorizarSetor($setor);
 
@@ -32,14 +29,16 @@ class ResponsavelSetorController extends Controller
             ->count();
 
         $totalConcluidos = (clone $requerimentos)
-            ->where('status', 'concluido')
+            ->where('status', 'Concluído')
             ->count();
 
         $totalIndeferidos = (clone $requerimentos)
-            ->where('status', 'indeferido')
+            ->where('status', 'Indeferido')
             ->count();
 
-        $totalAberto = (clone $requerimentos)->where('status', 'aberto')->count();
+        $totalAberto = (clone $requerimentos)
+            ->where('status', 'Aberto')
+            ->count();
 
         return view('setor.responsavel.dashboard', compact(
             'setor',
@@ -50,18 +49,18 @@ class ResponsavelSetorController extends Controller
         ));
     }
 
-   public function porStatus(Request $request, $id, string $status)
+    public function porStatus(Request $request, $id, string $status)
     {
         $setor = Setor::findOrFail($id);
 
         $this->autorizarSetor($setor);
 
         $statusMap = [
-            'todos'     => null,
-            'aberto'    => 'Aberto',
-            'analise'   => 'Em Análise',
-            'indeferido'   => 'indeferido',
-            'concluido' => 'Concluído',
+            'todos'      => null,
+            'aberto'     => 'Aberto',
+            'analise'    => 'Em Análise',
+            'indeferido' => 'Indeferido',
+            'concluido'  => 'Concluído',
         ];
 
         $statusBanco = $statusMap[$status] ?? ucwords(str_replace('-', ' ', $status));
@@ -70,7 +69,7 @@ class ResponsavelSetorController extends Controller
         $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
 
         // 1. Filtro por Status (se aplicável)
-        if ($statusBanco) {
+        if ($statusBanco && $status !== 'todos') {
             $query->where('status', $statusBanco);
         }
 
@@ -79,10 +78,10 @@ class ResponsavelSetorController extends Controller
             $termo = $request->input('busca');
             $query->where(function ($q) use ($termo) {
                 $q->where('numero_protocolo', 'like', "%{$termo}%")
-                ->orWhereHas('usuario', function ($qUser) use ($termo) {
-                    $qUser->where('nome', 'like', "%{$termo}%")
+                  ->orWhereHas('usuario', function ($qUser) use ($termo) {
+                      $qUser->where('nome', 'like', "%{$termo}%")
                             ->orWhere('matricula', 'like', "%{$termo}%");
-                });
+                  });
             });
         }
 
@@ -93,6 +92,7 @@ class ResponsavelSetorController extends Controller
         if ($request->filled('data_fim')) {
             $query->whereDate('created_at', '<=', $request->input('data_fim'));
         }
+
         $requerimentosAgrupados = $query->get()->groupBy('objetoDoRequerimento');
 
         return view('setor.requerimentos.status', [
@@ -110,8 +110,8 @@ class ResponsavelSetorController extends Controller
             abort(404);
         }
 
-        // Carrega o usuário junto com o endereço dele, além do assunto
-        $requerimento->load(['usuario.endereco', 'assunto']);
+        // Carrega o usuário, endereço, assunto e os históricos (linha do tempo)
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario']);
 
         return view('setor.requerimentos.show', compact('setor', 'requerimento'));
     }
@@ -125,17 +125,18 @@ class ResponsavelSetorController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
+            'status'     => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
+            'observacao' => 'required_if:status,Indeferido|nullable|string',
         ]);
 
+        // Atualiza o status no Requerimento
         $requerimento->update([
-            'status' => $validated['status']
+            'status' => $validated['status'],
         ]);
+
 
         return redirect()
             ->back()
             ->with('success', 'Status do requerimento atualizado para "' . $requerimento->status . '" com sucesso!');
     }
 }
-
-
