@@ -48,8 +48,9 @@
     </a>
 </div>
 
-<div class="cards">
-    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'aberto']) }}" class="card_individual total">
+<div class="cards" >
+    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'aberto']) }}"
+        class="card_individual total" style="border-left: 4px solid #D97706">
         <div class="linha1">Requerimentos em aberto</div>
         <div class="linha2">
             <p class="numero">{{ $totalAberto }}</p>
@@ -66,7 +67,8 @@
         </div>
     </a>
 
-    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'analise']) }}" class="card_individual total">
+    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'analise']) }}"
+        class="card_individual total" style="border-left: 4px solid #7C3AED">
         <div class="linha1">Requerimentos em análise</div>
         <div class="linha2">
             <p class="numero">{{ $totalAnalise }}</p>
@@ -83,7 +85,8 @@
         </div>
     </a>
 
-    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'indeferido']) }}" class="card_individual total">
+    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'indeferido']) }}"
+        class="card_individual total" style="border-left: 4px solid #d8d80a">
         <div class="linha1">Requerimentos Indeferidos</div>
         <div class="linha2">
             <p class="numero">{{ $totalIndeferidos }}</p>
@@ -99,7 +102,8 @@
             </div>
         </div>
     </a>
-    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'concluido']) }}" class="card_individual total">
+    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'concluido']) }}"
+        class="card_individual total" style="border-left: 4px solid #3ca13c">
         <div class="linha1">Requerimentos Concluídos</div>
         <div class="linha2">
             <p class="numero">{{ $totalConcluidos }}</p>
