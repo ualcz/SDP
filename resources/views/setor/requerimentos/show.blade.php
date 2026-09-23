@@ -218,6 +218,7 @@
                 <select name="status" id="status" class="select-status" required>
                     <option value="Aberto" {{ $requerimento->status == 'Aberto' ? 'selected' : '' }}>Aberto</option>
                     <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
+                    <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
                     <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
                 </select>
                 <button type="submit" class="btn-atualizar">
@@ -227,6 +228,13 @@
                     Atualizar Status
                 </button>
             </div>
+{{--
+            @if ($requerimento->status == 'Indeferido')
+                <div>
+                    mensagem
+                </div>
+            @endif --}}
+
         </form>
     </div>
 

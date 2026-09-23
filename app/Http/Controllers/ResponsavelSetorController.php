@@ -27,14 +27,6 @@ class ResponsavelSetorController extends Controller
 
         $requerimentos = Requerimento::where('setor_id', $setor->id);
 
-        $totalRequerimentos = (clone $requerimentos)->count();
-
-
-        $totalRecebidos = (clone $requerimentos)
-        ->whereMonth('created_at', now()->month)
-        ->whereYear('created_at', now()->year)
-        ->count();
-
         $totalAnalise = (clone $requerimentos)
             ->where('status', 'Em Análise')
             ->count();
@@ -43,14 +35,17 @@ class ResponsavelSetorController extends Controller
             ->where('status', 'concluido')
             ->count();
 
+        $totalIndeferidos = (clone $requerimentos)
+            ->where('status', 'indeferido')
+            ->count();
+
         $totalAberto = (clone $requerimentos)->where('status', 'aberto')->count();
 
         return view('setor.responsavel.dashboard', compact(
             'setor',
-            'totalRequerimentos',
             'totalAnalise',
             'totalConcluidos',
-            'totalRecebidos',
+            'totalIndeferidos',
             'totalAberto'
         ));
     }
@@ -65,6 +60,7 @@ class ResponsavelSetorController extends Controller
             'todos'     => null,
             'aberto'    => 'Aberto',
             'analise'   => 'Em Análise',
+            'indeferido'   => 'indeferido',
             'concluido' => 'Concluído',
         ];
 
@@ -129,7 +125,7 @@ class ResponsavelSetorController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Concluído',
+            'status' => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
         ]);
 
         $requerimento->update([
