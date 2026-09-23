@@ -53,20 +53,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
+    Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
+});
+
+// Administradores e responsáveis podem editar apenas os dados do próprio setor.
+Route::middleware(['auth', 'setor.config'])->group(function () {
     Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
     Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
     Route::get('/admin/setores/{id}/assuntos/criar', [AdminSetorController::class, 'createAssunto'])->name('admin.setores.assuntos.create');
     Route::post('/admin/setores/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
     Route::put('/admin/assuntos/{id}', [AdminSetorController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminSetorController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
-
-    // Gerenciamento de Documentos / Anexos por Assunto
     Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
     Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
     Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
-
-    // Alias /admin/modelos (compatibilidade com links legados)
-    Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');
     Route::put('/admin/modelos/{id}', [AdminSetorController::class, 'update'])->name('admin.modelos.update');
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');

@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ResponsavelSetorController extends Controller
 {
+    private function autorizarSetor(Setor $setor): void
+    {
+        if (!Auth::user()->ehResponsavelDoSetor($setor->id)) {
+            abort(403, 'Você não possui permissão para acessar este setor.');
+        }
+    }
+
     public function index(Request $request, $id)
     {
         $usuario = Auth::user();
@@ -16,9 +23,7 @@ class ResponsavelSetorController extends Controller
         $setor = Setor::findOrFail($id);
 
 
-        if (!$setor) {
-            abort(403, 'Você não possui um setor vinculado.');
-        }
+        $this->autorizarSetor($setor);
 
         $requerimentos = Requerimento::where('setor_id', $setor->id);
 
@@ -53,6 +58,8 @@ class ResponsavelSetorController extends Controller
    public function porStatus(Request $request, $id, string $status)
     {
         $setor = Setor::findOrFail($id);
+
+        $this->autorizarSetor($setor);
 
         $statusMap = [
             'todos'     => null,
@@ -101,6 +108,12 @@ class ResponsavelSetorController extends Controller
 
     public function show(Setor $setor, Requerimento $requerimento)
     {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id) {
+            abort(404);
+        }
+
         // Carrega o usuário junto com o endereço dele, além do assunto
         $requerimento->load(['usuario.endereco', 'assunto']);
 
@@ -109,6 +122,12 @@ class ResponsavelSetorController extends Controller
 
     public function atualizarStatus(Request $request, Setor $setor, Requerimento $requerimento)
     {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id) {
+            abort(404);
+        }
+
         $validated = $request->validate([
             'status' => 'required|in:Aberto,Em Análise,Concluído',
         ]);

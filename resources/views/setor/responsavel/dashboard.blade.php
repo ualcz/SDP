@@ -5,8 +5,48 @@
 
 <link rel="stylesheet" href="{{ asset('css/setorDashboard.css') }}">
 
+<style>
+    .btn-editar-setor {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: 1px solid #1d4ed8;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-editar-setor:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .btn-editar-setor:focus-visible {
+        outline: 3px solid rgba(37, 99, 235, 0.3);
+        outline-offset: 2px;
+    }
+</style>
+
 @section('content')
 <x-btn-voltar />
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+    <a href="{{ route('admin.setores.edit', $setor->id) }}" class="btn-editar-setor">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        Editar setor
+    </a>
+</div>
 
 <div class="cards">
     <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'todos']) }}" class="card_individual analise">

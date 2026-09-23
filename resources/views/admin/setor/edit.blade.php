@@ -19,8 +19,8 @@
                 Setor: {{ $modelo->setor_sigla }} &mdash; {{ $modelo->setor_nome }}
             </h2>
         </div>
-        <a href="{{ route('admin.setores.index') }}" class="btn-voltar">
-            &larr; Voltar para lista de setores
+        <a href="{{ auth()->user()->role === 'admin' ? route('admin.setores.index') : route('setor.responsavel.dashboard', $modelo->id) }}" class="btn-voltar">
+            &larr; Voltar
         </a>
     </div>
 

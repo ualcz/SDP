@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class AdminSetorController extends Controller
 {
+    private function autorizarSetor(int $setorId): void
+    {
+        $usuario = request()->user();
+
+        if ($usuario?->role !== 'admin' && !$usuario?->ehResponsavelDoSetor($setorId)) {
+            abort(403, 'Você não possui permissão para editar este setor.');
+        }
+    }
+
     public function index()
     {
         $setores = Setor::withCount(['assuntos', 'assuntosAtivos'])->get();
@@ -60,6 +69,8 @@ class AdminSetorController extends Controller
 
     public function edit($id)
     {
+        $this->autorizarSetor((int) $id);
+
         // Carrega o setor junto com os assuntos, documentos e os responsáveis já vinculados
         $setor = Setor::with(['assuntos.documentos', 'responsaveis'])->findOrFail($id);
         $modelo = $setor;
@@ -74,6 +85,8 @@ class AdminSetorController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->autorizarSetor((int) $id);
+
         $setor = Setor::findOrFail($id);
 
         $dados = $request->validate([
@@ -86,16 +99,23 @@ class AdminSetorController extends Controller
             'responsaveis.*' => 'exists:usuarios,id',
         ]);
 
-        $setor->update([
+        $dadosAtualizados = [
             'titulo'      => $dados['titulo'],
             'setor_sigla' => $dados['setor_sigla'],
             'setor_nome'  => $dados['setor_nome'],
             'email'       => $dados['email'] ?? null,
-            'ativo'       => $request->has('ativo'),
-        ]);
+        ];
 
-        // Sincroniza os responsáveis (adiciona novos e remove os desmarcados)
-        $setor->responsaveis()->sync($request->input('responsaveis', []));
+        if ($request->user()->role === 'admin') {
+            $dadosAtualizados['ativo'] = $request->has('ativo');
+        }
+
+        $setor->update($dadosAtualizados);
+
+        // Apenas administradores podem alterar os responsáveis do setor.
+        if ($request->user()->role === 'admin') {
+            $setor->responsaveis()->sync($request->input('responsaveis', []));
+        }
 
         return redirect()->route('admin.setores.edit', $setor->id)
             ->with('success', 'Setor atualizado com sucesso!');
@@ -103,6 +123,8 @@ class AdminSetorController extends Controller
 
     public function createAssunto($setorId)
     {
+        $this->autorizarSetor((int) $setorId);
+
         $setor = Setor::findOrFail($setorId);
         $modelo = $setor;
 
@@ -111,6 +133,8 @@ class AdminSetorController extends Controller
 
     public function storeAssunto(Request $request, $setorId)
     {
+        $this->autorizarSetor((int) $setorId);
+
         $setor = Setor::findOrFail($setorId);
 
         $dados = $request->validate([
@@ -159,6 +183,7 @@ class AdminSetorController extends Controller
     public function updateAssunto(Request $request, $assuntoId)
     {
         $assunto = AssuntoRequerimento::with('documentos')->findOrFail($assuntoId);
+        $this->autorizarSetor((int) $assunto->setor_id);
 
         $dados = $request->validate([
             'descricao'                     => 'required|string|max:255',
@@ -232,6 +257,8 @@ class AdminSetorController extends Controller
     public function destroyAssunto($assuntoId)
     {
         $assunto = AssuntoRequerimento::findOrFail($assuntoId);
+        $this->autorizarSetor((int) $assunto->setor_id);
+
         $setorId = $assunto->setor_id;
         $assunto->delete();
 
@@ -242,6 +269,7 @@ class AdminSetorController extends Controller
     public function storeDocumento(Request $request, $assuntoId)
     {
         $assunto = AssuntoRequerimento::findOrFail($assuntoId);
+        $this->autorizarSetor((int) $assunto->setor_id);
 
         $dados = $request->validate([
             'nome'          => 'required|string|max:255',
@@ -265,6 +293,7 @@ class AdminSetorController extends Controller
     public function updateDocumento(Request $request, $documentoId)
     {
         $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto->setor_id);
 
         $dados = $request->validate([
             'nome'          => 'required|string|max:255',
@@ -289,6 +318,8 @@ class AdminSetorController extends Controller
     public function destroyDocumento($documentoId)
     {
         $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto->setor_id);
+
         $setorId = $documento->assunto?->setor_id;
         $documento->delete();
 
