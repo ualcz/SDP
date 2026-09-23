@@ -35,6 +35,7 @@
                 <input type="email" id="email" name="email" value="{{ old('email', $modelo->email) }}" placeholder="protocolos.seabra@ifba.edu.br">
             </div>
 
+           @if(auth()->user()->role === 'admin')
            {{-- Responsáveis pelo Setor --}}
             <div class="form-group col-span-12">
                 <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #334155;">
@@ -65,17 +66,20 @@
                     @endforeach
                 </div>
             </div>
+            @endif
 
-            {{-- Status Ativo --}}
-            <div class="form-group col-span-12" style="margin-top: 4px;">
-                <label class="card-toggle-ativo">
-                    <input type="checkbox" name="ativo" value="1" {{ old('ativo', $modelo->ativo) ? 'checked' : '' }} style="width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb;">
-                    <div>
-                        <strong style="display: block; font-size: 0.875rem; color: #1e293b;">Setor Ativo</strong>
-                        <span style="font-size: 0.75rem; color: #64748b;">Quando desmarcado, este formulário não aparecerá para os alunos.</span>
-                    </div>
-                </label>
-            </div>
+            @if(auth()->user()->role === 'admin')
+                {{-- Status Ativo --}}
+                <div class="form-group col-span-12" style="margin-top: 4px;">
+                    <label class="card-toggle-ativo">
+                        <input type="checkbox" name="ativo" value="1" {{ old('ativo', $modelo->ativo) ? 'checked' : '' }} style="width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb;">
+                        <div>
+                            <strong style="display: block; font-size: 0.875rem; color: #1e293b;">Setor Ativo</strong>
+                            <span style="font-size: 0.75rem; color: #64748b;">Quando desmarcado, este formulário não aparecerá para os alunos.</span>
+                        </div>
+                    </label>
+                </div>
+            @endif
 
             {{-- Botão de Salvar --}}
             <div class="col-span-12" style="margin-top: 10px;">
@@ -91,7 +95,10 @@
 </div>
 
 <script>
-    document.getElementById('buscar-usuario').addEventListener('input', function() {
+    const campoBuscaUsuario = document.getElementById('buscar-usuario');
+
+    if (campoBuscaUsuario) {
+        campoBuscaUsuario.addEventListener('input', function() {
         const termo = this.value.toLowerCase();
         const itens = document.querySelectorAll('.usuario-item');
 
@@ -103,5 +110,6 @@
                 item.style.display = 'none';
             }
         });
-    });
+        });
+    }
 </script>

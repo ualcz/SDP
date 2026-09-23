@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ResponsavelSetorController extends Controller
 {
+    private function autorizarSetor(Setor $setor): void
+    {
+        if (!Auth::user()->ehResponsavelDoSetor($setor->id)) {
+            abort(403, 'Você não possui permissão para acessar este setor.');
+        }
+    }
+
     public function index(Request $request, $id)
     {
         $usuario = Auth::user();
@@ -16,19 +23,9 @@ class ResponsavelSetorController extends Controller
         $setor = Setor::findOrFail($id);
 
 
-        if (!$setor) {
-            abort(403, 'Você não possui um setor vinculado.');
-        }
+        $this->autorizarSetor($setor);
 
         $requerimentos = Requerimento::where('setor_id', $setor->id);
-
-        $totalRequerimentos = (clone $requerimentos)->count();
-
-
-        $totalRecebidos = (clone $requerimentos)
-        ->whereMonth('created_at', now()->month)
-        ->whereYear('created_at', now()->year)
-        ->count();
 
         $totalAnalise = (clone $requerimentos)
             ->where('status', 'Em Análise')
@@ -38,14 +35,17 @@ class ResponsavelSetorController extends Controller
             ->where('status', 'concluido')
             ->count();
 
+        $totalIndeferidos = (clone $requerimentos)
+            ->where('status', 'indeferido')
+            ->count();
+
         $totalAberto = (clone $requerimentos)->where('status', 'aberto')->count();
 
         return view('setor.responsavel.dashboard', compact(
             'setor',
-            'totalRequerimentos',
             'totalAnalise',
             'totalConcluidos',
-            'totalRecebidos',
+            'totalIndeferidos',
             'totalAberto'
         ));
     }
@@ -54,10 +54,13 @@ class ResponsavelSetorController extends Controller
     {
         $setor = Setor::findOrFail($id);
 
+        $this->autorizarSetor($setor);
+
         $statusMap = [
             'todos'     => null,
             'aberto'    => 'Aberto',
             'analise'   => 'Em Análise',
+            'indeferido'   => 'indeferido',
             'concluido' => 'Concluído',
         ];
 
@@ -101,6 +104,12 @@ class ResponsavelSetorController extends Controller
 
     public function show(Setor $setor, Requerimento $requerimento)
     {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id) {
+            abort(404);
+        }
+
         // Carrega o usuário junto com o endereço dele, além do assunto
         $requerimento->load(['usuario.endereco', 'assunto']);
 
@@ -109,8 +118,14 @@ class ResponsavelSetorController extends Controller
 
     public function atualizarStatus(Request $request, Setor $setor, Requerimento $requerimento)
     {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id) {
+            abort(404);
+        }
+
         $validated = $request->validate([
-            'status' => 'required|in:Aberto,Em Análise,Concluído',
+            'status' => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
         ]);
 
         $requerimento->update([

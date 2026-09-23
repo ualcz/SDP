@@ -36,19 +36,26 @@ class LoginController extends Controller
         |--------------------------------------------------------------------------
         */
         if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            $usuario = Usuario::where('email', $login)->first();
 
-            if (!Auth::attempt([
-                'email' => $login,
-                'role' => 'admin',
-                'password' => $password,
-            ])) {
+            if (!$usuario || !Hash::check($password, $usuario->password)) {
 
                 return back()->withErrors([
                     'login' => 'Email ou senha inválidos.',
                 ]);
             }
 
-            return redirect('/admin/dashboard');
+            Auth::login($usuario);
+
+            if ($usuario->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($usuario->isProfessor()) {
+                return redirect()->route('servidor.dashboard');
+            }
+
+            return redirect()->route('requerimentos.aluno');
         }
 
         /*
@@ -84,7 +91,7 @@ if (!$jwt) {
             }
 
     if ($usuario->isProfessor()) {
-        return redirect('/requerimentos/servidor');
+        return redirect()->route('servidor.dashboard');
     }
 
     return redirect('/requerimentos/aluno');
@@ -180,7 +187,7 @@ if (!$jwt) {
         */
         if ($usuario->isProfessor()) {
 
-            return redirect('/requerimentos/servidor');
+            return redirect()->route('servidor.dashboard');
         }
 
         return redirect('/requerimentos/aluno');

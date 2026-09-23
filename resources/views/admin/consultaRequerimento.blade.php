@@ -142,7 +142,7 @@
 
 {{-- Filtro de Pesquisa por Aluno ou Setor --}}
 <div class="dash-filter-card">
-    <form method="GET" action="{{ route('admin.dashboard') }}" class="dash-filter-form">
+    <form method="GET" action="" class="dash-filter-form">
         <div style="flex: 2; min-width: 220px;">
             <input type="text" name="aluno" value="{{ request('aluno') }}" placeholder="Buscar por aluno..." class="input-filtro">
         </div>

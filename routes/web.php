@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EnvioEmailController;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\RequerimentoPdfController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
@@ -53,23 +53,28 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
+    Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
+});
+
+// Administradores e responsáveis podem editar apenas os dados do próprio setor.
+Route::middleware(['auth', 'setor.config'])->group(function () {
     Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
     Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
     Route::get('/admin/setores/{id}/assuntos/criar', [AdminSetorController::class, 'createAssunto'])->name('admin.setores.assuntos.create');
     Route::post('/admin/setores/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.setores.assuntos.store');
     Route::put('/admin/assuntos/{id}', [AdminSetorController::class, 'updateAssunto'])->name('admin.assuntos.update');
     Route::delete('/admin/assuntos/{id}', [AdminSetorController::class, 'destroyAssunto'])->name('admin.assuntos.destroy');
-
-    // Gerenciamento de Documentos / Anexos por Assunto
     Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
     Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
     Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
-
-    // Alias /admin/modelos (compatibilidade com links legados)
-    Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');
     Route::put('/admin/modelos/{id}', [AdminSetorController::class, 'update'])->name('admin.modelos.update');
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
+});
+
+Route::middleware(['auth', 'role:professor'])->group(function () {
+    Route::get('/servidor/dashboard', [AdminDashboardController::class, 'index'])
+        ->name('servidor.dashboard');
 });
 
 /*
@@ -100,9 +105,6 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
         return view('requerimentos.aluno', compact('setores'));
     })->name('requerimentos.aluno');
 
-    Route::get('/requerimentos/aluno/enviar-email', function () {
-        return redirect()->route('requerimentos.aluno.novo');
-    });
     Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
     Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');
@@ -113,7 +115,7 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
 | PAINEL / REQUERIMENTOS - SERVIDOR
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:professor,admin'])->group(function () {
+Route::middleware(['auth', 'role:professor'])->group(function () {
     Route::get('/requerimentos/servidor', function () {
         return view('requerimentos.servidor');
     })->name('requerimentos.servidor');

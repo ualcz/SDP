@@ -119,31 +119,31 @@ function adicionarAnexoRow() {
     tr.id = `anexo-row-${index}`;
     tr.innerHTML = `
         <td>
-            <input type="text" 
-                   name="documentos[${index}][nome]" 
-                   placeholder="Ex: Histórico Escolar" 
-                   required 
-                   class="input-tabela" 
+            <input type="text"
+                   name="documentos[${index}][nome]"
+                   placeholder="Ex: Histórico Escolar"
+                   required
+                   class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>
         <td>
-            <input type="text" 
-                   name="documentos[${index}][descricao]" 
-                   placeholder="Opcional..." 
-                   class="input-tabela" 
+            <input type="text"
+                   name="documentos[${index}][descricao]"
+                   placeholder="Opcional..."
+                   class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>
         <td style="text-align: center;">
-            <input type="checkbox" 
-                   name="documentos[${index}][obrigatorio]" 
-                   value="1" 
-                   checked 
+            <input type="checkbox"
+                   name="documentos[${index}][obrigatorio]"
+                   value="1"
+                   checked
                    style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center;">
-            <button type="button" 
-                    class="btn-delete-doc-sm" 
-                    title="Remover" 
+            <button type="button"
+                    class="btn-delete-doc-sm"
+                    title="Remover"
                     onclick="removerAnexoRow(${index})">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>

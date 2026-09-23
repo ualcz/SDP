@@ -11,8 +11,8 @@
 
         @foreach($assuntosList as $idx => $assuntoItem)
             @php
-                $isAssuntoAtivo = $assuntoSelecionadoOld 
-                    ? ($assuntoSelecionadoOld === $assuntoItem['descricao']) 
+                $isAssuntoAtivo = $assuntoSelecionadoOld
+                    ? ($assuntoSelecionadoOld === $assuntoItem['descricao'])
                     : ($idx === 0);
                 $docs = $assuntoItem['documentos_obrigatorios'] ?? [];
             @endphp
@@ -22,15 +22,15 @@
                     <span style="font-size: 12px; color: #15803d; text-transform: uppercase; font-weight: 600; display: block;">Assunto Selecionado:</span>
                     <strong style="font-size: 16px; color: #047857;">{{ $assuntoItem['descricao'] }}</strong>
                 </div>
-
                 @if(count($docs) > 0)
+                    <h3 style="font-size: 1.25rem; text-align: center; margin-bottom: 12px;">Documentos Obrigatórios</h3>
                     @foreach($docs as $doc)
                         @php
                             $tiposAceitos = !empty($doc['tipos_aceitos'])
                                 ? '.' . str_replace(',', ',.', str_replace([' ', '.'], ['', ''], strtolower($doc['tipos_aceitos'])))
                                 : '.pdf,.doc,.docx,.png,.jpg,.jpeg';
                         @endphp
-                        <div class="campo" style="margin-bottom: 16px;">
+                        <div class="campo" style="background: rgb(249, 235, 235); padding: 20px; border-radius: 6px; border: 1px solid rgb(255, 203, 203); margin-bottom: 16px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
                                 {{ $doc['nome'] }}
                                 @if($doc['obrigatorio'])
@@ -40,13 +40,13 @@
                                 @endif
                             </label>
                             @if(!empty(trim($doc['descricao'] ?? '')))
-                                <small style="display: block; background: #fffbeb; color: #78350f; padding: 5px 10px; margin-bottom: 8px; font-size: 12px; border-radius: 0 4px 4px 0;">{{ $doc['descricao'] }}</small>
+                                <div style="display: block; background: #fffbeb; color: #78350f; padding: 10px 14px; margin: 8px 0 12px; font-size: 15px; font-weight: 600; line-height: 1.5; border: 1px solid #fcd34d;">{{ $doc['descricao'] }}</div>
                             @endif
-                            <input type="file" 
-                                   name="documentos[{{ $doc['id'] ?? $loop->index }}]" 
-                                   data-obrigatorio="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
-                                   data-nome="{{ $doc['nome'] }}"
-                                   accept="{{ $tiposAceitos }}">
+                            <input type="file"
+                                name="documentos[{{ $doc['id'] ?? $loop->index }}]"
+                                data-obrigatorio="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
+                                data-nome="{{ $doc['nome'] }}"
+                                accept="{{ $tiposAceitos }}">
                         </div>
                     @endforeach
                 @else

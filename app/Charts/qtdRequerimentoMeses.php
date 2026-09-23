@@ -5,7 +5,7 @@ namespace App\Charts;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use App\Models\Requerimento;
 
-class qtdRequerimentoMeses
+class QtdRequerimentoMeses
 {
    public function build(): \ArielMejiaDev\LarapexCharts\LineChart
     {
@@ -46,7 +46,8 @@ class qtdRequerimentoMeses
         ->setTitle('Requerimentos por mês')
         ->setSubtitle('Cada linha representa um objeto')
         ->setDataset($series)
-        ->setXAxis($meses);
+        ->setXAxis($meses)
+        ->setHeight(350);
 
         return $chart;
     }

@@ -23,6 +23,7 @@ class RequerimentoPorSetor
             ->pieChart()
             ->setTitle('Requerimentos por setor')
             ->addData($valores)
-            ->setLabels($labels);
+            ->setLabels($labels)
+            ->setHeight(350);;
     }
 }
