@@ -9,6 +9,7 @@ use App\Http\Controllers\RequerimentoPdfController;
 use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
     Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
+
+    // Gerenciamento de usuários do sistema;
+    Route::get('/admin/usuarios', [UsersController::class, 'index'])->name('admin.users.index');
 });
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.

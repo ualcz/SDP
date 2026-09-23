@@ -132,6 +132,7 @@
     text-align: center;
     border-radius: 5px;
     padding: 5%;
+    background-color: white;
 }
 
 .total{
@@ -234,11 +235,10 @@
 }
 
 .graficos{
-    margin-top: 4%;
+    margin-top: 2%;
     gap:3%;
     display: grid;
     grid-template-columns: 4fr 3fr;
-
 }
 
 .grafico-linha{
