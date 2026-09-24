@@ -78,36 +78,15 @@
                                 <td class="req-col-objeto">
                                     {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
                                 </td>
-                                @if($requerimento->status == 'Aberto')
-                                    <td class="req-col-objeto aberto">
+                                @if($requerimento->status)
+                                    <td class="req-col-objeto {{ $requerimento->status }}">
                                         <span>
                                             {{ $requerimento->status ?? '-'}}
                                         </span>
                                     </td>
-                                @elseif ($requerimento->status == 'Em Análise')
-                                    <td class="req-col-objeto analise">
-                                         <span>
-                                             {{ $requerimento->status ?? '-'}}
-                                         </span>
-                                    </td>
-                                @else
-                                    <td class="req-col-objeto concluido">
-                                         <span>
-                                             {{ $requerimento->status ?? '-'}}
-                                         </span>
-                                    </td>
                                 @endif
                                 <td class="req-col-acoes">
-                                    {{-- <a
-                                        href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
-                                        target="_blank"
-                                        class="req-btn-imprimir"
-                                    >
-                                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                                        </svg>
-                                        Imprimir comprovante
-                                    </a> --}}
+                                    {{-- --}}
                                     <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
                                 </td>
                             </tr>
