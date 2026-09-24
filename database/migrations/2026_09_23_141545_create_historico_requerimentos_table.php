@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('status');
             $table->text('observacao')->nullable();
 
+            $table->boolean('solicita_novo_documento')->default(false);
+            $table->string('nome_documento_solicitado')->nullable();
+
             $table->timestamps();
         });
     }

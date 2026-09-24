@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Requerimento;
 use Illuminate\Http\Request;
 use App\Models\Setor;
+use Illuminate\Support\Facades\Auth;
 
 class RequerimentoController extends Controller
 {
@@ -103,5 +105,14 @@ class RequerimentoController extends Controller
 
         $requerimentos = $query->get();
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));
+    }
+    public function show(Requerimento $requerimento)
+    {
+        $donoId = $requerimento->usuario_id ?? $requerimento->user_id;
+        if ((int) $donoId !== (int) auth()->id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario']);
+        return view('requerimentos.show', compact('requerimento'));
     }
 }

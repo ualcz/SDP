@@ -22,11 +22,18 @@ class RequerimentoObserver
     {
         // Dispara APENAS se o status mudou
         if ($requerimento->isDirty('status')) {
+
+            // Captura os dados da requisição HTTP atual
+            $solicitaDocumento = request()->boolean('solicita_novo_documento');
+            $nomeDocumento    = request('nome_documento_solicitado');
+
             HistoricoRequerimento::create([
-                'requerimento_id' => $requerimento->id,
-                'user_id'         => Auth::id() ?? $requerimento->usuario_id,
-                'status'          => $requerimento->status,
-                'observacao'      => request('observacao') ?? 'Status alterado.',
+                'requerimento_id'           => $requerimento->id,
+                'user_id'                   => Auth::id() ?? $requerimento->usuario_id,
+                'status'                    => $requerimento->status,
+                'observacao'                => request('observacao') ?? 'Status alterado.',
+                'solicita_novo_documento'   => $solicitaDocumento,
+                'nome_documento_solicitado' => $solicitaDocumento ? $nomeDocumento : null,
             ]);
         }
     }

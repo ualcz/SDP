@@ -127,6 +127,8 @@ class ResponsavelSetorController extends Controller
         $validated = $request->validate([
             'status'     => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
             'observacao' => 'required_if:status,Indeferido|nullable|string',
+            'solicita_novo_documento' => 'nullable|boolean',
+            'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',
         ]);
 
         // Atualiza o status no Requerimento

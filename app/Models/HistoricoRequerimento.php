@@ -15,6 +15,8 @@ class HistoricoRequerimento extends Model
         'user_id',
         'status',
         'observacao',
+        'solicita_novo_documento',     // <--- Deve estar aqui
+        'nome_documento_solicitado',   // <--- Deve estar aqui
     ];
 
     public function requerimento()
