@@ -142,6 +142,7 @@
 .badge-aberto    { background: #fef3c7; color: #b45309; }
 .badge-analise   { background: #ede9fe; color: #6d28d9; }
 .badge-concluido { background: #d1fae5; color: #047857; }
+.badge-indeferido { background: #faddd1; color: #f8350e; }
 
 /* =========================================================
    FORMULÁRIOS E INPUTS
