@@ -11,4 +11,27 @@ class UsersController extends Controller
         $usuarios = Usuario::where('role', '!=', 'aluno')->get();
         return view('admin.users.index', compact('usuarios'));
     }
+
+    public function create(){
+        return view('admin.users.register');
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'nome' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios,email'],
+            'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'string'],
+            ]);
+
+        Usuario::create([
+            'nome' => $request->nome,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+        
+        return redirect()->route('admin.users.index')->with('success', 'Usuário cadastrado com sucesso!');
+    }
+
 }
