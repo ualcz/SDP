@@ -58,13 +58,30 @@
             @endphp
 
             @if($ultimoHistorico && $ultimoHistorico->solicita_novo_documento)
-                <div class="alert alert-warning card-painel" style="border: 2px solid #ffeeba; background-color: #fff3cd; ">
+                <div class="alert alert-warning card-painel" >
                     <h4 style="color: #856404; margin-top: 0;">Ação Necessária: Documento Solicitado</h4>
                     <p><strong>Documento necessário:</strong> {{ $ultimoHistorico->nome_documento_solicitado }}</p>
                     <p><strong>Observação do Setor:</strong> {{ $ultimoHistorico->observacao }}</p>
-                    <form action="">
-                        //por o negocio de enviar o arquivo. e nas mudanças de status tbm mandar email
-                    </form>
+                    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
+                    @csrf
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="documento" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                            Selecione o arquivo para envio:
+                        </label>
+                        <input
+                            type="file"
+                            name="documento"
+                            id="documento"
+                            accept=".pdf,.png,.jpg,.jpeg"
+                            required
+                            style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; background-color: #fff;"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-atualizar style="font-weight: bold; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        Enviar Documento
+                    </button>
+                </form>
                 </div>
             @endif
 
