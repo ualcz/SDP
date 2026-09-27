@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Setor;
+use Spatie\Activitylog\Models\Activity;
+use App\Models\Requerimento;
 
 class RequerimentoController extends Controller
 {
@@ -103,5 +105,16 @@ class RequerimentoController extends Controller
 
         $requerimentos = $query->get();
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));
+    }
+
+    public function showHistorico($id)
+    {
+        $historicos = Activity::with('causer')
+        ->where('subject_id', $id)
+        ->where('subject_type', Requerimento::class) 
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return view('admin.historico', compact('historicos'));
     }
 }
