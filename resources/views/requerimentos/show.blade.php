@@ -51,8 +51,6 @@
             </div>
         @endif
 
-
-
             @php
                 $ultimoHistorico = $requerimento->historicos->sortByDesc('created_at')->first();
             @endphp
