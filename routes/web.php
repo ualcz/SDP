@@ -118,6 +118,7 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');
     Route::get('/requerimentos/aluno/visualizar/{requerimento}', [RequerimentoController::class, 'show']);
+    Route::post('/requerimentos/{requerimento}/reenviar', [RequerimentoController::class, 'reenviarRequerimento'])->name('requerimentos.reenviar');
 });
 
 /*

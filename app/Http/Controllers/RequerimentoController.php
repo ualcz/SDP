@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Requerimento;
 use Illuminate\Http\Request;
 use App\Models\Setor;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
 
 class RequerimentoController extends Controller
@@ -126,5 +125,29 @@ class RequerimentoController extends Controller
         ->get();
 
         return view('admin.historico', compact('historicos'));
+    }
+
+    public function reenviarRequerimento(Request $request, Requerimento $requerimento)
+    {
+        if ((int) $requerimento->usuario_id !== (int) auth()->id()) {
+            abort(403, 'Acesso não autorizado.');
+        }
+        $validated = $request->validate([
+            'motivo_correcao' => 'required|string|max:3000',
+            'arquivos.*'      => 'nullable|file|max:51200',
+        ]);
+        $requerimento->update([
+            'status' => 'Em Análise',
+        ]);
+        $arquivos = $request->file('arquivos', []);
+        $requerimento->notificarPartes(
+            mensagem: $validated['motivo_correcao'],
+            remetente: 'aluno',
+            arquivos: is_array($arquivos) ? $arquivos : [$arquivos]
+        );
+
+        return redirect()
+            ->back()
+            ->with('success', 'Correção e novos documentos enviados ao setor com sucesso!');
     }
 }

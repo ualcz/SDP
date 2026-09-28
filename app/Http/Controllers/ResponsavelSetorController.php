@@ -136,6 +136,12 @@ class ResponsavelSetorController extends Controller
             'status' => $validated['status'],
         ]);
 
+        // Envia e-mail de notificação para o aluno (com cópia para o setor)
+        $requerimento->notificarPartes(
+            mensagem: $validated['observacao'] ?? 'Status atualizado pelo setor.',
+            remetente: 'setor'
+        );
+
         activity()
             ->performedOn($requerimento)
             ->causedBy(auth()->user())

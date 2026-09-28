@@ -26,12 +26,14 @@ class RequerimentoObserver
             // Captura os dados da requisição HTTP atual
             $solicitaDocumento = request()->boolean('solicita_novo_documento');
             $nomeDocumento    = request('nome_documento_solicitado');
-
+            $observacao = request('observacao')
+                ?? request('motivo_correcao')
+                ?? 'Status alterado.';
             HistoricoRequerimento::create([
                 'requerimento_id'           => $requerimento->id,
                 'user_id'                   => Auth::id() ?? $requerimento->usuario_id,
                 'status'                    => $requerimento->status,
-                'observacao'                => request('observacao') ?? 'Status alterado.',
+                'observacao'                => $observacao,
                 'solicita_novo_documento'   => $solicitaDocumento,
                 'nome_documento_solicitado' => $solicitaDocumento ? $nomeDocumento : null,
             ]);

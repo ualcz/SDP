@@ -60,26 +60,21 @@
                     <h4 style="color: #856404; margin-top: 0;">Ação Necessária: Documento Solicitado</h4>
                     <p><strong>Documento necessário:</strong> {{ $ultimoHistorico->nome_documento_solicitado }}</p>
                     <p><strong>Observação do Setor:</strong> {{ $ultimoHistorico->observacao }}</p>
-                    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
-                    @csrf
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="documento" style="display: block; font-weight: bold; margin-bottom: 5px;">
-                            Selecione o arquivo para envio:
-                        </label>
-                        <input
-                            type="file"
-                            name="documento"
-                            id="documento"
-                            accept=".pdf,.png,.jpg,.jpeg"
-                            required
-                            style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; background-color: #fff;"
-                        >
-                    </div>
+                   <form action="{{ route('requerimentos.reenviar', $requerimento->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
 
-                    <button type="submit" class="btn btn-atualizar style="font-weight: bold; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                        Enviar Documento
-                    </button>
-                </form>
+                        <div class="mb-3">
+                            <label for="motivo_correcao" class="form-label">Descrição das Correções / Justificativa:</label>
+                            <textarea name="motivo_correcao" id="motivo_correcao" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="arquivos" class="form-label">Novos Anexos / Documentos Corrigidos:</label>
+                            <input type="file" name="arquivos[]" id="arquivos" class="form-control" multiple>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Enviar Correção</button>
+                    </form>
                 </div>
             @endif
 

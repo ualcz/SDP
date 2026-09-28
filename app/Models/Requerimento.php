@@ -8,6 +8,8 @@ use App\Models\Setor;
 use App\Models\AssuntoRequerimento;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\RequerimentoObserver;
+use App\Mail\AtualizacaoRequerimentoMail;
+use Illuminate\Support\Facades\Mail;
 
 #[ObservedBy([RequerimentoObserver::class])]
 class Requerimento extends Model
@@ -108,5 +110,39 @@ class Requerimento extends Model
     public function historicos()
     {
         return $this->hasMany(HistoricoRequerimento::class)->oldest();
+    }
+
+    /**
+     * Envia e-mail de atualização/tramitação para o aluno e setor.
+     */
+    public function notificarPartes(string $mensagem, string $remetente, array $arquivos = []): void
+    {
+        $setor = $this->setor;
+        $aluno = $this->usuario;
+
+        $emailsSetor = [];
+        if (!empty($setor->email)) {
+            $emailsSetor = is_array($setor->email) ? $setor->email : [$setor->email];
+        }
+        $emailsSetor = array_values(array_unique(array_filter(array_map('trim', $emailsSetor))));
+
+        $emailsAluno = array_filter([$aluno?->email_pessoal, $aluno?->email]);
+        $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
+
+        if ($remetente === 'setor') {
+            $to = $emailsAluno;
+            $cc = $emailsSetor;
+        } else {
+            $to = $emailsSetor;
+            $cc = $emailsAluno;
+        }
+
+        if (!empty($to)) {
+            $mailer = Mail::to($to);
+            if (!empty($cc)) {
+                $mailer->cc($cc);
+            }
+            $mailer->send(new AtualizacaoRequerimentoMail($this, $mensagem, $remetente, $arquivos));
+        }
     }
 }
