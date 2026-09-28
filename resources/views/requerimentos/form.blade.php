@@ -8,12 +8,7 @@
 
 <div class="form-box">
     <!-- Overlay de Carregamento -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-hidden="true">
-        <div class="loading-box">
-            <div class="spinner"></div>
-            <p id="loadingText" class="loading-text">Enviando requerimento, por favor aguarde...</p>
-        </div>
-    </div>
+   <x-loading-overlay form-id="formRequerimento" />
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav">

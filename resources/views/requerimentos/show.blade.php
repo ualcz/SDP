@@ -50,6 +50,15 @@
                 {{ session('sucesso') }}
             </div>
         @endif
+        <x-loading-overlay
+            form-id="formCorrecao"
+            :mensagens="[
+                'Atualizando status...',
+                'Enviando email para o setor...',
+                'Atualizando sistema...',
+                'Só mais um instante...',
+            ]"
+        />
 
             @php
                 $ultimoHistorico = $requerimento->historicos->sortByDesc('created_at')->first();
@@ -60,7 +69,7 @@
                     <h4 style="color: #856404; margin-top: 0;">Ação Necessária: Documento Solicitado</h4>
                     <p><strong>Documento necessário:</strong> {{ $ultimoHistorico->nome_documento_solicitado }}</p>
                     <p><strong>Observação do Setor:</strong> {{ $ultimoHistorico->observacao }}</p>
-                   <form action="{{ route('requerimentos.reenviar', $requerimento->id) }}" method="POST" enctype="multipart/form-data">
+                   <form action="{{ route('requerimentos.reenviar', $requerimento->id) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
                         @csrf
 
                         <div class="mb-3">

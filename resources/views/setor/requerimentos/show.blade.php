@@ -41,7 +41,15 @@
                 {{ session('sucesso') }}
             </div>
         @endif
-
+            <x-loading-overlay
+            form-id="formCorrecao"
+            :mensagens="[
+                'Atualizando status...',
+                'Enviando email para o aluno...',
+                'Atualizando sistema...',
+                'Só mais um instante...'
+            ]"
+        />
         {{-- CABEÇALHO DO REQUERIMENTO --}}
         <div class="card-painel">
             <div class="card-header-flex">
@@ -109,7 +117,7 @@
 
             {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
             <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1.25rem 0 1rem 0;">
-            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST">
+            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" id="formCorrecao">
                 @csrf
                 @method('PATCH')
 
