@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Usuario;
 use App\Models\Setor;
 use App\Models\AssuntoRequerimento;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use App\Observers\RequerimentoObserver;
 
+#[ObservedBy([RequerimentoObserver::class])]
 class Requerimento extends Model
 {
     protected $table = 'requerimentos';
@@ -100,5 +103,10 @@ class Requerimento extends Model
         }
 
         return 'Setor Geral';
+    }
+
+    public function historicos()
+    {
+        return $this->hasMany(HistoricoRequerimento::class)->oldest();
     }
 }

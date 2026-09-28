@@ -4,7 +4,16 @@
 
 @section('content')
 <div class="detalhes-container">
-    <x-btn-voltar style="grid-column: span 2;"/>
+    <x-btn-voltar/>
+    <a href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
+    target="_blank"
+    class="req-btn-imprimir"
+    >
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        Imprimir comprovante
+    </a>
     <div class="historico">
         <h3>Histórico da Tramitação</h3>
 
@@ -41,6 +50,39 @@
                 {{ session('sucesso') }}
             </div>
         @endif
+
+            @php
+                $ultimoHistorico = $requerimento->historicos->sortByDesc('created_at')->first();
+            @endphp
+
+            @if($ultimoHistorico && $ultimoHistorico->solicita_novo_documento)
+                <div class="alert alert-warning card-painel" >
+                    <h4 style="color: #856404; margin-top: 0;">Ação Necessária: Documento Solicitado</h4>
+                    <p><strong>Documento necessário:</strong> {{ $ultimoHistorico->nome_documento_solicitado }}</p>
+                    <p><strong>Observação do Setor:</strong> {{ $ultimoHistorico->observacao }}</p>
+                    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
+                    @csrf
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="documento" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                            Selecione o arquivo para envio:
+                        </label>
+                        <input
+                            type="file"
+                            name="documento"
+                            id="documento"
+                            accept=".pdf,.png,.jpg,.jpeg"
+                            required
+                            style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; background-color: #fff;"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-atualizar style="font-weight: bold; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        Enviar Documento
+                    </button>
+                </form>
+                </div>
+            @endif
+
 
         {{-- CABEÇALHO DO REQUERIMENTO --}}
         <div class="card-painel">
@@ -107,65 +149,9 @@
                 </div>
             @endif
 
-            {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
-            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1.25rem 0 1rem 0;">
-            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST">
-                @csrf
-                @method('PATCH')
 
-                <label for="status" class="info-label">Atualizar Status do Requerimento</label>
-                <div class="form-status">
-                    <select name="status" id="status" class="select-status" required onchange="toggleMensagemIndeferido()">
-                        <option value="Aberto" {{ $requerimento->status == 'Aberto' ? 'selected' : '' }}>Aberto</option>
-                        <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
-                        <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
-                        <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
-                    </select>
-
-                    <button type="submit" class="btn-atualizar">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/>
-                        </svg>
-                        Atualizar Status
-                    </button>
-                </div>
-
-                <div id="campo-mensagem" style="display: {{ $requerimento->status == 'Indeferido' ? 'block' : 'none' }}; margin-top: 15px;">
-                    <label for="observacao" class="info-label">Instrução de correção / Motivo do Indeferimento:</label>
-                    <textarea
-                        name="observacao"
-                        id="observacao"
-                        class="form-control"
-                        rows="3"
-                        placeholder="Descreva o motivo ou o que o aluno precisa corrigir..."
-                        {{ $requerimento->status == 'Indeferido' ? 'required' : '' }}
-                    >{{ old('observacao') }}</textarea>
-                    {{-- Seleção para Solicitar Novo Documento --}}
-                    <div style="margin-bottom: 12px; margin-top:10px;">
-                        <label for="solicita_novo_documento" class="info-label">Deseja solicitar o envio de um documento ao aluno?</label>
-                        <select name="solicita_novo_documento" id="solicita_novo_documento" class="select-status" style="width: 100%;" onchange="toggleCampoNomeDocumento()">
-                            <option value="0" {{ old('solicita_novo_documento') == '0' ? 'selected' : '' }}>Não</option>
-                            <option value="1" {{ old('solicita_novo_documento') == '1' ? 'selected' : '' }}>Sim, solicitar documento</option>
-                        </select>
-                    </div>
-
-                    <div id="box-nome-documento" style="display: {{ old('solicita_novo_documento') == '1' ? 'block' : 'none' }};">
-                        <label for="nome_documento_solicitado" class="info-label">Nome/Tipo do documento solicitado:</label>
-                        <input
-                            type="text"
-                            name="nome_documento_solicitado"
-                            id="nome_documento_solicitado"
-                            class="select-status"
-                            placeholder="Ex: Atestado Médico, Comprovante de Residência..."
-                            value="{{ old('nome_documento_solicitado') }}"
-                            style="width: 100%; border-radius: 6px; border: 1px solid #d1d5db; padding: 8px;"
-                        >
-                    </div>
-                </div>
-            </form>
         </div>
 
-        {{-- DADOS DO ALUNO --}}
         <div class="card-painel">
             <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
                 <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
