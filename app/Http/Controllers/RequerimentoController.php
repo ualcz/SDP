@@ -6,6 +6,7 @@ use App\Models\Requerimento;
 use Illuminate\Http\Request;
 use App\Models\Setor;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 class RequerimentoController extends Controller
 {
@@ -114,5 +115,16 @@ class RequerimentoController extends Controller
         }
         $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario']);
         return view('requerimentos.show', compact('requerimento'));
+    }
+
+    public function showHistorico($id)
+    {
+        $historicos = Activity::with('causer')
+        ->where('subject_id', $id)
+        ->where('subject_type', Requerimento::class)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return view('admin.historico', compact('historicos'));
     }
 }

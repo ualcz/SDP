@@ -60,6 +60,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/usuarios', [UsersController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/usuarios/registrar', [UsersController::class, 'create'])->name('admin.users.register');
     Route::post('/admin/usuarios/registrar', [UsersController::class, 'store'])->name('admin.users.criar-usuario');
+
+    //Histórico de alterações;
+    Route::get('admin/historico/{id}',[RequerimentoController::class, 'showHistorico'])->name('admin.historico');
 });
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.

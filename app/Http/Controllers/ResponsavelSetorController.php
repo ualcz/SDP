@@ -136,6 +136,14 @@ class ResponsavelSetorController extends Controller
             'status' => $validated['status'],
         ]);
 
+        activity()
+            ->performedOn($requerimento)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => $validated['status'],
+                'setor' => $setor->setor_sigla,
+            ])
+            ->log('Status do requerimento atualizado');
 
         return redirect()
             ->back()

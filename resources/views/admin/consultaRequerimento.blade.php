@@ -189,6 +189,7 @@
                         <th>Requerimento</th>
                         <th style="width: 120px; text-align: center;">Setor</th>
                         <th style="text-align: center;">Status</th>
+                        <th style="text-align: center;">Histórico</th>
                         <th style="width: 140px;">Data</th>
                     </tr>
                 </thead>
@@ -221,6 +222,12 @@
                                          </span>
                                     </td>
                                 @endif
+
+                            <td style="text-align: center; width: 120px;">
+                                <span class="badge badge-setor border">
+                                    <a href="{{ route('admin.historico', $requerimento->id) }}">Visualizar</a>
+                                </span>
+                            </td>
                             <td style="color: #64748b; font-size: 0.8125rem;">
                                 {{ $requerimento->created_at?->format('d/m/Y H:i') }}
                             </td>
