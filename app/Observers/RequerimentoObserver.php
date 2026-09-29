@@ -20,8 +20,10 @@ class RequerimentoObserver
 
     public function updated(Requerimento $requerimento): void
     {
-        // Dispara APENAS se o status mudou
-        if ($requerimento->isDirty('status')) {
+        $statusAlterado = $requerimento->wasChanged('status');
+        $alunoReenviouCorrecao = request()->filled('motivo_correcao');
+
+        if ($statusAlterado || $alunoReenviouCorrecao) {
 
             // Captura os dados da requisição HTTP atual
             $solicitaDocumento = request()->boolean('solicita_novo_documento');
