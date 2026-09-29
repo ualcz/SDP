@@ -50,7 +50,74 @@
                 'Só mais um instante...'
             ]"
         />
-        {{-- CABEÇALHO DO REQUERIMENTO --}}
+
+            <div class="card-painel info-aluno">
+                <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Informações do Aluno
+                </h2>
+                <div class="grid-3">
+                    <div class="info-grupo">
+                        <span class="info-label">Nome Completo</span>
+                        <span class="info-valor">{{ $requerimento->usuario->nome }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Matrícula</span>
+                        <span class="info-valor">{{ $requerimento->usuario->matricula }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Telefone / WhatsApp</span>
+                        <span class="info-valor">{{ $requerimento->usuario->telefone ?? 'Não informado' }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">CPF</span>
+                        <span class="info-valor">{{ $requerimento->usuario->cpf }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Turma</span>
+                        <span class="info-valor">{{ $requerimento->usuario->turma_codigo ?? 'Não informada' }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">E-mail Institucional</span>
+                        <span class="info-valor">{{ $requerimento->usuario->email }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">E-mail Pessoal</span>
+                        <span class="info-valor">{{ $requerimento->usuario->email_pessoal ?? 'Não informado' }}</span>
+                    </div>
+                </div>
+
+            <h2 style="margin-top: 20px; font-size: 1.5rem; margin-bottom: 10px">Endereço Recidencial</h2>
+            @if($requerimento->usuario->endereco)
+                <div class="grid-2">
+                    <div class="info-grupo">
+                        <span class="info-label">Rua / Logradouro</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->rua }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Número</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->numero }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Bairro</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->bairro }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Cidade / UF</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cidade }} / {{ $requerimento->usuario->endereco->estado }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">CEP</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cep }}</span>
+                    </div>
+                </div>
+            @else
+                <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado para este usuário.</p>
+            @endif
+        </div>
+        </div>
         <div class="card-painel">
             <div class="card-header-flex">
                 <div>
@@ -174,81 +241,10 @@
         </div>
 
         {{-- DADOS DO ALUNO --}}
-        <div class="card-painel">
-            <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
-                Informações do Aluno
-            </h2>
-            <div class="grid-2">
-                <div class="info-grupo">
-                    <span class="info-label">Nome Completo</span>
-                    <span class="info-valor">{{ $requerimento->usuario->nome }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">Matrícula</span>
-                    <span class="info-valor">{{ $requerimento->usuario->matricula }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">CPF</span>
-                    <span class="info-valor">{{ $requerimento->usuario->cpf }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">Turma</span>
-                    <span class="info-valor">{{ $requerimento->usuario->turma_codigo ?? 'Não informada' }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">E-mail Institucional</span>
-                    <span class="info-valor">{{ $requerimento->usuario->email }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">E-mail Pessoal</span>
-                    <span class="info-valor">{{ $requerimento->usuario->email_pessoal ?? 'Não informado' }}</span>
-                </div>
-                <div class="info-grupo">
-                    <span class="info-label">Telefone / WhatsApp</span>
-                    <span class="info-valor">{{ $requerimento->usuario->telefone ?? 'Não informado' }}</span>
-                </div>
-            </div>
-        </div>
+
 
         {{-- ENDEREÇO DO ALUNO --}}
-        <div class="card-painel">
-            <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Endereço Residencial
-            </h2>
-            @if($requerimento->usuario->endereco)
-                <div class="grid-2">
-                    <div class="info-grupo">
-                        <span class="info-label">Rua / Logradouro</span>
-                        <span class="info-valor">{{ $requerimento->usuario->endereco->rua }}</span>
-                    </div>
-                    <div class="info-grupo">
-                        <span class="info-label">Número</span>
-                        <span class="info-valor">{{ $requerimento->usuario->endereco->numero }}</span>
-                    </div>
-                    <div class="info-grupo">
-                        <span class="info-label">Bairro</span>
-                        <span class="info-valor">{{ $requerimento->usuario->endereco->bairro }}</span>
-                    </div>
-                    <div class="info-grupo">
-                        <span class="info-label">Cidade / UF</span>
-                        <span class="info-valor">{{ $requerimento->usuario->endereco->cidade }} / {{ $requerimento->usuario->endereco->estado }}</span>
-                    </div>
-                    <div class="info-grupo">
-                        <span class="info-label">CEP</span>
-                        <span class="info-valor">{{ $requerimento->usuario->endereco->cep }}</span>
-                    </div>
-                </div>
-            @else
-                <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado para este usuário.</p>
-            @endif
-        </div>
+
 
     </div>
 </div>

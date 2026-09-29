@@ -23,6 +23,12 @@
     padding: 1.5rem;
 }
 
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
 .card-painel { margin-bottom: 1.25rem; }
 
 .historico {
