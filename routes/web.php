@@ -47,9 +47,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
 
-    Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
-        ->name('admin.consultar-requerimentos');
-
     // Gerenciamento de Setores e Assuntos de Requerimentos
     Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
@@ -63,6 +60,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     //Histórico de alterações;
     Route::get('admin/historico/{id}',[RequerimentoController::class, 'showHistorico'])->name('admin.historico');
+});
+
+Route::middleware(['auth', 'role:admin,professor'])->group(function () {
+    Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
+        ->name('admin.consultar-requerimentos');
 });
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.
