@@ -58,13 +58,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/usuarios/registrar', [UsersController::class, 'create'])->name('admin.users.register');
     Route::post('/admin/usuarios/registrar', [UsersController::class, 'store'])->name('admin.users.criar-usuario');
 
-    //Histórico de alterações;
-    Route::get('admin/historico/{id}',[RequerimentoController::class, 'showHistorico'])->name('admin.historico');
 });
 
-Route::middleware(['auth', 'role:admin,professor'])->group(function () {
+Route::middleware(['auth', 'role:admin,professor,servidor'])->group(function () {
     Route::get('/admin/consultar-requerimentos', [AdminConsultaController::class, 'index'])
         ->name('admin.consultar-requerimentos');
+    Route::get('/admin/historico/{id}', [RequerimentoController::class, 'showHistorico'])
+        ->name('admin.historico');
 });
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.
@@ -83,7 +83,7 @@ Route::middleware(['auth', 'setor.config'])->group(function () {
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
 });
 
-Route::middleware(['auth', 'role:professor'])->group(function () {
+Route::middleware(['auth', 'role:professor,servidor'])->group(function () {
     Route::get('/servidor/dashboard', [AdminDashboardController::class, 'index'])
         ->name('servidor.dashboard');
 });

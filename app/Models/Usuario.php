@@ -56,6 +56,11 @@ class Usuario extends Authenticatable
         return $this->role === 'professor';
     }
 
+    public function isServidor(): bool
+    {
+        return in_array(strtolower(trim((string) $this->role)), ['professor', 'servidor'], true);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | RESPONSABILIDADE DE SETOR

@@ -17,7 +17,7 @@
             <div class="header-inner">
 
                 {{-- Logotipo --}}
-            <a href="{{ auth()->check() ? (auth()->user()->isAdmin() ? route('admin.dashboard') : (auth()->user()->isProfessor() ? route('servidor.dashboard') : route('requerimentos.aluno'))) : url('/') }}" class="header-brand">
+            <a href="{{ auth()->check() ? (auth()->user()->isAdmin() ? route('admin.dashboard') : (auth()->user()->isServidor() ? route('servidor.dashboard') : route('requerimentos.aluno'))) : url('/') }}" class="header-brand">
                     <img src="{{ asset('img/logoVertical.png') }}" alt="Logo IFBA">
                     <div class="header-brand-text">
                         <span class="header-brand-title">SDP</span>
@@ -31,7 +31,7 @@
                     <nav class="header-nav">
 
                         {{-- Dashboard para administradores e servidores --}}
-                        @if(auth()->user()->isAdmin() || auth()->user()->isProfessor())
+                        @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
                         <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('servidor.dashboard') }}"
                         class="nav-link {{ request()->routeIs('admin.dashboard', 'servidor.dashboard') ? 'active' : '' }}">
                             <span>Dashboard</span>
@@ -99,7 +99,7 @@
                             <span>Usuários</span>
                         </a>
                         @else
-                            <a class="profile header-username nav-link {{ request()->routeIs('requerimentos.aluno') ? 'active' : '' }}" href="{{ auth()->user()->isProfessor() ? route('servidor.dashboard') : route('requerimentos.aluno') }}">
+                            <a class="profile header-username nav-link {{ request()->routeIs('requerimentos.aluno') ? 'active' : '' }}" href="{{ auth()->user()->isServidor() ? route('servidor.dashboard') : route('requerimentos.aluno') }}">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8zm7 8a7 7 0 00-14 0"/>
                                 </svg>
