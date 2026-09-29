@@ -49,9 +49,9 @@
 </div>
 
 <div class="cards" >
-    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'aberto']) }}"
+    <a href="{{ route('setor.requerimento.status', ['id' => $setor->id, 'status' => 'Aberto']) }}"
         class="card_individual total" style="border-left: 4px solid #D97706">
-        <div class="linha1">Requerimentos em aberto</div>
+        <div class="linha1">Requerimentos em Aberto</div>
         <div class="linha2">
             <p class="numero">{{ $totalAberto }}</p>
         </div>

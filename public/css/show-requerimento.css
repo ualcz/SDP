@@ -139,7 +139,7 @@
 
 .badge svg { flex-shrink: 0; }
 
-.badge-aberto    { background: #fef3c7; color: #b45309; }
+.badge-Aberto    { background: #fef3c7; color: #b45309; }
 .badge-analise   { background: #ede9fe; color: #6d28d9; }
 .badge-concluido { background: #d1fae5; color: #047857; }
 .badge-indeferido { background: #faddd1; color: #f8350e; }
@@ -360,8 +360,8 @@
 }
 
 /* Estados da Timeline */
-.status-aberto .timeline-badge       { border-color: #f59e0b; }
-.status-aberto .badge-status        { background: #fef3c7; color: #92400e; }
+.status-Aberto .timeline-badge       { border-color: #f59e0b; }
+.status-Aberto .badge-status        { background: #fef3c7; color: #92400e; }
 
 .status-em-analise .timeline-badge   { border-color: #8b5cf6; }
 .status-em-analise .badge-status    { background: #ede9fe; color: #6d28d9; }
@@ -382,6 +382,72 @@
     color: #6b7280;
     font-size: 0.84rem;
     text-align: center;
+}
+
+/* =========================================================
+   ALERTA DE AÇÃO NECESSÁRIA (REENVIO DE DOCUMENTO)
+   ========================================================= */
+
+.alert-acao-necessaria {
+    background: #fff;
+    border: 1px solid #fef3c7;
+    }
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b45309;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #fde68a;
+}
+
+.alert-titulo {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #92400e;
+}
+
+.alert-detalhes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-correcao {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #fde68a;
+}
+
+.form-correcao .info-label {
+    color: #92400e;
+}
+
+.file-input {
+    min-height: auto;
+    padding: 0.5rem;
+    background: #ffffff;
+}
+
+.btn-enviar-correcao {
+    background: #40b338;
+    border-color: #00aa14;
+    margin-top: 0.5rem;
+}
+
+.btn-enviar-correcao:hover {
+    background: #2830be;
+    border-color: #0d0a67;
+}
+
+@media (max-width: 650px) {
+    .btn-enviar-correcao {
+        width: 100%;
+    }
 }
 
 /* =========================================================

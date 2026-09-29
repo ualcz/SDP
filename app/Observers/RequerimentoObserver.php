@@ -13,7 +13,7 @@ class RequerimentoObserver
         HistoricoRequerimento::create([
             'requerimento_id' => $requerimento->id,
             'user_id'         => Auth::id() ?? $requerimento->usuario_id,
-            'status'          => $requerimento->status ?? 'aberto',
+            'status'          => $requerimento->status ?? 'Aberto',
             'observacao'      => 'Requerimento cadastrado no sistema.',
         ]);
     }

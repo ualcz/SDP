@@ -103,7 +103,9 @@ class RequerimentoController extends Controller
             $query->where('numero_protocolo', 'LIKE', '%' . $request->input('numero_protocolo') . '%');
         }
 
-        $requerimentos = $query->get();
+        $requerimentos = $query->orderByRaw("CASE WHEN LOWER(status) = 'indeferido' THEN 0 ELSE 1 END")
+                               ->latest()
+                               ->get();
         return view('requerimentos.meusRequerimentos', compact('requerimentos'));
     }
     public function show(Requerimento $requerimento)

@@ -57,7 +57,7 @@ class ResponsavelSetorController extends Controller
 
         $statusMap = [
             'todos'      => null,
-            'aberto'     => 'Aberto',
+            'Aberto'     => 'Aberto',
             'analise'    => 'Em Análise',
             'indeferido' => 'Indeferido',
             'concluido'  => 'Concluído',

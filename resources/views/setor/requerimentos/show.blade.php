@@ -62,7 +62,7 @@
                 <div>
                     @php
                         $statusClass = match($requerimento->status) {
-                            'Aberto' => 'badge-aberto',
+                            'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
                             'Indeferido' => 'badge-indeferido',

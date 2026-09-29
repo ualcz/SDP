@@ -65,24 +65,45 @@
             @endphp
 
             @if($ultimoHistorico && $ultimoHistorico->solicita_novo_documento)
-                <div class="alert alert-warning card-painel" >
-                    <h4 style="color: #856404; margin-top: 0;">Ação Necessária: Documento Solicitado</h4>
-                    <p><strong>Documento necessário:</strong> {{ $ultimoHistorico->nome_documento_solicitado }}</p>
-                    <p><strong>Observação do Setor:</strong> {{ $ultimoHistorico->observacao }}</p>
-                   <form action="{{ route('requerimentos.reenviar', $requerimento->id) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
+                <div class="alert-acao-necessaria card-painel">
+                    <div class="alert-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        <h4 class="alert-titulo">Ação Necessária: Documento Solicitado</h4>
+                    </div>
+
+                    <div class="alert-detalhes">
+                        <div class="info-grupo">
+                            <span class="info-label">OBSERVAÇÃO DO SETOR</span>
+                            <div class="box-motivo">
+                                <span class="info-valor">{{ $ultimoHistorico->observacao }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('requerimentos.reenviar', $requerimento->id) }}" method="POST" enctype="multipart/form-data" id="formCorrecao" class="form-correcao">
                         @csrf
 
                         <div class="mb-3">
-                            <label for="motivo_correcao" class="form-label">Descrição das Correções / Justificativa:</label>
-                            <textarea name="motivo_correcao" id="motivo_correcao" class="form-control" rows="4" required></textarea>
+                            <label for="motivo_correcao" class="info-label">DESCRIÇÃO DAS CORREÇÕES / JUSTIFICATIVA</label>
+                            <textarea name="motivo_correcao" id="motivo_correcao" class="form-control" rows="4" placeholder="Informe aqui os detalhes da correção..." required></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="arquivos" class="form-label">Novos Anexos / Documentos Corrigidos:</label>
-                            <input type="file" name="arquivos[]" id="arquivos" class="form-control" multiple>
+                            <label for="arquivos" class="info-label">{{ $ultimoHistorico->nome_documento_solicitado }} / DOCUMENTOS CORRIGIDOS</label>
+                            <input type="file" name="arquivos[]" id="arquivos" class="form-control file-input" multiple required>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Enviar Correção</button>
+                        <button type="submit" class="btn-atualizar btn-enviar-correcao">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m5 12 7-7 7 7"/>
+                                <path d="M12 19V5"/>
+                            </svg>
+                            Enviar Correção
+                        </button>
                     </form>
                 </div>
             @endif
@@ -100,7 +121,7 @@
                 <div>
                     @php
                         $statusClass = match($requerimento->status) {
-                            'Aberto' => 'badge-aberto',
+                            'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
                             'Indeferido' => 'badge-indeferido',

@@ -198,7 +198,7 @@ class EnvioEmailController extends Controller
                 'assunto_requerimento_id' => $assunto?->id,
                 'objetoDoRequerimento'   => $objeto,
                 'motivo'                 => $motivo,
-                'status'                 => 'aberto',
+                'status'                 => 'Aberto',
                 'setor_id'                => $setor->id,
             ]);
             // Chama método para gerar número de protocolo;

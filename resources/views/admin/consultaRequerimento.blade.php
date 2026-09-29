@@ -120,7 +120,7 @@
         font-size: 0.75rem;
     }
 
-    .aberto span{
+    .Aberto span{
         color: rgb(245, 148, 30);
         background-color: rgb(255, 232, 204);
         padding: 5px 10px 5px 10px;
@@ -204,7 +204,7 @@
                                 </span>
                             </td>
                          @if($requerimento->status == 'Aberto')
-                                    <td class="req-col-objeto aberto" style="text-align: center;">
+                                    <td class="req-col-objeto Aberto" style="text-align: center;">
                                         <span>
                                             {{ $requerimento->status ?? '-'}}
                                         </span>
