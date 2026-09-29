@@ -134,9 +134,15 @@ class RequerimentoController extends Controller
         if ((int) $requerimento->usuario_id !== (int) auth()->id()) {
             abort(403, 'Acesso não autorizado.');
         }
+
+        $ultimoHistorico = $requerimento->historicos()->reorder()->latest('created_at')->first();
+        $exigeDocumentos = $requerimento->status === 'Indeferido'
+            || (bool) $ultimoHistorico?->solicita_novo_documento;
+
         $validated = $request->validate([
             'motivo_correcao' => 'required|string|max:3000',
-            'arquivos.*'      => 'nullable|file|max:51200',
+            'arquivos'        => [$exigeDocumentos ? 'required' : 'nullable', 'array', 'min:1'],
+            'arquivos.*'      => [$exigeDocumentos ? 'required' : 'nullable', 'file', 'max:51200'],
         ]);
         $requerimento->update([
             'status' => 'Em Análise',

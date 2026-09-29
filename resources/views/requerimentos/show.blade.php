@@ -64,7 +64,7 @@
                 $ultimoHistorico = $requerimento->historicos->sortByDesc('created_at')->first();
             @endphp
 
-            @if($ultimoHistorico && $ultimoHistorico->solicita_novo_documento)
+            @if($requerimento->status === 'Indeferido' || ($ultimoHistorico && $ultimoHistorico->solicita_novo_documento))
                 <div class="alert-acao-necessaria card-painel">
                     <div class="alert-header">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,7 +93,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="arquivos" class="info-label">{{ $ultimoHistorico->nome_documento_solicitado }} / DOCUMENTOS CORRIGIDOS</label>
+                            <label for="arquivos" class="info-label">{{ $ultimoHistorico->nome_documento_solicitado ?? 'Documento indeferido' }} / DOCUMENTOS CORRIGIDOS</label>
                             <input type="file" name="arquivos[]" id="arquivos" class="form-control file-input" multiple required>
                         </div>
 

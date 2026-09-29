@@ -112,6 +112,11 @@ class Requerimento extends Model
         return $this->hasMany(HistoricoRequerimento::class)->oldest();
     }
 
+    public function emailThreadSubject(): string
+    {
+        return 'Requerimento #' . ($this->numero_protocolo ?? $this->id) . ' [' . $this->objetoDoRequerimento . '] - ' . ($this->usuario?->nome ?? 'Aluno');
+    }
+
     /**
      * Envia e-mail de atualização/tramitação para o aluno e setor.
      */

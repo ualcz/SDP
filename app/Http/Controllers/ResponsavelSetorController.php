@@ -131,6 +131,15 @@ class ResponsavelSetorController extends Controller
             'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',
         ]);
 
+        $solicitaNovoDocumento = $validated['status'] === 'Indeferido'
+            || $request->boolean('solicita_novo_documento');
+        $request->merge([
+            'solicita_novo_documento' => $solicitaNovoDocumento,
+            'nome_documento_solicitado' => $solicitaNovoDocumento
+                ? ($validated['nome_documento_solicitado'] ?? 'Documento indeferido')
+                : null,
+        ]);
+
         // Atualiza o status no Requerimento
         $requerimento->update([
             'status' => $validated['status'],

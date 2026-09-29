@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Requerimento;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
 class AtualizacaoRequerimentoMail extends Mailable
@@ -18,11 +19,19 @@ class AtualizacaoRequerimentoMail extends Mailable
         public ?array $arquivos = []
     ) {}
 
+    public function headers(): Headers
+    {
+        $messageId = $this->requerimento->email_message_id;
+
+        return new Headers(
+            references: $messageId ? [$messageId] : [],
+            text: $messageId ? ['In-Reply-To' => '<' . $messageId . '>'] : [],
+        );
+    }
+
     public function build()
     {
-        $subject = "Atualização no Requerimento #{$this->requerimento->numero_protocolo} [Status: {$this->requerimento->status}]";
-
-        $email = $this->subject($subject)
+        $email = $this->subject($this->requerimento->emailThreadSubject())
                      ->markdown('emails.requerimento_atualizado');
 
         // Anexa arquivos se houver (ex: nova documentação de correção)

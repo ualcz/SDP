@@ -100,6 +100,30 @@
         border-bottom: 1px solid #f3f4f6;
         padding-left: 0.5rem;
     }
+
+    .btn-ver-mais {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.875rem;
+        border-radius: 0.375rem;
+        background-color: #2563eb;
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .btn-ver-mais:hover {
+        background-color: #1d4ed8;
+        box-shadow: 0 2px 5px rgb(37 99 235 / 25%);
+    }
+
+    .btn-ver-mais:focus-visible {
+        outline: 3px solid #93c5fd;
+        outline-offset: 2px;
+    }
 </style>
 
 @section('content')
@@ -151,7 +175,7 @@
                 <p>{{ $requerimento->usuario->nome ?? $requerimento->user->name }}</p>
                 <p>{{ $requerimento->usuario->matricula ?? $requerimento->user->matricula }}</p>
                 <p>{{ $requerimento->created_at->format('d/m/Y H:i') }}</p>
-                <a href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}">
+                <a class="btn-ver-mais" href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}">
                     Ver Mais
                 </a>
             </div>

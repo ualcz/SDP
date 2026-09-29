@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Http\Controllers\RequerimentoPdfController;
+use App\Models\Requerimento;
 use App\Models\Usuario;
 use App\Services\Pdf\PdfMergerService;
 use Illuminate\Bus\Queueable;
@@ -11,6 +12,7 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 
@@ -30,7 +32,8 @@ class InformacoesAlunoMail extends Mailable
         public ?string $mensagem = null,
         public array $arquivos = [],
         public ?string $objeto = null,
-        public ?string $setorChave = null
+        public ?string $setorChave = null,
+        public ?Requerimento $requerimento = null
     ) {}
 
     /**
@@ -38,8 +41,8 @@ class InformacoesAlunoMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $assunto = $this->objeto 
-            ? 'Requerimento [' . $this->objeto . '] - ' . $this->aluno->nome 
+        $assunto = $this->objeto
+            ? ($this->requerimento?->emailThreadSubject() ?? 'Requerimento [' . $this->objeto . '] - ' . $this->aluno->nome)
             : 'Informações Cadastrais do Aluno: ' . $this->aluno->nome;
 
         // Reply-To aponta para o e-mail pessoal do aluno.
@@ -54,6 +57,11 @@ class InformacoesAlunoMail extends Mailable
             subject: $assunto,
             replyTo: $replyTo ?: null,
         );
+    }
+
+    public function headers(): Headers
+    {
+        return new Headers(messageId: $this->requerimento?->email_message_id);
     }
 
     /**

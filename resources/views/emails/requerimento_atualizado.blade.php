@@ -8,6 +8,14 @@ Houve uma nova atualização no requerimento referente a **{{ $requerimento->obj
 **Status Atual:** {{ $requerimento->status }}
 **Enviado por:** {{ $autor === 'setor' ? 'Setor Responsável' : 'Aluno' }}
 
+@if($requerimento->status === 'Indeferido' && $autor === 'setor')
+Seu requerimento foi indeferido. Acesse o sistema para corrigir e enviar novamente o documento solicitado.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Corrigir e reenviar documento
+</x-mail::button>
+@endif
+
 ---
 
 ### Mensagem / Observação:

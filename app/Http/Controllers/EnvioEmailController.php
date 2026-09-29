@@ -7,6 +7,7 @@ use App\Models\Requerimento;
 use App\Models\Setor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class EnvioEmailController extends Controller
 {
@@ -189,6 +190,7 @@ class EnvioEmailController extends Controller
         ]);
 
         // 3. Salva o registro no banco de dados
+        $requerimento = null;
         try {
             // Tenta encontrar o assunto pelo texto selecionado
             $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
@@ -203,6 +205,12 @@ class EnvioEmailController extends Controller
             ]);
             // Chama método para gerar número de protocolo;
             $this->gerarNumeroProtocolo($requerimento);
+
+            $dominioEmail = substr(strrchr((string) config('mail.from.address'), '@') ?: '', 1);
+            $dominioEmail = $dominioEmail ?: (parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost');
+            $requerimento->forceFill([
+                'email_message_id' => Str::uuid() . '@' . $dominioEmail,
+            ])->save();
         } catch (\Exception $e) {
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
@@ -214,7 +222,8 @@ class EnvioEmailController extends Controller
             mensagem: $motivo,
             arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
             objeto: $objeto,
-            setorChave: (string) $setor->id
+            setorChave: (string) $setor->id,
+            requerimento: $requerimento
         );
 
         $mailer = Mail::to($toEmails);
