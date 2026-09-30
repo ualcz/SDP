@@ -26,6 +26,9 @@
                                     <strong>Observação:</strong> {{ $historico->observacao }}
                                 </div>
                             @endif
+
+                            {{-- DOCUMENTOS ANEXADOS NESTA TRAMITAÇÃO --}}
+                            @include('requerimentos.partials.historico-documentos', ['documentos' => $historico->documentos])
                         </div>
                     </div>
                 </li>
@@ -117,7 +120,6 @@
                 <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado para este usuário.</p>
             @endif
         </div>
-        </div>
         <div class="card-painel">
             <div class="card-header-flex">
                 <div>
@@ -184,7 +186,7 @@
 
             {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
             <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1.25rem 0 1rem 0;">
-            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" id="formCorrecao">
+            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
                 @csrf
                 @method('PATCH')
 
@@ -203,6 +205,13 @@
                         </svg>
                         Atualizar Status
                     </button>
+                </div>
+
+                {{-- Campo para anexar documentos do setor/servidor --}}
+                <div style="margin-top: 15px;">
+                    <label for="arquivos_servidor" class="info-label">Anexar Documento / Parecer / Despacho (opcional):</label>
+                    <input type="file" name="arquivos[]" id="arquivos_servidor" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                    <small style="color: #6b7280; font-size: 0.78rem; display: block; margin-top: 4px;">Você pode anexar um ou mais documentos (PDF, imagens, documentos Word) para ficarem registrados no histórico desta tramitação.</small>
                 </div>
 
                 <div id="campo-mensagem" style="display: {{ $requerimento->status == 'Indeferido' ? 'block' : 'none' }}; margin-top: 15px;">
@@ -248,6 +257,6 @@
 
     </div>
 </div>
-<script src="{{ asset('js/show-requerimento.js') }}">
-</script>
+
+<script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

@@ -35,6 +35,9 @@
                                     <strong>Observação:</strong> {{ $historico->observacao }}
                                 </div>
                             @endif
+
+                            {{-- DOCUMENTOS ANEXADOS NESTA TRAMITAÇÃO --}}
+                            @include('requerimentos.partials.historico-documentos', ['documentos' => $historico->documentos])
                         </div>
                     </div>
                 </li>
@@ -255,6 +258,6 @@
 
     </div>
 </div>
-<script src="{{ asset('js/show-requerimento.js') }}">
-</script>
+
+<script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection
