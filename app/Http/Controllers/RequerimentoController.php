@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Requerimento;
 use Illuminate\Http\Request;
 use App\Models\Setor;
+use App\Services\DocumentoRequerimentoService;
 
 class RequerimentoController extends Controller
 {
@@ -113,13 +114,13 @@ class RequerimentoController extends Controller
         if ((int) $donoId !== (int) auth()->id()) {
             abort(403, 'Acesso não autorizado.');
         }
-        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario']);
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos']);
         return view('requerimentos.show', compact('requerimento'));
     }
 
     public function showHistorico($id)
     {
-        $requerimento = Requerimento::with(['historicos.usuario', 'usuario', 'setor'])->findOrFail($id);
+        $requerimento = Requerimento::with(['historicos.usuario', 'historicos.documentos', 'usuario', 'setor'])->findOrFail($id);
         $historicos = $requerimento->historicos;
 
         return view('admin.historico', compact('requerimento', 'historicos'));
@@ -143,7 +144,30 @@ class RequerimentoController extends Controller
         $requerimento->update([
             'status' => 'Em Análise',
         ]);
+
         $arquivos = $request->file('arquivos', []);
+
+        $novoHistorico = \App\Models\HistoricoRequerimento::create([
+            'requerimento_id'           => $requerimento->id,
+            'user_id'                   => auth()->id() ?? $requerimento->usuario_id,
+            'status'                    => $requerimento->status,
+            'observacao'                => $validated['motivo_correcao'],
+            'solicita_novo_documento'   => false,
+            'nome_documento_solicitado' => null,
+        ]);
+
+        // Salva os documentos enviados vinculados ao histórico
+        if (!empty($arquivos)) {
+            $titulo = $ultimoHistorico?->nome_documento_solicitado ?? 'Documento de Correção';
+            app(DocumentoRequerimentoService::class)->salvarArquivos(
+                requerimento: $requerimento,
+                historico: $novoHistorico,
+                arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
+                usuario: auth()->user(),
+                titulo: $titulo
+            );
+        }
+
         $requerimento->notificarPartes(
             mensagem: $validated['motivo_correcao'],
             remetente: 'aluno',

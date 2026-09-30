@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Setor;
 use App\Models\Requerimento;
+use App\Models\HistoricoRequerimento;
+use App\Services\DocumentoRequerimentoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -110,8 +112,8 @@ class ResponsavelSetorController extends Controller
             abort(404);
         }
 
-        // Carrega o usuário, endereço, assunto e os históricos (linha do tempo)
-        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario']);
+        // Carrega o usuário, endereço, assunto e os históricos (linha do tempo com documentos)
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos']);
 
         return view('setor.requerimentos.show', compact('setor', 'requerimento'));
     }
@@ -129,6 +131,8 @@ class ResponsavelSetorController extends Controller
             'observacao' => 'required_if:status,Indeferido|nullable|string',
             'solicita_novo_documento' => 'nullable|boolean',
             'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',
+            'arquivos'   => 'nullable|array',
+            'arquivos.*' => 'nullable|file|max:51200',
         ]);
 
         $solicitaNovoDocumento = $validated['status'] === 'Indeferido'
@@ -140,15 +144,36 @@ class ResponsavelSetorController extends Controller
                 : null,
         ]);
 
-        // Atualiza o status no Requerimento
         $requerimento->update([
             'status' => $validated['status'],
         ]);
 
+        $novoHistorico = HistoricoRequerimento::create([
+            'requerimento_id'           => $requerimento->id,
+            'user_id'                   => Auth::id() ?? $requerimento->usuario_id,
+            'status'                    => $requerimento->status,
+            'observacao'                => $validated['observacao'] ?? 'Despacho registrado pelo setor.',
+            'solicita_novo_documento'   => $solicitaNovoDocumento,
+            'nome_documento_solicitado' => $solicitaNovoDocumento ? ($validated['nome_documento_solicitado'] ?? 'Documento indeferido') : null,
+        ]);
+
+        // Salva arquivos anexados pelo servidor vinculados ao histórico
+        $arquivos = $request->file('arquivos', []);
+        if (!empty($arquivos) && $novoHistorico) {
+            app(DocumentoRequerimentoService::class)->salvarArquivos(
+                requerimento: $requerimento,
+                historico: $novoHistorico,
+                arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
+                usuario: auth()->user(),
+                titulo: 'Despacho / Documento do Setor'
+            );
+        }
+
         // Envia e-mail de notificação para o aluno (com cópia para o setor)
         $requerimento->notificarPartes(
             mensagem: $validated['observacao'] ?? 'Status atualizado pelo setor.',
-            remetente: 'setor'
+            remetente: 'setor',
+            arquivos: is_array($arquivos) ? $arquivos : []
         );
 
         activity()

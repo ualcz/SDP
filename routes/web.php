@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminConsultaController;
 use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\DocumentoRequerimentoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -144,4 +145,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/requerimentos/visualizar-blade', [RequerimentoPdfController::class, 'visualizarBlade'])->name('requerimentos.visualizar-blade');
     Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
     Route::get('/requerimentos/{numero_protocolo}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->where('numero_protocolo', '.*')->name('requerimentos.gerar-comprovante');
+
+    /*
+    |--------------------------------------------------------------------------
+    | GESTÃO DE DOCUMENTOS DO HISTÓRICO & TRAMITAÇÃO
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/documentos/{documento}/visualizar', [DocumentoRequerimentoController::class, 'visualizar'])
+        ->name('documentos.preview');
+    Route::get('/documentos/{documento}/baixar', [DocumentoRequerimentoController::class, 'baixar'])
+        ->name('documentos.download');
 });
+
