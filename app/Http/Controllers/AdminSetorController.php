@@ -141,11 +141,22 @@ class AdminSetorController extends Controller
             'descricao'                => 'required|string|max:255',
             'observacao'               => 'nullable|string|max:500',
             'ordem'                    => 'nullable|integer',
-            'curso_acesso'             => 'required|string|max:10',
             'documentos'               => 'nullable|array',
-            'documentos.*.nome'        => 'nullable|string|max:255',
+            'documentos.*.nome'        => 'required_with:documentos.*.descricao,documentos.*.obrigatorio|nullable|string|max:255',
             'documentos.*.descricao'   => 'nullable|string|max:500',
             'documentos.*.obrigatorio' => 'nullable',
+        ], [
+            'required'      => 'O campo :attribute é obrigatório.',
+            'required_with' => 'O nome do documento é obrigatório ao preencher seus detalhes.',
+            'string'        => 'O campo :attribute deve ser um texto.',
+            'max'           => 'O campo :attribute não pode ter mais que :max caracteres.',
+            'integer'       => 'O campo :attribute deve ser um número inteiro.',
+        ], [
+            'descricao'                => 'Descrição do Assunto',
+            'observacao'               => 'Observação',
+            'ordem'                    => 'Ordem',
+            'documentos.*.nome'        => 'Nome do Documento',
+            'documentos.*.descricao'   => 'Descrição do Documento',
         ]);
 
         $maxOrdem = $setor->assuntos()->max('ordem') ?? 0;
@@ -156,7 +167,6 @@ class AdminSetorController extends Controller
                 'descricao'  => trim($dados['descricao']),
                 'observacao' => !empty($dados['observacao']) ? trim($dados['observacao']) : null,
                 'ordem'      => $dados['ordem'] ?? ($maxOrdem + 1),
-                'curso_acesso' => $dados['curso_acesso'],
                 'ativo'      => true,
             ]);
 
