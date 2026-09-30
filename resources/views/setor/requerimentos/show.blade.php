@@ -54,7 +54,28 @@
             ]"
         />
 
-        @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
+<<<<<<< HEAD
+            @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
+            <div class="card-painel info-aluno">
+                <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Informações do Aluno
+                </h2>
+                <div class="grid-3">
+                    <div class="info-grupo">
+                        <span class="info-label">Nome Completo</span>
+                        <span class="info-valor">{{ $requerimento->usuario->nome }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Matrícula</span>
+                        <span class="info-valor">{{ $requerimento->usuario->matricula }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Telefone / WhatsApp</span>
+                        <span class="info-valor">{{ $requerimento->usuario->telefone ?? 'Não informado' }}</span>
+=======
         <details class="card-painel info-aluno-accordion">
             <summary class="accordion-header">
                 <div class="accordion-titulo-wrapper">
@@ -79,6 +100,7 @@
                             <span class="info-label">Telefone / WhatsApp</span>
                             <span class="info-valor">{{ $requerimento->usuario->telefone ?? 'Não informado' }}</span>
                         </div>
+>>>>>>> 805d5255b0c6771cbdc53fc92d0ce740f9d6e528
                     </div>
                 </div>
 
@@ -136,12 +158,36 @@
                             <span class="info-valor">{{ $requerimento->usuario->endereco->cep }}</span>
                         </div>
                     </div>
+<<<<<<< HEAD
+                    <div class="info-grupo">
+                        <span class="info-label">Número</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->numero }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Bairro</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->bairro }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Cidade / UF</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cidade }} / {{ $requerimento->usuario->endereco->estado }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">CEP</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cep }}</span>
+                    </div>
+                </div>
+            @else
+                <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado para este usuário.</p>
+            @endif
+        </div>
+            @endif
+=======
                 @else
                     <p class="texto-vazio">Nenhum endereço cadastrado para este usuário.</p>
                 @endif
             </div>
         </details>
-        @endif
+>>>>>>> 805d5255b0c6771cbdc53fc92d0ce740f9d6e528
         <div class="card-painel">
             <div class="card-header-flex">
                 <div>
