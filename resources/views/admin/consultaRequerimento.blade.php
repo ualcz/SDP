@@ -6,32 +6,71 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/consultaRequerimento.css') }}">
 
-{{-- Filtro de Pesquisa por Aluno ou Setor --}}
+{{-- Filtro Avançado de Pesquisa --}}
 <div class="dash-filter-card">
     <form method="GET" action="" class="dash-filter-form">
-        <div style="flex: 2; min-width: 220px;">
-            <input type="text" name="aluno" value="{{ request('aluno') }}" placeholder="Buscar por aluno..." class="input-filtro">
+        <div class="filter-grid">
+
+            <div class="filter-group">
+                <label class="filter-label">Aluno</label>
+                <input type="text" name="aluno" value="{{ request('aluno') }}" placeholder="Nome do aluno..." class="input-filtro">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Turma</label>
+                <input type="text" name="turma" value="{{ request('turma') }}" placeholder="Código da turma..." class="input-filtro">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Setor</label>
+                <select name="setor" class="input-filtro">
+                    <option value="">Todos</option>
+                    @foreach($setores as $s)
+                        <option value="{{ $s->id }}" {{ request('setor') == $s->id ? 'selected' : '' }}>
+                            {{ $s->setor_sigla }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select name="status" class="input-filtro">
+                    <option value="">Todos</option>
+                    <option value="Aberto" {{ request('status') == 'Aberto' ? 'selected' : '' }}>Aberto</option>
+                    <option value="Em Análise" {{ request('status') == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
+                    <option value="Indeferido" {{ request('status') == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
+                    <option value="Concluido" {{ request('status') == 'Concluido' ? 'selected' : '' }}>Concluido</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Data Inicial</label>
+                <input type="date" name="data_inicio" value="{{ request('data_inicio') }}" class="input-filtro">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Data Final</label>
+                <input type="date" name="data_fim" value="{{ request('data_fim') }}" class="input-filtro">
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn-filtrar">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+
+                @if(request()->anyFilled(['aluno', 'turma', 'setor', 'status', 'data_inicio', 'data_fim']))
+                    <a href="{{ route('admin.consultar-requerimentos') }}" class="btn-limpar">
+                       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12"/>
+                        </svg>
+                    </a>
+                @endif
+            </div>
         </div>
-        <div style="flex: 1; min-width: 180px;">
-            <select name="setor" class="input-filtro">
-                <option value="">Todos os setores</option>
-                @foreach($setores as $s)
-                    <option value="{{ $s->id }}" {{ request('setor') == $s->id ? 'selected' : '' }}>
-                        {{ $s->setor_sigla }} &mdash; {{ $s->setor_nome }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div style="display: flex; gap: 8px;">
-            <button type="submit" class="btn-filtrar">
-                Buscar
-            </button>
-            @if(request()->filled('aluno') || request()->filled('setor'))
-                <a href="{{ route('admin.dashboard') }}" class="btn-limpar">
-                    Limpar
-                </a>
-            @endif
-        </div>
+
     </form>
 </div>
 

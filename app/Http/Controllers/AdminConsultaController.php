@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Requerimento;
 use App\Models\Setor;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AdminConsultaController extends Controller
 {
@@ -12,7 +13,7 @@ class AdminConsultaController extends Controller
     {
         $query = Requerimento::with(['usuario', 'assunto.setor']);
 
-        // Filtro por Aluno (nome ou matrícula)
+        // 1. Filtro por Aluno (Nome ou Matrícula)
         if ($request->filled('aluno')) {
             $aluno = trim($request->input('aluno'));
             $query->whereHas('usuario', function ($q) use ($aluno) {
@@ -21,7 +22,15 @@ class AdminConsultaController extends Controller
             });
         }
 
-        // Filtro por Setor
+        // 2. Filtro por Turma
+        if ($request->filled('turma')) {
+            $turma = trim($request->input('turma'));
+            $query->whereHas('usuario', function ($q) use ($turma) {
+                $q->where('turma_codigo', 'LIKE', "%{$turma}%");
+            });
+        }
+
+        // 3. Filtro por Setor
         if ($request->filled('setor')) {
             $setorFiltro = $request->input('setor');
             $query->where(function ($q) use ($setorFiltro) {
@@ -36,7 +45,29 @@ class AdminConsultaController extends Controller
             });
         }
 
-        $requerimentos = $query->latest()->get();
+        // 4. Filtro por Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // 5. Filtro por Intervalo de Datas com fallback de 30 dias por padrão
+        $hasDataInicio = $request->filled('data_inicio');
+        $hasDataFim = $request->filled('data_fim');
+
+        if ($hasDataInicio || $hasDataFim) {
+            if ($hasDataInicio) {
+                $query->whereDate('created_at', '>=', $request->input('data_inicio'));
+            }
+            if ($hasDataFim) {
+                $query->whereDate('created_at', '<=', $request->input('data_fim'));
+            }
+        } else {
+            // Regra Padrão: Se o usuário não definiu datas, busca somente dos últimos 30 dias
+            $query->where('created_at', '>=', Carbon::now()->subDays(30));
+        }
+
+        // Paginando para evitar lentidão e mantendo os parâmetros de busca na URL
+        $requerimentos = $query->latest()->paginate(15)->appends($request->query());
         $setores = Setor::where('ativo', true)->orderBy('setor_sigla')->get();
 
         return view('admin.consultaRequerimento', [
@@ -45,4 +76,3 @@ class AdminConsultaController extends Controller
         ]);
     }
 }
-
