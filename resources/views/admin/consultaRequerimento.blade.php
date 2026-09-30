@@ -4,141 +4,7 @@
 @section('tag', 'Administração')
 
 @section('content')
-<style>
-    .dash-filter-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 14px 18px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
-
-    .dash-filter-form {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .input-filtro {
-        width: 100%;
-        padding: 8px 12px;
-        font-size: 0.875rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        background: #ffffff;
-        color: #1e293b;
-        box-sizing: border-box;
-    }
-
-    .input-filtro:focus {
-        outline: none;
-        border-color: #059669;
-        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
-    }
-
-    .btn-filtrar {
-        background-color: #059669;
-        color: #ffffff;
-        padding: 8px 18px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.15s;
-    }
-
-    .btn-filtrar:hover {
-        background-color: #047857;
-    }
-
-    .btn-limpar {
-        background: #f1f5f9;
-        color: #475569;
-        padding: 8px 14px;
-        font-size: 0.875rem;
-        border-radius: 6px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        transition: background-color 0.15s;
-    }
-
-    .btn-limpar:hover {
-        background: #e2e8f0;
-        color: #1e293b;
-    }
-
-    .dash-section {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 20px 24px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    }
-
-    .dash-section-title {
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin: 0 0 16px 0;
-    }
-
-    .dash-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.875rem;
-    }
-
-    .dash-table th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 600;
-        text-align: left;
-        padding: 10px 14px;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .dash-table td {
-        padding: 12px 14px;
-        border-bottom: 1px solid #f1f5f9;
-        color: #1e293b;
-    }
-
-    .dash-table tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    .badge-setor {
-        background: #ecfdf5;
-        color: #047857;
-        font-weight: 600;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-    }
-
-    .Aberto span{
-        color: rgb(245, 148, 30);
-        background-color: rgb(255, 232, 204);
-        padding: 5px 10px 5px 10px;
-        border-radius: 4px;
-    }
-    .analise span{
-        color: rgb(78, 25, 102);
-        background-color: rgb(241, 204, 255);
-        padding: 5px 10px 5px 10px;
-        border-radius: 4px;
-    }
-    .concluido span{
-        color: rgb(18, 106, 14);
-        background-color: rgb(202, 255, 200);
-        padding: 5px 10px 5px 10px;
-        border-radius: 4px;
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/consultaRequerimento.css') }}">
 
 {{-- Filtro de Pesquisa por Aluno ou Setor --}}
 <div class="dash-filter-card">
@@ -185,51 +51,40 @@
             <table class="dash-table">
                 <thead>
                     <tr>
+                        <th>ID</th>
+                        <th style="width: 140px;">Data e Hora</th>
                         <th>Solicitante</th>
+                        <th>Turma</th>
                         <th>Requerimento</th>
                         <th style="width: 120px; text-align: center;">Setor</th>
                         <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Histórico</th>
-                        <th style="width: 140px;">Data</th>
+                        <th style="text-align: center;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($requerimentos as $requerimento)
                         <tr>
+                            <td>{{ $requerimento->id ?? 'Usuário removido' }}</td>
+                            <td style="color: #64748b; font-size: 0.8125rem;">
+                                {{ $requerimento->created_at?->format('d/m/Y H:i') }}
+                            </td>
                             <td>{{ $requerimento->usuario?->nome ?? 'Usuário removido' }}</td>
+                            <td>{{ $requerimento->usuario?->turma_codigo ?? 'Usuário removido' }}</td>
                             <td>{{ $requerimento->objetoDoRequerimento }}</td>
                             <td style="text-align: center;">
                                 <span class="badge badge-setor" title="{{ $requerimento->setor_nome }}">
                                     {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla }}
                                 </span>
                             </td>
-                         @if($requerimento->status == 'Aberto')
-                                    <td class="req-col-objeto Aberto" style="text-align: center;">
-                                        <span>
-                                            {{ $requerimento->status ?? '-'}}
-                                        </span>
-                                    </td>
-                                @elseif ($requerimento->status == 'Em Análise')
-                                    <td class="req-col-objeto analise" style="text-align: center;">
-                                         <span>
-                                             {{ $requerimento->status ?? '-'}}
-                                         </span>
-                                    </td>
-                                @else
-                                    <td class="req-col-objeto concluido" style="text-align: center;">
-                                         <span>
-                                             {{ $requerimento->status ?? '-'}}
-                                         </span>
-                                    </td>
-                                @endif
-
+                            <td class="req-col-objeto {{ $requerimento->status ?? "Aberto" }}" style="text-align: center;">
+                                <span>
+                                    {{ $requerimento->status ?? '-'}}
+                                </span>
+                            </td>
                             <td style="text-align: center; width: 120px;">
                                 <span class="badge badge-setor border">
                                     <a href="{{ route('admin.historico', $requerimento->id) }}">Visualizar</a>
                                 </span>
-                            </td>
-                            <td style="color: #64748b; font-size: 0.8125rem;">
-                                {{ $requerimento->created_at?->format('d/m/Y H:i') }}
                             </td>
                         </tr>
                     @endforeach
