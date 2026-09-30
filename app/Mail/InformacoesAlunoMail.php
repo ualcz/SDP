@@ -2,10 +2,8 @@
 
 namespace App\Mail;
 
-use App\Http\Controllers\RequerimentoPdfController;
 use App\Models\Requerimento;
 use App\Models\Usuario;
-use App\Services\Pdf\PdfMergerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
@@ -14,7 +12,6 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 
 class InformacoesAlunoMail extends Mailable
 {
@@ -33,7 +30,8 @@ class InformacoesAlunoMail extends Mailable
         public array $arquivos = [],
         public ?string $objeto = null,
         public ?string $setorChave = null,
-        public ?Requerimento $requerimento = null
+        public ?Requerimento $requerimento = null,
+        public ?array $pdfRequerimento = null
     ) {}
 
     /**
@@ -74,43 +72,16 @@ class InformacoesAlunoMail extends Mailable
         );
     }
 
-    /**
-     * Anexa dinamicamente o PDF unificado (Requerimento + Anexos mesclados).
-     */
     public function attachments(): array
     {
         $anexos = [];
-        $arquivosNaoMesclados = [];
 
-        // 1. Gera o PDF do requerimento através do controller especializado
-        try {
-            $pdf = RequerimentoPdfController::criarPdf(
-                aluno: $this->aluno,
-                setorNome: $this->setorNome,
-                setorChave: $this->setorChave,
-                objeto: $this->objeto,
-                mensagem: $this->mensagem,
-            );
-
-            $pdfConteudo = $pdf->output();
-
-            // Se houver anexos enviados, mescla tudo (requerimento + imagens/PDFs) em um único PDF
-            if (!empty($this->arquivos)) {
-                $merger = app(PdfMergerService::class);
-                $pdfConteudo = $merger->mesclarComAnexos($pdfConteudo, $this->arquivos, $arquivosNaoMesclados);
-            }
-
-            $nomePdf = 'Requerimento_' . Str::slug($this->aluno->nome) . '_' . date('Ymd_His') . '.pdf';
-
-            $anexos[] = Attachment::fromData(fn () => $pdfConteudo, $nomePdf)
+        if ($this->pdfRequerimento !== null) {
+            $anexos[] = Attachment::fromData(fn () => $this->pdfRequerimento['conteudo'], $this->pdfRequerimento['nome'])
                 ->withMime('application/pdf');
-        } catch (\Throwable $e) {
-            logger()->error('Erro ao gerar/mesclar PDF do requerimento: ' . $e->getMessage());
-            $arquivosNaoMesclados = $this->arquivos;
         }
 
-        // 2. Anexa separadamente apenas eventuais arquivos que não puderam ser convertidos/mesclados (ex: docx, zip)
-        foreach ($arquivosNaoMesclados as $arquivo) {
+        foreach ($this->arquivos as $arquivo) {
             if ($arquivo instanceof \Illuminate\Http\UploadedFile) {
                 $anexos[] = Attachment::fromPath($arquivo->getRealPath())
                     ->as($arquivo->getClientOriginalName())
