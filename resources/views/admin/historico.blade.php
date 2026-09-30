@@ -94,6 +94,71 @@
             </div>
         </div>
     </div>
+    @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
+        <div class="card-painel info-aluno">
+            <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                Informações do Aluno
+            </h2>
+            <div class="grid-2">
+                <div class="info-grupo">
+                    <span class="info-label">Nome Completo</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->nome ?? 'Não informado' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">Matrícula</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->matricula ?? 'Não informada' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">CPF</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->cpf ?? 'Não informado' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">Turma</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->turma_codigo ?? 'Não informada' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">E-mail Institucional</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->email ?? 'Não informado' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">E-mail Pessoal</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->email_pessoal ?? 'Não informado' }}</span>
+                </div>
+                <div class="info-grupo">
+                    <span class="info-label">Telefone / WhatsApp</span>
+                    <span class="info-valor">{{ $requerimento->usuario?->telefone ?? 'Não informado' }}</span>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.25rem;">Endereço Residencial</h3>
+            @if($requerimento->usuario?->endereco)
+                <div class="grid-2">
+                    <div class="info-grupo">
+                        <span class="info-label">Rua / Logradouro</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->rua }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Número</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->numero }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Bairro</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->bairro }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">Cidade / UF</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cidade }} / {{ $requerimento->usuario->endereco->estado }}</span>
+                    </div>
+                    <div class="info-grupo">
+                        <span class="info-label">CEP</span>
+                        <span class="info-valor">{{ $requerimento->usuario->endereco->cep }}</span>
+                    </div>
+                </div>
+            @else
+                <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado.</p>
+            @endif
+        </div>
+    @endif
 </div>
 
 <script src="{{ asset('js/show-requerimento.js') }}"></script>

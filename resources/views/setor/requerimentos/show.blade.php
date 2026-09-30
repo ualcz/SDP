@@ -54,6 +54,7 @@
             ]"
         />
 
+            @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
             <div class="card-painel info-aluno">
                 <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
                     <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24">
@@ -120,6 +121,7 @@
                 <p style="color: #6b7280; font-size: 0.875rem;">Nenhum endereço cadastrado para este usuário.</p>
             @endif
         </div>
+            @endif
         <div class="card-painel">
             <div class="card-header-flex">
                 <div>

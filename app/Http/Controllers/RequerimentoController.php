@@ -120,7 +120,7 @@ class RequerimentoController extends Controller
 
     public function showHistorico($id)
     {
-        $requerimento = Requerimento::with(['historicos.usuario', 'historicos.documentos', 'usuario', 'setor'])->findOrFail($id);
+        $requerimento = Requerimento::with(['historicos.usuario', 'historicos.documentos', 'usuario.endereco', 'setor'])->findOrFail($id);
         $historicos = $requerimento->historicos;
 
         return view('admin.historico', compact('requerimento', 'historicos'));

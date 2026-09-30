@@ -239,8 +239,19 @@
 
 .req-card-actions {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
     border-top: 1px solid #f1f5f9;
     padding-top: 10px;
+}
+
+.req-card-actions .req-card-status span {
+    display: inline-block;
+    width: auto;
+    font-size: 0.75rem;
+    white-space: nowrap;
 }
 
 .req-card-btn-imprimir {

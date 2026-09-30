@@ -4,7 +4,7 @@
 @section('tag', 'Aluno')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/meusRequerimentos.css') }}">
+<link rel="stylesheet" href="{{ asset('css/meusRequerimentos.css') }}?v={{ filemtime(public_path('css/meusRequerimentos.css')) }}">
 
 <div class="req-container">
 
@@ -118,11 +118,10 @@
                         {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
                     </div>
 
-                    <div class="req-card-objeto {{ $requerimento->status }}">
-                        <span style="display: inline; font-size: 0.75rem">{{$requerimento->status }}</span>
-                    </div>
-
                     <div class="req-card-actions">
+                        <div class="req-card-status {{ $requerimento->status }}">
+                            <span>{{ $requerimento->status }}</span>
+                        </div>
                         <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
                     </div>
                 </div>

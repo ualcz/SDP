@@ -2,6 +2,11 @@
    Header / Navbar - SDP IFBA Seabra
    ========================================================================== */
 
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .site-header {
     background: #ffffff;
     border-bottom: 1px solid #e5e7eb;
