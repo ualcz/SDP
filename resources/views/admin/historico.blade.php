@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}">
+<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}?v={{ filemtime(public_path('css/show-requerimento.css')) }}">
 
 @section('content')
 <div class="detalhes-container">
@@ -93,7 +93,6 @@
                 </div>
             </div>
         </div>
-    </div>
     @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
         <div class="card-painel info-aluno">
             <h2 class="card-titulo" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
@@ -159,7 +158,8 @@
             @endif
         </div>
     @endif
+    </div>
 </div>
 
-<script src="{{ asset('js/show-requerimento.js') }}"></script>
+<script src="{{ asset('js/show-requerimento.js') }}?v={{ filemtime(public_path('js/show-requerimento.js')) }}"></script>
 @endsection

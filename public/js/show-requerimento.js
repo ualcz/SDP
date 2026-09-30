@@ -14,6 +14,24 @@ function toggleMensagemIndeferido() {
     }
 }
 
+// Suporte e transição da sanfona (accordion de informações do aluno)
+document.addEventListener('DOMContentLoaded', function () {
+    const accordions = document.querySelectorAll('.info-aluno-accordion');
+    accordions.forEach(function (acc) {
+        const header = acc.querySelector('.accordion-header');
+        if (header) {
+            header.addEventListener('click', function () {
+                setTimeout(function () {
+                    const seta = acc.querySelector('.icone-seta');
+                    if (seta) {
+                        seta.style.transform = acc.open ? 'rotate(180deg)' : 'rotate(0deg)';
+                    }
+                }, 20);
+            });
+        }
+    });
+});
+
 function toggleCampoNomeDocumento() {
     const solicitaSelect = document.getElementById('solicita_novo_documento');
     const boxNomeDocumento = document.getElementById('box-nome-documento');

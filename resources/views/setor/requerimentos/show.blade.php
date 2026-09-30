@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}">
+<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}?v={{ filemtime(public_path('css/show-requerimento.css')) }}">
 
 @section('content')
 <div class="detalhes-container">
@@ -54,7 +54,6 @@
             ]"
         />
 
-        @if(auth()->user()->isAdmin() || auth()->user()->isServidor())
         <details class="card-painel info-aluno-accordion">
             <summary class="accordion-header">
                 <div class="accordion-titulo-wrapper">
@@ -141,7 +140,6 @@
                 @endif
             </div>
         </details>
-        @endif
 
         <div class="card-painel">
             <div class="card-header-flex">
@@ -275,5 +273,5 @@
     </div>
 </div>
 
-<script src="{{ asset('js/show-requerimento.js') }}"></script>
+<script src="{{ asset('js/show-requerimento.js') }}?v={{ filemtime(public_path('js/show-requerimento.js')) }}"></script>
 @endsection
