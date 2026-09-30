@@ -32,6 +32,9 @@
                                     <strong>Documento solicitado:</strong> {{ $historico->nome_documento_solicitado ?? 'Documento corrigido' }}
                                 </div>
                             @endif
+
+                            {{-- DOCUMENTOS ANEXADOS NESTA TRAMITAÇÃO --}}
+                            @include('requerimentos.partials.historico-documentos', ['documentos' => $historico->documentos])
                         </div>
                     </div>
                 </li>
@@ -92,4 +95,6 @@
         </div>
     </div>
 </div>
+
+<script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

@@ -128,6 +128,71 @@
     border-top: 1px solid #e5e7eb;
 }
 
+.timeline-documentos {
+    margin-top: 0.75rem;
+    color: #4b5563;
+    font-size: 0.85rem;
+}
+
+.timeline-doc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+
+.timeline-doc-header::-webkit-details-marker { display: none; }
+.timeline-doc-chevron { margin-left: auto; transition: transform 0.15s ease; }
+.timeline-doc-dropdown[open] .timeline-doc-chevron { transform: rotate(180deg); }
+.timeline-doc-lista { margin-top: 0.35rem; }
+
+.doc-card-item {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 0.25rem 0.5rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.doc-card-icon { grid-row: span 2; }
+
+.doc-card-info {
+    min-width: 0;
+}
+
+.doc-titulo-principal,
+.doc-nome-arq {
+    display: block;
+    overflow-wrap: break-word;
+}
+
+.doc-detalhes-secundarios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    color: #6b7280;
+    font-size: 0.78rem;
+}
+
+.doc-card-acoes {
+    display: flex;
+    grid-column: 2;
+    gap: 0.75rem;
+}
+
+.btn-acao-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #2563eb;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.btn-acao-doc:hover { text-decoration: underline; }
+
 /* =========================================================
    BADGES DE STATUS
    ========================================================= */

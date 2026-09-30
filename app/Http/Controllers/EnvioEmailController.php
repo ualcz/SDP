@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Mail\InformacoesAlunoMail;
 use App\Models\Requerimento;
 use App\Models\Setor;
+use App\Services\DocumentoRequerimentoService;
+use App\Services\RequerimentoEmailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class EnvioEmailController extends Controller
@@ -110,40 +111,16 @@ class EnvioEmailController extends Controller
             ? $request->input('motivo')
             : (!empty($request->input('mensagem')) ? $request->input('mensagem') : 'Solicitação de ' . $objeto);
 
-        // 1. Montagem dos destinatários separados por papel
-        // O setor vai no campo "Para:" (to) e os e-mails do aluno vão no "CC:"
-        // Assim, um único e-mail é enviado com todos os destinatários visíveis na mesma mensagem.
+        $servicoEmail = app(RequerimentoEmailService::class);
+        $destinatarios = $servicoEmail->resolverDestinatarios(
+            $setor,
+            $aluno,
+            $request->input('email_adicional')
+        );
 
-        $emailsSetor = [];
-        if (!empty($setor->email)) {
-            $emailsSetor = is_array($setor->email) ? $setor->email : [$setor->email];
-        }
-
-        $emailsAluno = [];
-        if (!empty($aluno->email_pessoal)) {
-            $emailsAluno[] = $aluno->email_pessoal;
-        }
-        if (!empty($aluno->email)) {
-            $emailsAluno[] = $aluno->email;
-        }
-        if (!empty($request->input('email_adicional'))) {
-            $emailsAluno[] = $request->input('email_adicional');
-        }
-
-        // Remove duplicados e valores inválidos de cada lista
-        $emailsSetor = array_values(array_unique(array_filter(array_map('trim', $emailsSetor))));
-        $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
-
-        // Remove do CC e-mails que já estão no "Para:" para evitar duplicatas
-        $emailsAluno = array_values(array_diff($emailsAluno, $emailsSetor));
-
-        if (empty($emailsSetor) && empty($emailsAluno)) {
+        if ($destinatarios === null) {
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);
         }
-
-        // Se não há e-mail de setor, usa os e-mails do aluno como destinatário principal
-        $toEmails  = !empty($emailsSetor) ? $emailsSetor : $emailsAluno;
-        $ccEmails  = !empty($emailsSetor) ? $emailsAluno  : [];
 
         // 2. Validação de documentos obrigatórios e coleta de arquivos
         $assunto = null;
@@ -211,26 +188,44 @@ class EnvioEmailController extends Controller
             $requerimento->forceFill([
                 'email_message_id' => Str::uuid() . '@' . $dominioEmail,
             ])->save();
+
+            // Salva no banco e no storage os documentos enviados vinculados ao histórico inicial
+            $historicoInicial = $requerimento->historicos()->first();
+            app(DocumentoRequerimentoService::class)->salvarDocumentosIniciais(
+                requerimento: $requerimento,
+                historico: $historicoInicial,
+                documentosInput: $request->file('documentos', []),
+                arquivosComplementares: $request->file('arquivos', []),
+                usuario: $aluno
+            );
         } catch (\Exception $e) {
             logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
         }
 
-        // 4. Dispara um único e-mail com setor no "Para:" e aluno no "CC:"
+        $resultadoPdf = app(DocumentoRequerimentoService::class)->gerarESalvarPdfRequerimento(
+            requerimento: $requerimento,
+            aluno: $aluno,
+            setorNome: $setor->setor_nome,
+            arquivos: $arquivos,
+            historico: $requerimento?->historicos()->first(),
+            usuario: $aluno,
+            setorChave: (string) $setor->id,
+            objeto: $objeto,
+            mensagem: $motivo
+        );
+
         $mailable = new InformacoesAlunoMail(
             aluno: $aluno,
             setorNome: $setor->setor_nome,
             mensagem: $motivo,
-            arquivos: is_array($arquivos) ? $arquivos : [$arquivos],
+            arquivos: $resultadoPdf['arquivos_nao_mesclados'],
             objeto: $objeto,
             setorChave: (string) $setor->id,
-            requerimento: $requerimento
+            requerimento: $requerimento,
+            pdfRequerimento: $resultadoPdf['pdf']
         );
 
-        $mailer = Mail::to($toEmails);
-        if (!empty($ccEmails)) {
-            $mailer = $mailer->cc($ccEmails);
-        }
-        $mailer->send($mailable);
+        $servicoEmail->enviar($mailable, $destinatarios);
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');
     }

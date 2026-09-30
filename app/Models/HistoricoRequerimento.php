@@ -28,4 +28,10 @@ class HistoricoRequerimento extends Model
     {
         return $this->belongsTo(Usuario::class, 'user_id');
     }
+
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoRequerimento::class, 'historico_requerimento_id');
+    }
 }
+

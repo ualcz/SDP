@@ -13,7 +13,7 @@ class AdminDashboardController extends Controller
     public function index(Request $request, QtdRequerimentoMeses $chart, RequerimentoPorSetor $pieChart, StatusSetorChart $progressBarChart){
         $periodo = $request->get('periodo', 'mes');
         $totalRequerimentos = Requerimento::whereYear('created_at', now()->year)->count();
-        $totalAnalise = Requerimento::where('status', 'Em análise')->count();
+        $totalAnalise = Requerimento::where('status', 'Em Análise')->count();
         if ($periodo === 'semana') {
             $totalRecebidos = Requerimento::whereBetween('created_at', [
                 now()->startOfWeek(),

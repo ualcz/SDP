@@ -112,6 +112,12 @@ class Requerimento extends Model
         return $this->hasMany(HistoricoRequerimento::class)->oldest();
     }
 
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoRequerimento::class, 'requerimento_id');
+    }
+
+
     public function emailThreadSubject(): string
     {
         return 'Requerimento #' . ($this->numero_protocolo ?? $this->id) . ' [' . $this->objetoDoRequerimento . '] - ' . ($this->usuario?->nome ?? 'Aluno');
