@@ -102,8 +102,8 @@
                                 <span>{{ $requerimento->status ?? 'Aberto' }}</span>
                             </td>
                             <td style="text-align: center; width: 120px;">
-                                <span class="badge badge-setor border">
-                                    <a href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}">Atender</a>
+                                <span class="badge badge-setor border" style="background:#dbeafe; border-color:#60a5fa;">
+                                    <a href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}" style="color:#1d4ed8; text-decoration:none; font-weight:600;">Atender</a>
                                 </span>
                             </td>
                         </tr>
