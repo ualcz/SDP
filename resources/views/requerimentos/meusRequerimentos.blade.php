@@ -55,7 +55,7 @@
                             <th class="req-col-protocolo">Protocolo</th>
                             <th class="req-col-setor">Setor</th>
                             <th class="req-col-objeto">Objeto do Requerimento</th>
-                            <th class="req-col-objeto">Status</th>
+                            <th class="req-col-status">Status</th>
                             <th class="req-col-acoes">Ações</th>
                         </tr>
                     </thead>

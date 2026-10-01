@@ -174,7 +174,7 @@
                 <p>{{ $requerimento->numero_protocolo }}</p>
                 <p>{{ $requerimento->usuario->nome ?? $requerimento->user->name }}</p>
                 <p>{{ $requerimento->usuario->matricula ?? $requerimento->user->matricula }}</p>
-                <p>{{ $requerimento->created_at->format('d/m/Y H:i') }}</p>
+                <p>{{ $requerimento->created_at ? $requerimento->created_at->format('d/m/Y H:i') : 'Data não disponível' }}</p>
                 <a class="btn-ver-mais" href="{{ route('setor.requerimentos.show', ['setor' => $setor->id, 'requerimento' => $requerimento->id]) }}">
                     Ver Mais
                 </a>

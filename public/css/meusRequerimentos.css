@@ -151,10 +151,17 @@
     width: 38%;
     color: #1e293b;
     font-weight: 500;
+    text-align: center;
+}
+
+.req-col-status {
+    width: 9%;
+    color: #1e293b;
+    font-weight: 500;
 }
 
 .req-col-acoes {
-    width: 18%;
+    width: 9%;
     text-align: center;
     white-space: nowrap;
 }
