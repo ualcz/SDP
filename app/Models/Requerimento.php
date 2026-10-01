@@ -124,9 +124,11 @@ class Requerimento extends Model
     }
 
     /**
-     * Envia e-mail de atualização/tramitação para o aluno e setor.
+     * Envia e-mail de atualização/tramitação.
+     * - Quando o setor atualiza: envia APENAS para o aluno (sem CC ao setor), mantendo a thread.
+     * - Quando o aluno responde: envia APENAS para o setor (sem CC ao aluno), mantendo a thread.
      */
-    public function notificarPartes(string $mensagem, string $remetente, array $arquivos = []): void
+    public function notificarPartes(string $mensagem, string $remetente, array $arquivos = [], bool $solicitaNovoDocumento = false): void
     {
         $setor = $this->setor;
         $aluno = $this->usuario;
@@ -140,20 +142,16 @@ class Requerimento extends Model
         $emailsAluno = array_filter([$aluno?->email_pessoal, $aluno?->email]);
         $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
 
+        // Setor atualiza → só o aluno recebe (sem cópia ao setor)
+        // Aluno responde → só o setor recebe (sem cópia ao aluno)
         if ($remetente === 'setor') {
             $to = $emailsAluno;
-            $cc = $emailsSetor;
         } else {
             $to = $emailsSetor;
-            $cc = $emailsAluno;
         }
 
         if (!empty($to)) {
-            $mailer = Mail::to($to);
-            if (!empty($cc)) {
-                $mailer->cc($cc);
-            }
-            $mailer->send(new AtualizacaoRequerimentoMail($this, $mensagem, $remetente, $arquivos));
+            Mail::to($to)->send(new AtualizacaoRequerimentoMail($this, $mensagem, $remetente, $arquivos, $solicitaNovoDocumento));
         }
     }
 }

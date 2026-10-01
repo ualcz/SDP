@@ -33,13 +33,20 @@ class SuapSyncService
             $updates = [];
 
             if ($usuario->isAluno()) {
-                // Página principal do aluno (extrai turma)
-                $paginaAluno = $this->browser->get("/edu/aluno/{$usuario->matricula}/");
-                if ($paginaAluno) {
-                    $turma = $this->turmaScraper->codigoAtual($paginaAluno);
-                    if ($turma) {
-                        $updates['turma_codigo'] = $turma;
+                // Página de dados acadêmicos do aluno (onde fica a tabela de turmas e períodos)
+                $paginaAcademica = $this->browser->get("/edu/aluno/{$usuario->matricula}/?tab=dados_academicos");
+                $turma = $this->turmaScraper->codigoAtual($paginaAcademica);
+
+                // Fallback para a página principal caso necessário
+                if (!$turma) {
+                    $paginaAluno = $this->browser->get("/edu/aluno/{$usuario->matricula}/");
+                    if ($paginaAluno) {
+                        $turma = $this->turmaScraper->codigoAtual($paginaAluno);
                     }
+                }
+
+                if ($turma) {
+                    $updates['turma_codigo'] = $turma;
                 }
 
                 // Página de dados pessoais do aluno (extrai email pessoal)

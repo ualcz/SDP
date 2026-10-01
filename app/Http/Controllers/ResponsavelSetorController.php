@@ -127,7 +127,7 @@ class ResponsavelSetorController extends Controller
         }
 
         $validated = $request->validate([
-            'status'     => 'required|in:Aberto,Em Análise,Indeferido,Concluído',
+            'status'     => 'required|in:Em Análise,Indeferido,Concluído',
             'observacao' => 'required_if:status,Indeferido|nullable|string',
             'solicita_novo_documento' => 'nullable|boolean',
             'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',
@@ -171,9 +171,10 @@ class ResponsavelSetorController extends Controller
 
         // Envia e-mail de notificação para o aluno (com cópia para o setor)
         $requerimento->notificarPartes(
-            mensagem: $validated['observacao'] ?? 'Status atualizado pelo setor.',
+            mensagem: $validated['observacao'] ?? '',
             remetente: 'setor',
-            arquivos: is_array($arquivos) ? $arquivos : []
+            arquivos: is_array($arquivos) ? $arquivos : [],
+            solicitaNovoDocumento: $solicitaNovoDocumento
         );
 
         activity()

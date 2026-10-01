@@ -16,7 +16,8 @@ class AtualizacaoRequerimentoMail extends Mailable
         public Requerimento $requerimento,
         public string $mensagem,
         public string $autor, // 'setor' ou 'aluno'
-        public ?array $arquivos = []
+        public ?array $arquivos = [],
+        public bool $solicitaNovoDocumento = false
     ) {}
 
     public function headers(): Headers

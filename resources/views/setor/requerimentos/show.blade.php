@@ -214,7 +214,6 @@
                 <label for="status" class="info-label">Atualizar Status do Requerimento</label>
                 <div class="form-status">
                     <select name="status" id="status" class="select-status" required onchange="toggleMensagemIndeferido()">
-                        <option value="Aberto" {{ $requerimento->status == 'Aberto' ? 'selected' : '' }}>Aberto</option>
                         <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
                         <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
                         <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
