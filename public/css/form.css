@@ -1,10 +1,8 @@
 .form-box {
     max-width: 1200px;
     margin: 20px auto;
-    background: #fff;
     padding: 25px;
     border-radius: 8px;
-    border: 1px solid #ddd;
 }
 
 .setores-nav {
@@ -90,6 +88,26 @@
 .campo input[readonly] {
     background: #f5f5f5;
     color: #666;
+}
+
+.campo input[name="objeto_outro"]:disabled {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.ajuda-campo-bloqueado {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 6px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.ajuda-campo-bloqueado[hidden] {
+    display: none;
 }
 
 .campo textarea {

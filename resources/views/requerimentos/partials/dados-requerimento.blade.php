@@ -80,7 +80,7 @@
                         <input type="radio" 
                                name="objetoDoRequerimento" 
                                value="{{ $descricao }}" 
-                               onchange="mostrarDocumentosAssunto({{ $indexAssunto }})" 
+                               onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }})" 
                                {{ $isChecked ? 'checked' : '' }}>
                         {{ $descricao }}
                     </span>
@@ -89,14 +89,33 @@
                     @endif
                 </label>
             @endforeach
+            <label style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 8px; cursor: pointer;">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <input type="radio"
+                           name="objetoDoRequerimento"
+                           value="outro"
+                           onchange="alternarObjetoOutro(true)"
+                           {{ old('objetoDoRequerimento') === 'outro' ? 'checked' : '' }}>
+                    Outro
+                </span>
+            </label>
         </div>
 
         <div class="campo" style="margin-top: 10px;">
             <label>Outro / Detalhe adicional (opcional):</label>
+            <small id="objeto-outro-ajuda" class="ajuda-campo-bloqueado" @if(old('objetoDoRequerimento') === 'outro') hidden @endif>
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Selecione “Outro” para liberar este campo.
+            </small>
             <input type="text" 
                    name="objeto_outro" 
+                   value="{{ old('objeto_outro') }}"
+                   @disabled(old('objetoDoRequerimento') !== 'outro')
                    placeholder="Especifique caso necessário"
-                   oninput="if(this.value.trim() !== '') { mostrarDocumentosAssunto('outro'); const el = document.getElementById('nome-assunto-outro-preview'); if(el) el.textContent = 'Outro: ' + this.value; }">
+                   oninput="const el = document.getElementById('nome-assunto-outro-preview'); if(el) el.textContent = 'Outro: ' + this.value;">
         </div>
     </fieldset>
 

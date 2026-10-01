@@ -125,6 +125,12 @@ function adicionarAnexoRow() {
                    required
                    class="input-tabela"
                    style="font-size: 0.8125rem;">
+                 <input type="url"
+                     name="documentos[${index}][link_modelo]"
+                     placeholder="Link do modelo (opcional, https://...)"
+                     maxlength="2048"
+                     class="input-tabela"
+                     style="font-size: 0.8125rem; margin-top: 4px;">
         </td>
         <td>
             <input type="text"

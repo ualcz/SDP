@@ -12,6 +12,7 @@ class DocumentoAssunto extends Model
         'assunto_requerimento_id',
         'nome',
         'descricao',
+        'link_modelo',
         'obrigatorio',
         'tipos_aceitos',
     ];

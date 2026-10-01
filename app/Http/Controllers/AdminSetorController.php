@@ -144,6 +144,7 @@ class AdminSetorController extends Controller
             'documentos'               => 'nullable|array',
             'documentos.*.nome'        => 'required_with:documentos.*.descricao,documentos.*.obrigatorio|nullable|string|max:255',
             'documentos.*.descricao'   => 'nullable|string|max:500',
+            'documentos.*.link_modelo' => 'nullable|url:http,https|max:2048',
             'documentos.*.obrigatorio' => 'nullable',
         ], [
             'required'      => 'O campo :attribute é obrigatório.',
@@ -178,6 +179,7 @@ class AdminSetorController extends Controller
                             'assunto_requerimento_id' => $assunto->id,
                             'nome'                    => $nome,
                             'descricao'               => !empty($docData['descricao']) ? trim($docData['descricao']) : null,
+                            'link_modelo'             => $docData['link_modelo'] ?? null,
                             'obrigatorio'             => !empty($docData['obrigatorio']),
                             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
                         ]);
@@ -203,13 +205,16 @@ class AdminSetorController extends Controller
             'documentos'                    => 'nullable|array',
             'documentos.*.nome'             => 'required|string|max:255',
             'documentos.*.descricao'        => 'nullable|string|max:500',
+            'documentos.*.link_modelo'      => 'nullable|url:http,https|max:2048',
             'documentos.*.obrigatorio'      => 'nullable',
             'novos_documentos'              => 'nullable|array',
             'novos_documentos.*.nome'       => 'nullable|string|max:255',
             'novos_documentos.*.descricao'  => 'nullable|string|max:500',
+            'novos_documentos.*.link_modelo'=> 'nullable|url:http,https|max:2048',
             'novos_documentos.*.obrigatorio'=> 'nullable',
             'novo_documento.nome'           => 'nullable|string|max:255',
             'novo_documento.descricao'      => 'nullable|string|max:500',
+            'novo_documento.link_modelo'    => 'nullable|url:http,https|max:2048',
             'novo_documento.obrigatorio'    => 'nullable',
         ]);
 
@@ -228,6 +233,7 @@ class AdminSetorController extends Controller
                         $doc->update([
                             'nome'        => $docData['nome'],
                             'descricao'   => $docData['descricao'] ?? null,
+                            'link_modelo' => $docData['link_modelo'] ?? null,
                             'obrigatorio' => !empty($docData['obrigatorio']),
                         ]);
                     }
@@ -242,6 +248,7 @@ class AdminSetorController extends Controller
                             'assunto_requerimento_id' => $assunto->id,
                             'nome'                    => $nome,
                             'descricao'               => !empty($novoDoc['descricao']) ? trim($novoDoc['descricao']) : null,
+                            'link_modelo'             => $novoDoc['link_modelo'] ?? null,
                             'obrigatorio'             => !empty($novoDoc['obrigatorio']),
                             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
                         ]);
@@ -254,6 +261,7 @@ class AdminSetorController extends Controller
                     'assunto_requerimento_id' => $assunto->id,
                     'nome'                    => trim($dados['novo_documento']['nome']),
                     'descricao'               => $dados['novo_documento']['descricao'] ?? null,
+                    'link_modelo'             => $dados['novo_documento']['link_modelo'] ?? null,
                     'obrigatorio'             => !empty($dados['novo_documento']['obrigatorio']),
                     'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
                 ]);
@@ -284,6 +292,7 @@ class AdminSetorController extends Controller
         $dados = $request->validate([
             'nome'          => 'required|string|max:255',
             'descricao'     => 'nullable|string|max:500',
+            'link_modelo'   => 'nullable|url:http,https|max:2048',
             'obrigatorio'   => 'nullable|boolean',
             'tipos_aceitos' => 'nullable|string|max:100',
         ]);
@@ -292,6 +301,7 @@ class AdminSetorController extends Controller
             'assunto_requerimento_id' => $assunto->id,
             'nome'                    => $dados['nome'],
             'descricao'               => $dados['descricao'] ?? null,
+            'link_modelo'             => $dados['link_modelo'] ?? null,
             'obrigatorio'             => $request->has('obrigatorio'),
             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
         ]);
@@ -308,6 +318,7 @@ class AdminSetorController extends Controller
         $dados = $request->validate([
             'nome'          => 'required|string|max:255',
             'descricao'     => 'nullable|string|max:500',
+            'link_modelo'   => 'nullable|url:http,https|max:2048',
             'obrigatorio'   => 'nullable|boolean',
             'tipos_aceitos' => 'nullable|string|max:100',
         ]);
@@ -315,6 +326,7 @@ class AdminSetorController extends Controller
         $documento->update([
             'nome'          => $dados['nome'],
             'descricao'     => $dados['descricao'] ?? null,
+            'link_modelo'   => $dados['link_modelo'] ?? null,
             'obrigatorio'   => $request->has('obrigatorio'),
             'tipos_aceitos' => $dados['tipos_aceitos'] ?: 'pdf,jpg,jpeg,png',
         ]);

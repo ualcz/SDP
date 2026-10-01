@@ -63,6 +63,14 @@
                                class="input-tabela"
                                style="font-size: 0.8125rem;"
                                placeholder="Orientações opcionais...">
+                           <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="url"
+                               name="documentos[{{ $doc->id }}][link_modelo]"
+                               value="{{ $doc->link_modelo }}"
+                               class="input-tabela"
+                               style="font-size: 0.8125rem; margin-top: 4px;"
+                               placeholder="Link do modelo (opcional, https://...)"
+                               maxlength="2048">
                     </td>
                     <td style="text-align: center;">
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
@@ -132,6 +140,13 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    class="input-tabela"
                    placeholder="Orientações opcionais..."
                    style="font-size: 0.8125rem;">
+                 <input form="${formUpdateId}"
+                     type="url"
+                     name="novos_documentos[${idx}][link_modelo]"
+                     class="input-tabela"
+                     placeholder="Link do modelo (opcional, https://...)"
+                     maxlength="2048"
+                     style="font-size: 0.8125rem; margin-top: 4px;">
         </td>
         <td style="text-align: center;">
             <input form="${formUpdateId}"

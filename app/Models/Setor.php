@@ -77,6 +77,7 @@ class Setor extends Model
                                 'id'            => $d->id,
                                 'nome'          => $d->nome,
                                 'descricao'     => $d->descricao,
+                                'link_modelo'   => $d->link_modelo,
                                 'obrigatorio'   => $d->obrigatorio,
                                 'tipos_aceitos' => $d->tipos_aceitos,
                             ])->values()->toArray(),
