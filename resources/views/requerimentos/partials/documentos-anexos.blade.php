@@ -53,11 +53,14 @@
                                     Baixar modelo
                                 </a>
                             @endif
-                            <input type="file"
+
+                            <x-file-input
                                 name="documentos[{{ $doc['id'] ?? $loop->index }}]"
-                                data-obrigatorio="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
-                                data-nome="{{ $doc['nome'] }}"
-                                accept="{{ $tiposAceitos }}">
+                                required="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
+                                label="{{ $doc['nome'] }}"
+                                helpText=""
+                                accept="{{ $tiposAceitos }}"
+                            />
                         </div>
                     @endforeach
                 @else
@@ -80,15 +83,7 @@
         </div>
 
         <!-- Anexos complementares para qualquer requerimento -->
-        <div class="campo" style="margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 12px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
-                Anexos complementares (opcional):
-            </label>
-            <small style="display: block; color: #666; margin-bottom: 6px; font-size: 12px;">
-                Adicione outros arquivos ou comprovantes se desejar.
-            </small>
-            <input type="file" name="arquivos[]" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
-        </div>
+        <x-file-input />
     </fieldset>
 
     <div class="step-nav">
