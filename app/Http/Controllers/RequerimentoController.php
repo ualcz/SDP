@@ -28,11 +28,11 @@ class RequerimentoController extends Controller
         } elseif (str_starts_with($sufixoMatricula, '28')) {
             $coordenacaoPermitida = 'COMAM';
         } else {
-            $coordenacaoPermitida = 'COLIC';
+            $coordenacaoPermitida = 'COCIE';
         }
 
         // Siglas de todas as coordenações que dependem do curso do aluno
-        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COLIC'];
+        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COCIE'];
 
         // 1. Filtra a lista de modelos
         $modelos = array_filter($modelos, function ($mod) use ($coordenacaoPermitida, $coordenacoesRestritas) {
