@@ -4,7 +4,7 @@
 @section('tag', 'Aluno')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/form.css') }}">
+<link rel="stylesheet" href="{{ asset('css/form.css') }}?v={{ filemtime(public_path('css/form.css')) }}">
 
 <div class="form-box">
     <!-- Overlay de Carregamento -->
@@ -57,7 +57,7 @@
         @include('requerimentos.partials.documentos-anexos')
     </form>
 
-    <script src="{{ asset('js/form.js') }}"></script>
+    <script src="{{ asset('js/form.js') }}?v={{ filemtime(public_path('js/form.js')) }}"></script>
 
     @if ($errors->any())
         <script>

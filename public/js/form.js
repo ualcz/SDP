@@ -16,8 +16,13 @@ function alternarObjetoOutro(ativo) {
     if (!campoOutro) return;
 
     campoOutro.disabled = !ativo;
+    campoOutro.style.backgroundColor = ativo ? '#fff' : '#f1f5f9';
+    campoOutro.style.borderColor = ativo ? '#ccc' : '#cbd5e1';
+    campoOutro.style.color = ativo ? '#111827' : '#64748b';
+    campoOutro.style.cursor = ativo ? 'text' : 'not-allowed';
+
     const ajudaOutro = document.getElementById('objeto-outro-ajuda');
-    if (ajudaOutro) ajudaOutro.hidden = ativo;
+    if (ajudaOutro) ajudaOutro.style.display = ativo ? 'none' : 'flex';
 
     if (ativo) {
         mostrarDocumentosAssunto('outro');

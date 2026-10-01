@@ -103,7 +103,8 @@
 
         <div class="campo" style="margin-top: 10px;">
             <label>Outro / Detalhe adicional (opcional):</label>
-            <small id="objeto-outro-ajuda" class="ajuda-campo-bloqueado" @if(old('objetoDoRequerimento') === 'outro') hidden @endif>
+                 <small id="objeto-outro-ajuda" class="ajuda-campo-bloqueado"
+                     style="display: {{ old('objetoDoRequerimento') === 'outro' ? 'none' : 'flex' }}; align-items: center; gap: 5px; margin-bottom: 6px; color: #64748b; font-size: 12px; line-height: 1.4;">
                 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -114,6 +115,7 @@
                    name="objeto_outro" 
                    value="{{ old('objeto_outro') }}"
                    @disabled(old('objetoDoRequerimento') !== 'outro')
+                   style="background-color: {{ old('objetoDoRequerimento') === 'outro' ? '#fff' : '#f1f5f9' }}; border-color: {{ old('objetoDoRequerimento') === 'outro' ? '#ccc' : '#cbd5e1' }}; color: {{ old('objetoDoRequerimento') === 'outro' ? '#111827' : '#64748b' }}; cursor: {{ old('objetoDoRequerimento') === 'outro' ? 'text' : 'not-allowed' }};"
                    placeholder="Especifique caso necessário"
                    oninput="const el = document.getElementById('nome-assunto-outro-preview'); if(el) el.textContent = 'Outro: ' + this.value;">
         </div>
