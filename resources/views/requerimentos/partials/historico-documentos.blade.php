@@ -3,11 +3,21 @@
         && $historico->status === 'Em Análise'
         && (int) $historico->user_id === (int) $requerimento->usuario_id;
 
-    $documentosExibidos = $documentos->filter(fn($doc) => in_array(
-        $doc->nome_documento,
-        ['Modelo do Requerimento', 'Requerimento enviado'],
-        true
-    ) || $respostaDoAluno);
+    $deveExibirTodosDocumentos = $documentos->isNotEmpty() && (
+        ($historico?->status ?? null) === 'Concluído'
+        || ($historico?->status ?? null) === 'Indeferido'
+        || ($requerimento?->status ?? null) === 'Concluído'
+        || (($historico?->status ?? null) === 'Em Análise' && !empty($historico?->solicita_novo_documento))
+    );
+
+    $documentosExibidos = $documentos->filter(function ($doc) use ($respostaDoAluno, $deveExibirTodosDocumentos) {
+        if ($deveExibirTodosDocumentos) {
+            return true;
+        }
+
+        return in_array($doc->nome_documento, ['Modelo do Requerimento', 'Requerimento enviado'], true)
+            || $respostaDoAluno;
+    });
 @endphp
 
 @if($documentosExibidos->isNotEmpty())

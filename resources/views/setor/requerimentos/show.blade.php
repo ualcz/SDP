@@ -33,7 +33,11 @@
                             @endif
 
                             {{-- DOCUMENTOS ANEXADOS NESTA TRAMITAÇÃO --}}
-                            @include('requerimentos.partials.historico-documentos', ['documentos' => $historico->documentos])
+                            @include('requerimentos.partials.historico-documentos', [
+                                'documentos' => $historico->documentos,
+                                'historico' => $historico,
+                                'requerimento' => $requerimento,
+                            ])
                         </div>
                     </div>
                 </li>
