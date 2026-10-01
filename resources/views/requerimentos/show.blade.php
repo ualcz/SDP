@@ -35,7 +35,11 @@
                                     <strong>Observação:</strong> {{ $historico->observacao }}
                                 </div>
                             @endif
-
+                            @if($historico->nome_documento_solicitado)
+                                <div class="timeline-observacao">
+                                    <strong>Documento Solicitado:</strong> {{ $historico->nome_documento_solicitado }}
+                                </div>
+                            @endif
                             {{-- DOCUMENTOS ANEXADOS NESTA TRAMITAÇÃO --}}
                             @include('requerimentos.partials.historico-documentos', ['documentos' => $historico->documentos])
                         </div>

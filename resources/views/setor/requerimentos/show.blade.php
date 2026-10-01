@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}?v={{ filemtime(public_path('css/show-requerimento.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/show-requerimento.css') }}">
 
 @section('content')
 <div class="detalhes-container">
@@ -24,6 +24,11 @@
                             @if($historico->observacao)
                                 <div class="timeline-observacao">
                                     <strong>Observação:</strong> {{ $historico->observacao }}
+                                </div>
+                            @endif
+                            @if($historico->nome_documento_solicitado)
+                                <div class="timeline-observacao">
+                                    <strong>Documento Solicitado:</strong> {{ $historico->nome_documento_solicitado }}
                                 </div>
                             @endif
 
@@ -140,7 +145,6 @@
                 @endif
             </div>
         </details>
-
         <div class="card-painel">
             <div class="card-header-flex">
                 <div>
@@ -269,8 +273,14 @@
             </form>
         </div>
 
+        {{-- DADOS DO ALUNO --}}
+
+
+        {{-- ENDEREÇO DO ALUNO --}}
+
+
     </div>
 </div>
 
-<script src="{{ asset('js/show-requerimento.js') }}?v={{ filemtime(public_path('js/show-requerimento.js')) }}"></script>
+<script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

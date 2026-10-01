@@ -1,0 +1,247 @@
+.dash-filter-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(6, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.input-filtro {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #1f2937;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.input-filtro:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding-top: 0.85rem;
+}
+
+.btn-filtrar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.btn-filtrar:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-limpar {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: underline;
+    padding: 0.5rem;
+}
+
+.btn-limpar:hover {
+    color: #1f2937;
+}
+
+.dash-filter-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.dash-filter-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.input-filtro {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+}
+
+.input-filtro:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+}
+
+.btn-filtrar {
+    background-color: #059669;
+    color: #ffffff;
+    padding: 8px 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.btn-filtrar:hover {
+    background-color: #047857;
+}
+
+.btn-limpar {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.15s;
+}
+
+.btn-limpar:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.dash-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dash-section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 16px 0;
+}
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.dash-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dash-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}
+
+.dash-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.badge-setor {
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.Aberto span{
+    color: rgb(245, 148, 30);
+    background-color: rgb(255, 232, 204);
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+.aberto span{
+    color: rgb(245, 148, 30);
+    background-color: rgb(255, 232, 204);
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+.Análise span{
+    color: rgb(78, 25, 102);
+    background-color: rgb(241, 204, 255);
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+.Concluído span{
+    color: rgb(18, 106, 14);
+    background-color: rgb(202, 255, 200);
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+.Indeferido span{
+    color: rgb(135, 3, 3);
+    background-color: rgb(255, 174, 174);
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+
