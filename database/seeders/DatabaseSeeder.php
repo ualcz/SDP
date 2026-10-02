@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $this->call(AlunosTesteSeeder::class);
         $this->call(ModeloRequerimentoSeeder::class);
     }
 }
