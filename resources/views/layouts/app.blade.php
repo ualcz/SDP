@@ -136,6 +136,14 @@
                     </div>
                 </a>
 
+                   {{-- Centro: Links principais centralizados --}}
+                <ul class="hidden md:flex space-x-6 md:space-x-4 xl:space-x-8 text-sm md:text-xs xl:text-base font-medium absolute left-1/2 transform -translate-x-1/2">
+                    <li><a href="#inicio" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Início</a></li>
+                    <li><a href="#funcionalidades" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Funcionalidades</a></li>
+                    <li><a href="#sobre" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Sobre</a></li>
+                    <li><a href="#devs" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Desenvolvedores</a></li>
+                </ul>
+
                 {{-- Navegação --}}
                 <div style="display:flex; align-items:center; gap:4px;">
 
