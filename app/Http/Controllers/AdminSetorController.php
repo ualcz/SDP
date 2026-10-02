@@ -22,7 +22,15 @@ class AdminSetorController extends Controller
 
     public function index()
     {
-        $setores = Setor::withCount(['assuntos', 'assuntosAtivos'])->get();
+        $consulta = Setor::withCount(['assuntos', 'assuntosAtivos']);
+
+        if (request()->user()->role !== 'admin') {
+            $consulta->whereHas('responsaveis', function ($query) {
+                $query->where('usuarios.id', request()->user()->id);
+            });
+        }
+
+        $setores = $consulta->get();
         $modelos = $setores; // compatibilidade com as views
 
         return view('admin.setor.index', compact('setores', 'modelos'));
