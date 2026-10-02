@@ -65,6 +65,8 @@ Route::middleware(['auth', 'role:admin,professor,servidor'])->group(function () 
         ->name('admin.consultar-requerimentos');
     Route::get('/admin/historico/{id}', [RequerimentoController::class, 'showHistorico'])
         ->name('admin.historico');
+    Route::post('admin/assunto-requerimento/{id}/reordenar/{direcao}',[AdminSetorController::class,'reordenarAssuntos'])
+        ->name('admin.reordenarAssunto');
 });
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.

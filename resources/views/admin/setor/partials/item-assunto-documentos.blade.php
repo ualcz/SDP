@@ -99,9 +99,6 @@
     {{-- Estado vazio exibido quando não há anexos --}}
     <div id="{{ $emptyDocsId }}" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 6px; display: {{ $hasDocs ? 'none' : 'flex' }}; justify-content: space-between; align-items: center;">
         <span style="font-size: 0.8125rem; color: #64748b;">Nenhum anexo cadastrado ainda.</span>
-        <button type="button" class="btn-destaque-anexo" onclick="adicionarLinhaNovoAnexoEdicao('{{ $assunto->id }}', '{{ $formUpdateId }}')" style="padding: 4px 10px; font-size: 0.75rem;">
-            + Adicionar Anexo
-        </button>
     </div>
 </div>
 

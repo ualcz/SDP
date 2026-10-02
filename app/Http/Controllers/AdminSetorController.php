@@ -91,6 +91,26 @@ class AdminSetorController extends Controller
         return view('admin.setor.edit', compact('setor', 'modelo', 'usuarios'));
     }
 
+    public function reordenarAssuntos($id, $direcao){
+        $itemAtual = AssuntoRequerimento::findOrFail($id);
+
+        if ($direcao === 'up') {
+            $itemVizinho = AssuntoRequerimento::where('ordem', '<', $itemAtual->ordem)
+            ->orderBy('ordem', 'desc')
+            ->first();
+         } else {
+            $itemVizinho = AssuntoRequerimento::where('ordem', '>', $itemAtual->ordem)
+            ->orderBy('ordem', 'asc')
+            ->first();
+        }
+        if ($itemVizinho) {
+            $posicaoAtual = $itemAtual->ordem;
+            $itemAtual->update(['ordem' => $itemVizinho->ordem]);
+            $itemVizinho->update(['ordem' => $posicaoAtual]);
+        }
+        return redirect()->back()->with('success', 'Ordem atualizada com sucesso!');
+    }
+
     public function update(Request $request, $id)
     {
         $this->autorizarSetor((int) $id);
