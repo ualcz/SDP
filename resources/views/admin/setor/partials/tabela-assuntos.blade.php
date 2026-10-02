@@ -128,15 +128,6 @@
                                                class="input-tabela">
                                     </div>
 
-                                    <div style="width: 80px;">
-                                        <label class="label-campo">Ordem</label>
-                                        <input form="{{ $formUpdateId }}"
-                                               type="number"
-                                               name="ordem"
-                                               value="{{ $assunto->ordem }}"
-                                               class="input-tabela"
-                                               style="text-align: center;">
-                                    </div>
                                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;">
                                         <label class="label-campo">Ativo</label>
                                         <input form="{{ $formUpdateId }}"
