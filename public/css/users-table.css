@@ -132,6 +132,13 @@
     padding: 5px 10px 5px 10px;
     border-radius: 4px;
 }
+.Despacho span,
+.despacho span{
+    color: #0369a1;
+    background-color: #e0f2fe;
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+}
 
 .btn-acao {
     display: inline-flex;
