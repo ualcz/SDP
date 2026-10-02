@@ -7,7 +7,7 @@
 
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
-<section id="inicio" class="fade-up">
+<section id="inicio" class="fade-up">    
     <div class="container">
         <div class="hero-wrapper">
             <div class="hero-text">
