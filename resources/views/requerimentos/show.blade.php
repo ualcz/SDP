@@ -136,6 +136,7 @@
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
                             'Indeferido' => 'badge-indeferido',
+                            'Despacho' => 'badge-despacho',
                             default => 'badge-analise'
                         };
                     @endphp

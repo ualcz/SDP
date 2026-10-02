@@ -282,6 +282,7 @@
 .badge-analise   { background: #ede9fe; color: #6d28d9; }
 .badge-concluido { background: #d1fae5; color: #047857; }
 .badge-indeferido { background: #faddd1; color: #f8350e; }
+.badge-despacho  { background: #e0f2fe; color: #0369a1; }
 
 /* =========================================================
    ACCORDION INFO ALUNO
@@ -588,6 +589,9 @@
 
 .status-concluido .timeline-badge    { border-color: #10b981; background: #10b981; }
 .status-concluido .badge-status     { background: #d1fae5; color: #047857; }
+
+.status-despacho .timeline-badge     { border-color: #0ea5e9; }
+.status-despacho .badge-status      { background: #e0f2fe; color: #0369a1; }
 
 /* Timeline Vazia */
 .timeline > p {
