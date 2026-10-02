@@ -49,7 +49,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.dashboard');
 
     // Gerenciamento de Setores e Assuntos de Requerimentos
-    Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');
     Route::get('/admin/modelos', [AdminSetorController::class, 'index'])->name('admin.modelos.index');
@@ -70,6 +69,7 @@ Route::middleware(['auth', 'role:admin,professor,servidor'])->group(function () 
 
 // Administradores e responsáveis podem editar apenas os dados do próprio setor.
 Route::middleware(['auth', 'setor.config'])->group(function () {
+    Route::get('/admin/setores', [AdminSetorController::class, 'index'])->name('admin.setores.index');
     Route::get('/admin/setores/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.setores.edit');
     Route::put('/admin/setores/{id}', [AdminSetorController::class, 'update'])->name('admin.setores.update');
     Route::get('/admin/setores/{id}/assuntos/criar', [AdminSetorController::class, 'createAssunto'])->name('admin.setores.assuntos.create');
