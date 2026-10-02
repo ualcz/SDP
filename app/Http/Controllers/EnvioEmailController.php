@@ -231,10 +231,8 @@ class EnvioEmailController extends Controller
     }
 
     public function gerarNumeroProtocolo(Requerimento $requerimento){
-        //Gera um número aleatório no formato: anoAtual/sequenciaAleatoriaDeSeisDígitos e salva no banco de dados;
-        $ano = date('Y');
-        $sequencia = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-        $requerimento->numero_protocolo = $ano . '/' . $sequencia;
+        $ano = $requerimento->created_at?->format('Y') ?? date('Y');
+        $requerimento->numero_protocolo = $ano . '/' . $requerimento->id;
         $requerimento->save();
     }
 }

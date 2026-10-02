@@ -31,6 +31,74 @@
 
 .card-painel { margin-bottom: 1.25rem; }
 
+.painel-acoes {
+    padding: 0;
+    overflow: hidden;
+}
+
+.painel-acoes-titulo {
+    padding: 1.25rem 1.5rem;
+    margin: 0;
+    border-bottom: 1px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.acao-item + .acao-item {
+    border-top: 1px solid #e5e7eb;
+}
+
+.acao-resumo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    list-style: none;
+}
+
+.acao-resumo::-webkit-details-marker { display: none; }
+
+.acao-resumo::after {
+    content: '+';
+    color: #2563eb;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.acao-item[open] > .acao-resumo::after { content: '-'; }
+
+.acao-resumo:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+}
+
+.acao-textos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.acao-titulo {
+    color: #1f2937;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.acao-descricao {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.acao-conteudo { padding: 0 1.5rem 1.5rem; }
+.acao-arquivos { margin: 1rem 0; }
+.acao-label-secundario { margin-top: 1rem; }
+.acao-campo-secundario { margin: 0.75rem 0; }
+.acao-campo-secundario .select-status,
+.campo-documento-solicitado { width: 100%; }
+
 .historico {
     padding: 1.35rem;
     position: sticky;
@@ -505,6 +573,7 @@
     color: #4b5563;
     font-size: 0.82rem;
     line-height: 1.5;
+    white-space: pre-line;
 }
 
 /* Estados da Timeline */
@@ -625,6 +694,11 @@
         padding: 1rem;
         border-radius: 8px;
     }
+
+    .painel-acoes { padding: 0; }
+    .painel-acoes-titulo { padding: 1rem; }
+    .acao-resumo { padding: 1rem; }
+    .acao-conteudo { padding: 0 1rem 1rem; }
 
     .grid-2,
     .form-status,

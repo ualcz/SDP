@@ -22,14 +22,15 @@ table {
     vertical-align: middle; 
 }
 
-.logo {
-    width: 18mm;
+.cabecalho {
     text-align: center;
 }
 
-.logo img {
+.logo {
+    display: block;
     width: 13mm;
     height: 13mm;
+    margin: 0 auto 1mm;
 }
 
 .instituto {
@@ -47,56 +48,12 @@ table {
     font-size: 8pt;
 }
 
-.processo {
-    width: 37%;
-    border: 0.5pt solid #555;
-    padding: 1.5mm 1.5mm;
-    vertical-align: middle;
-}
-
-.processo-label {
-    font-size: 6.5pt;
-    font-weight: bold;
-    text-align: right;
-}
-
-.numero-boxes {
-    margin-top: 1mm;
-    text-align: right;
-    white-space: nowrap;
-    font-size: 0;
-}
-
-.numero-boxes span {
-    display: inline-block;
-    width: 3.8mm;
-    height: 4.5mm;
-    border: 0.5pt solid #555;
-    text-align: center;
-    line-height: 4.5mm;
-    font-size: 6.5pt;
-    vertical-align: middle;
-}
-
-.numero-boxes .separador {
-    display: inline-block;
-    width: 2.5mm;
-    text-align: center;
-    font-size: 7pt;
-    line-height: 4.5mm;
-    vertical-align: middle;
-}
-
 .titulo {
     margin-top: 1.5mm;
     border: 0.5pt solid #555;
     padding: 1.3mm 2mm;
     font-size: 12pt;
     font-weight: bold;
-}
-
-.titulo .ano {
-    font-size: 10pt;
 }
 
 .secao {
