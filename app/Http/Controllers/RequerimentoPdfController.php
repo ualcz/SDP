@@ -20,7 +20,8 @@ class RequerimentoPdfController extends Controller
         string $setorNome,
         ?string $setorChave = null,
         ?string $objeto = null,
-        ?string $mensagem = null
+        ?string $mensagem = null,
+        ?string $numeroProtocolo = null
     ): DomPDF {
         return Pdf::loadView('pdf.requerimento', [
             'aluno' => $aluno,
@@ -28,6 +29,7 @@ class RequerimentoPdfController extends Controller
             'setorChave' => $setorChave,
             'objeto' => $objeto,
             'mensagem' => $mensagem,
+            'numeroProtocolo' => $numeroProtocolo,
         ])->setPaper('a4', 'portrait');
     }
 
@@ -71,7 +73,8 @@ class RequerimentoPdfController extends Controller
             setorNome: $dados['setorNome'],
             setorChave: $dados['setorChave'],
             objeto: $dados['objeto'],
-            mensagem: $dados['mensagem']
+            mensagem: $dados['mensagem'],
+            numeroProtocolo: $dados['numeroProtocolo']
         );
 
         $nomeArquivo = 'Requerimento_' . Str::slug($dados['aluno']->nome) . '_' . date('Ymd_His') . '.pdf';
@@ -149,6 +152,7 @@ class RequerimentoPdfController extends Controller
             'setorChave' => (string) ($modeloAtivo['id'] ?? $setorParam),
             'objeto' => $objeto,
             'mensagem' => $mensagem,
+            'numeroProtocolo' => $request->query('numero_protocolo'),
         ];
     }
 }

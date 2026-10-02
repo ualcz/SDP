@@ -8,16 +8,6 @@
 
 <x-btn-voltar />
 
-<div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
-    <a href="{{ route('admin.setores.edit', $setor->id) }}" class="btn-editar-setor" style="display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border:1px solid #1d4ed8; border-radius:8px; background:linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.22); color:#fff; font-size:0.875rem; font-weight:700; text-decoration:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-        </svg>
-        Editar setor
-    </a>
-</div>
-
 <div class="dash-filter-card">
     <form method="GET" action="{{ route('setor.responsavel.dashboard', $setor->id) }}" class="dash-filter-form">
         <div class="filter-grid" style="display:grid; grid-template-columns: 1.5fr 1.2fr 1.2fr 1.2fr 1fr 1fr auto; gap:1rem; align-items:end;">
@@ -37,6 +27,7 @@
                     <option value="">Todos</option>
                     <option value="Aberto" {{ request('status') == 'Aberto' ? 'selected' : '' }}>Aberto</option>
                     <option value="Em Análise" {{ request('status') == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
+                    <option value="Despacho" {{ request('status') == 'Despacho' ? 'selected' : '' }}>Despacho</option>
                     <option value="Indeferido" {{ request('status') == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
                     <option value="Concluído" {{ request('status') == 'Concluído' ? 'selected' : '' }}>Concluído</option>
                 </select>

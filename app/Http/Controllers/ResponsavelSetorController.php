@@ -8,6 +8,8 @@ use App\Models\HistoricoRequerimento;
 use App\Services\DocumentoRequerimentoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ResponsavelSetorController extends Controller
 {
@@ -93,9 +95,15 @@ class ResponsavelSetorController extends Controller
         }
 
         // Carrega o usuário, endereço, assunto e os históricos (linha do tempo com documentos)
-        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos']);
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos', 'setorRetorno']);
+        $setoresDestino = Setor::query()
+            ->where('ativo', true)
+            ->where('id', '!=', $setor->id)
+            ->whereHas('responsaveis')
+            ->orderBy('setor_nome')
+            ->get();
 
-        return view('setor.requerimentos.show', compact('setor', 'requerimento'));
+        return view('setor.requerimentos.show', compact('setor', 'requerimento', 'setoresDestino'));
     }
 
     public function atualizarStatus(Request $request, Setor $setor, Requerimento $requerimento)
@@ -169,5 +177,117 @@ class ResponsavelSetorController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Status do requerimento atualizado para "' . $requerimento->status . '" com sucesso!');
+    }
+
+    public function encaminhar(Request $request, Setor $setor, Requerimento $requerimento)
+    {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id || $requerimento->setor_retorno_id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'setor_destino_id' => ['required', 'integer', Rule::exists('setores', 'id')->where('ativo', true)],
+            'observacao' => 'required|string|max:10000',
+            'arquivos' => 'nullable|array',
+            'arquivos.*' => 'nullable|file|max:51200',
+        ]);
+
+        $destino = Setor::query()
+            ->where('ativo', true)
+            ->whereHas('responsaveis')
+            ->find($validated['setor_destino_id']);
+
+        if (!$destino || (int) $destino->id === (int) $setor->id) {
+            return back()->withErrors(['setor_destino_id' => 'Selecione outro setor ativo com responsáveis.']);
+        }
+
+        $historico = DB::transaction(function () use ($setor, $destino, $requerimento, $validated) {
+            $atual = Requerimento::query()->lockForUpdate()->findOrFail($requerimento->id);
+            if ((int) $atual->setor_id !== (int) $setor->id || $atual->setor_retorno_id) {
+                abort(409, 'Este requerimento já foi encaminhado ou mudou de setor.');
+            }
+
+            $atual->update([
+                'setor_id' => $destino->id,
+                'setor_retorno_id' => $setor->id,
+                'status' => 'Despacho',
+            ]);
+
+            return HistoricoRequerimento::create([
+                'requerimento_id' => $atual->id,
+                'user_id' => Auth::id(),
+                'status' => $atual->status,
+                'observacao' => "Orientação para: {$destino->setor_sigla}\n{$validated['observacao']}",
+            ]);
+        });
+
+        $arquivos = $request->file('arquivos', []);
+        if (!empty($arquivos)) {
+            app(DocumentoRequerimentoService::class)->salvarArquivos(
+                requerimento: $requerimento,
+                historico: $historico,
+                arquivos: $arquivos,
+                usuario: Auth::user(),
+                titulo: 'Documento de encaminhamento'
+            );
+        }
+
+        return redirect()
+            ->route('setor.responsavel.dashboard', $setor->id)
+            ->with('success', 'Requerimento encaminhado para ' . $destino->setor_nome . '.');
+    }
+
+    public function responderEncaminhamento(Request $request, Setor $setor, Requerimento $requerimento)
+    {
+        $this->autorizarSetor($setor);
+
+        if ((int) $requerimento->setor_id !== (int) $setor->id || !$requerimento->setor_retorno_id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'observacao' => 'required|string|max:10000',
+            'arquivos' => 'nullable|array',
+            'arquivos.*' => 'nullable|file|max:51200',
+        ]);
+
+        [$setorOrigem, $historico] = DB::transaction(function () use ($setor, $requerimento, $validated) {
+            $atual = Requerimento::query()->lockForUpdate()->findOrFail($requerimento->id);
+            if ((int) $atual->setor_id !== (int) $setor->id || !$atual->setor_retorno_id) {
+                abort(409, 'Este requerimento já foi devolvido ou mudou de setor.');
+            }
+
+            $setorOrigem = Setor::findOrFail($atual->setor_retorno_id);
+            $atual->update([
+                'setor_id' => $setorOrigem->id,
+                'setor_retorno_id' => null,
+            ]);
+
+            $historico = HistoricoRequerimento::create([
+                'requerimento_id' => $atual->id,
+                'user_id' => Auth::id(),
+                'status' => $atual->status,
+                'observacao' => "Resposta para: {$setorOrigem->setor_sigla}\n{$validated['observacao']}",
+            ]);
+
+            return [$setorOrigem, $historico];
+        });
+
+        $arquivos = $request->file('arquivos', []);
+        if (!empty($arquivos)) {
+            app(DocumentoRequerimentoService::class)->salvarArquivos(
+                requerimento: $requerimento,
+                historico: $historico,
+                arquivos: $arquivos,
+                usuario: Auth::user(),
+                titulo: 'Resposta do setor'
+            );
+        }
+
+        return redirect()
+            ->route('setor.responsavel.dashboard', $setor->id)
+            ->with('success', 'Resposta registrada e requerimento devolvido para ' . $setorOrigem->setor_nome . '.');
     }
 }

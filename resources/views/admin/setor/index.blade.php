@@ -90,10 +90,12 @@
             <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0; color: #111827;">Setores</h2>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <a href="{{ route('admin.setores.create') }}" class="btn-acao">
-                ＋ Novo Setor
-            </a>
-            <a href="{{ route('admin.dashboard') }}" class="btn-voltar">
+            @if(auth()->user()->isAdmin())
+                <a href="{{ route('admin.setores.create') }}" class="btn-acao">
+                    ＋ Novo Setor
+                </a>
+            @endif
+            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('servidor.dashboard') }}" class="btn-voltar">
                 &larr; Voltar ao Dashboard
             </a>
         </div>
