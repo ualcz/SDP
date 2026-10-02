@@ -91,13 +91,22 @@ class RequerimentoController extends Controller
                 $q->where('objetoDoRequerimento', 'LIKE', '%' . $busca . '%')
                   ->orWhere('numero_protocolo', 'LIKE', '%' . $busca . '%')
                   ->orWhere('status', 'LIKE', '%' . $busca . '%');
+
+                if (stripos('aberto', $busca) !== false) {
+                    $q->orWhere('status', 'Despacho');
+                }
             });
         }
         if ($request->filled('objetoDoRequerimento')) {
             $query->where('objetoDoRequerimento', 'LIKE', '%' . $request->input('objetoDoRequerimento') . '%');
         }
         if ($request->filled('status')) {
-            $query->where('status', 'LIKE', '%' . $request->input('status') . '%');
+            $statusFiltro = $request->input('status');
+            if (strcasecmp($statusFiltro, 'Aberto') === 0) {
+                $query->whereIn('status', ['Aberto', 'Despacho']);
+            } else {
+                $query->where('status', 'LIKE', '%' . $statusFiltro . '%');
+            }
         }
         if ($request->filled('numero_protocolo')) {
             $query->where('numero_protocolo', 'LIKE', '%' . $request->input('numero_protocolo') . '%');

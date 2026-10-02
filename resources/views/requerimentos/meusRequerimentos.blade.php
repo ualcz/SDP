@@ -79,9 +79,9 @@
                                     {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
                                 </td>
                                 @if($requerimento->status)
-                                    <td class="req-col-objeto {{ $requerimento->status }}">
+                                    <td class="req-col-objeto {{ $requerimento->status_aluno }}">
                                         <span>
-                                            {{ $requerimento->status ?? '-'}}
+                                            {{ $requerimento->status_aluno }}
                                         </span>
                                     </td>
                                 @endif
@@ -119,8 +119,8 @@
                     </div>
 
                     <div class="req-card-actions">
-                        <div class="req-card-status {{ $requerimento->status }}">
-                            <span>{{ $requerimento->status }}</span>
+                        <div class="req-card-status {{ $requerimento->status_aluno }}">
+                            <span>{{ $requerimento->status_aluno }}</span>
                         </div>
                         <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
                     </div>

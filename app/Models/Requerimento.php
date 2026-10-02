@@ -113,6 +113,14 @@ class Requerimento extends Model
         return 'Setor Geral';
     }
 
+    /**
+     * Retorna o status visível para o aluno (Despacho é exibido como Aberto).
+     */
+    public function getStatusAlunoAttribute(): string
+    {
+        return $this->status === 'Despacho' ? 'Aberto' : ($this->status ?? 'Aberto');
+    }
+
     public function historicos()
     {
         return $this->hasMany(HistoricoRequerimento::class)->oldest();
