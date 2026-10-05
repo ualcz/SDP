@@ -168,6 +168,7 @@ class AdminSetorController extends Controller
         $dados = $request->validate([
             'descricao'                => 'required|string|max:255',
             'observacao'               => 'nullable|string|max:500',
+            'link_norma'               => 'nullable|url:http,https|max:2048',
             'ordem'                    => 'nullable|integer',
             'documentos'               => 'nullable|array',
             'documentos.*.nome'        => 'required_with:documentos.*.descricao,documentos.*.obrigatorio|nullable|string|max:255',
@@ -190,11 +191,12 @@ class AdminSetorController extends Controller
 
         $maxOrdem = $setor->assuntos()->max('ordem') ?? 0;
 
-        DB::transaction(function () use ($setor, $dados, $maxOrdem) {
+        DB::transaction(function () use ($setor, $dados, $maxOrdem, $request) {
             $assunto = AssuntoRequerimento::create([
                 'setor_id'   => $setor->id,
                 'descricao'  => trim($dados['descricao']),
                 'observacao' => !empty($dados['observacao']) ? trim($dados['observacao']) : null,
+                'link_norma' => !empty($dados['link_norma']) ? trim($dados['link_norma']) : null,
                 'ordem'      => $dados['ordem'] ?? ($maxOrdem + 1),
                 'ativo'      => true,
             ]);
@@ -228,7 +230,7 @@ class AdminSetorController extends Controller
         $dados = $request->validate([
             'descricao'                     => 'required|string|max:255',
             'observacao'                    => 'nullable|string|max:500',
-            'ordem'                         => 'required|integer',
+            'link_norma'                    => 'nullable|url:http,https|max:2048',
             'ativo'                         => 'nullable|boolean',
             'documentos'                    => 'nullable|array',
             'documentos.*.nome'             => 'required|string|max:255',
@@ -250,7 +252,8 @@ class AdminSetorController extends Controller
             $assunto->update([
                 'descricao'  => $dados['descricao'],
                 'observacao' => $dados['observacao'] ?? null,
-                'ordem'      => $dados['ordem'],
+                'link_norma' => $dados['link_norma'] ?? null,
+                'ordem'      => $assunto->ordem,
                 'ativo'      => $request->has('ativo'),
             ]);
 

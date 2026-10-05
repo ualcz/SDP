@@ -83,6 +83,16 @@
                                onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }})" 
                                {{ $isChecked ? 'checked' : '' }}>
                         {{ $descricao }}
+                        @if(!empty($assuntoItem['link_norma']))
+                            <a href="{{ $assuntoItem['link_norma'] }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               aria-label="Consultar norma de {{ $descricao }}"
+                               title="Consultar norma"
+                               style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 1px solid #e6904f; border-radius: 50%; color: #e6904f; font-size: 12px; font-weight: 700; text-decoration: none;">
+                                ?
+                            </a>
+                        @endif
                     </span>
                     @if(!empty($obs))
                         <small style="color: #e6904f; margin-left: 22px; font-size: 0.78rem;">{{ $obs }}</small>

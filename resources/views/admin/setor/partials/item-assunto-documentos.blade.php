@@ -24,11 +24,13 @@
     </div>
 
     {{-- Tabela com documentos existentes e novos dinâmicos --}}
-    <table id="{{ $tabelaDocsId }}" class="tabela-docs-nested" style="margin-top: 4px; {{ $hasDocs ? '' : 'display: none;' }}">
+    <div style="overflow-x: auto;">
+    <table id="{{ $tabelaDocsId }}" class="tabela-docs-nested" style="min-width: 820px; margin-top: 4px; {{ $hasDocs ? '' : 'display: none;' }}">
         <thead>
             <tr>
                 <th>Documento *</th>
                 <th>Orientações</th>
+                <th>Link do modelo</th>
                 <th style="width: 80px; text-align: center;">Obrigatório</th>
                 <th style="width: 50px; text-align: center;">Ações</th>
             </tr>
@@ -63,13 +65,15 @@
                                class="input-tabela"
                                style="font-size: 0.8125rem;"
                                placeholder="Orientações opcionais...">
-                           <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                    </td>
+                    <td>
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
                                type="url"
                                name="documentos[{{ $doc->id }}][link_modelo]"
                                value="{{ $doc->link_modelo }}"
                                class="input-tabela"
-                               style="font-size: 0.8125rem; margin-top: 4px;"
-                               placeholder="Link do modelo (opcional, https://...)"
+                               style="font-size: 0.8125rem;"
+                               placeholder="https://..."
                                maxlength="2048">
                     </td>
                     <td style="text-align: center;">
@@ -95,6 +99,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 
     {{-- Estado vazio exibido quando não há anexos --}}
     <div id="{{ $emptyDocsId }}" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 6px; display: {{ $hasDocs ? 'none' : 'flex' }}; justify-content: space-between; align-items: center;">
@@ -137,13 +142,15 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    class="input-tabela"
                    placeholder="Orientações opcionais..."
                    style="font-size: 0.8125rem;">
-                 <input form="${formUpdateId}"
-                     type="url"
-                     name="novos_documentos[${idx}][link_modelo]"
-                     class="input-tabela"
-                     placeholder="Link do modelo (opcional, https://...)"
-                     maxlength="2048"
-                     style="font-size: 0.8125rem; margin-top: 4px;">
+        </td>
+        <td>
+            <input form="${formUpdateId}"
+                   type="url"
+                   name="novos_documentos[${idx}][link_modelo]"
+                   class="input-tabela"
+                   placeholder="https://..."
+                   maxlength="2048"
+                   style="font-size: 0.8125rem;">
         </td>
         <td style="text-align: center;">
             <input form="${formUpdateId}"

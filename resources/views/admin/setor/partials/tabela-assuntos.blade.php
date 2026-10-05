@@ -127,6 +127,16 @@
                                                placeholder="Ex: Necessita assinatura do coordenador"
                                                class="input-tabela">
                                     </div>
+                                    <div style="flex: 4; min-width: 220px;">
+                                        <label class="label-campo">Link da norma (opcional)</label>
+                                        <input form="{{ $formUpdateId }}"
+                                               type="url"
+                                               name="link_norma"
+                                               value="{{ $assunto->link_norma }}"
+                                               placeholder="https://..."
+                                               maxlength="2048"
+                                               class="input-tabela">
+                                    </div>
 
                                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;">
                                         <label class="label-campo">Ativo</label>
