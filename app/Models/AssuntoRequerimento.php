@@ -13,6 +13,7 @@ class AssuntoRequerimento extends Model
         'modelo_requerimento_id',
         'descricao',
         'observacao',
+        'link_norma',
         'ordem',
         'curso_acesso',
         'ativo',

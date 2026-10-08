@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [
+            \App\Http\Middleware\PreventAuthenticatedPageCaching::class,
+        ]);
 
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,

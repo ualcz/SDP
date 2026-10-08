@@ -19,6 +19,7 @@ class Requerimento extends Model
     protected $fillable = [
         'usuario_id',
         'setor_id',
+        'setor_retorno_id',
         'assunto_requerimento_id',
         'objetoDoRequerimento',
         'numero_protocolo',
@@ -48,6 +49,11 @@ class Requerimento extends Model
      public function setor()
     {
         return $this->belongsTo(Setor::class, 'setor_id', 'id');
+    }
+
+    public function setorRetorno()
+    {
+        return $this->belongsTo(Setor::class, 'setor_retorno_id');
     }
 
     /**
@@ -107,6 +113,14 @@ class Requerimento extends Model
         return 'Setor Geral';
     }
 
+    /**
+     * Retorna o status visível para o aluno (Despacho é exibido como Aberto).
+     */
+    public function getStatusAlunoAttribute(): string
+    {
+        return $this->status === 'Despacho' ? 'Aberto' : ($this->status ?? 'Aberto');
+    }
+
     public function historicos()
     {
         return $this->hasMany(HistoricoRequerimento::class)->oldest();
@@ -139,7 +153,7 @@ class Requerimento extends Model
         }
         $emailsSetor = array_values(array_unique(array_filter(array_map('trim', $emailsSetor))));
 
-        $emailsAluno = array_filter([$aluno?->email_pessoal, $aluno?->email]);
+        $emailsAluno = array_filter([$aluno?->email_pessoal]);
         $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
 
         // Setor atualiza → só o aluno recebe (sem cópia ao setor)

@@ -99,6 +99,15 @@
                             <span>Usuários</span>
                         </a>
                         @else
+                            @if(auth()->user()->ehResponsavel())
+                                <a href="{{ route('admin.setores.index') }}" class="nav-link {{ request()->routeIs('admin.setores.index') ? 'active' : '' }}">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15.1 1.65 1.65 0 0 0 3.09 14H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.92a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+                                    </svg>
+                                    <span>Configurações</span>
+                                </a>
+                            @endif
                             <a class="profile header-username nav-link {{ request()->routeIs('requerimentos.aluno') ? 'active' : '' }}" href="{{ auth()->user()->isServidor() ? route('servidor.dashboard') : route('requerimentos.aluno') }}">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8zm7 8a7 7 0 00-14 0"/>
@@ -135,6 +144,14 @@
                         <span class="header-brand-subtitle">Sistema de Protocolos</span>
                     </div>
                 </a>
+
+                   {{-- Centro: Links principais centralizados --}}
+                <ul class="hidden md:flex space-x-6 md:space-x-4 xl:space-x-8 text-sm md:text-xs xl:text-base font-medium absolute left-1/2 transform -translate-x-1/2">
+                    <li><a href="#inicio" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Início</a></li>
+                    <li><a href="#funcionalidades" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Funcionalidades</a></li>
+                    <li><a href="#sobre" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Sobre</a></li>
+                    <li><a href="#devs" class="nav-link scroll-link text-gray-700 hover:text-purple-600 transition">Desenvolvedores</a></li>
+                </ul>
 
                 {{-- Navegação --}}
                 <div style="display:flex; align-items:center; gap:4px;">

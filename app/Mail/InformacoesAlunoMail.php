@@ -43,10 +43,8 @@ class InformacoesAlunoMail extends Mailable
             ? ($this->requerimento?->emailThreadSubject() ?? 'Requerimento [' . $this->objeto . '] - ' . $this->aluno->nome)
             : 'Informações Cadastrais do Aluno: ' . $this->aluno->nome;
 
-        // Reply-To aponta para o e-mail pessoal do aluno.
-        // Quando o setor clicar em "Responder", a resposta vai direto para o aluno.
-        // Usa o e-mail institucional apenas como fallback, caso o pessoal não exista.
-        $replyToEmail = $this->aluno->email_pessoal ?: $this->aluno->email;
+        // Respostas do setor devem ir somente para o e-mail pessoal do aluno.
+        $replyToEmail = $this->aluno->email_pessoal;
         $replyTo = $replyToEmail
             ? [new Address($replyToEmail, $this->aluno->nome)]
             : [];

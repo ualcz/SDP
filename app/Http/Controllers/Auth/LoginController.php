@@ -198,11 +198,11 @@ if (!$jwt) {
     | Logout
     |--------------------------------------------------------------------------
     */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-
-        session()->forget('suap_jwt');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('home');
     }

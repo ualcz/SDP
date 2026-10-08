@@ -22,8 +22,23 @@
                         <div class="timeline-body">
                             <p><strong>Responsável:</strong> {{ $historico->usuario->nome ?? 'Sistema' }}</p>
                             @if($historico->observacao)
+                                @php
+                                    $rotuloObservacao = 'Observação';
+                                    $textoObservacao = $historico->observacao;
+
+                                    if (preg_match('/^(Orientação para|Resposta para):\s*(.+?)\R(.*)$/s', $textoObservacao, $partes)) {
+                                        $rotuloObservacao = $partes[1] . ': ' . $partes[2];
+                                        $textoObservacao = $partes[3];
+                                    } elseif (preg_match('/^Encaminhado de .+ para (.+?)\.\s*\R+\s*(.*)$/s', $textoObservacao, $partes)) {
+                                        $rotuloObservacao = 'Orientação para: ' . $partes[1];
+                                        $textoObservacao = $partes[2];
+                                    } elseif (preg_match('/^Resposta de .+ para (.+?)\.\s*\R+\s*(.*)$/s', $textoObservacao, $partes)) {
+                                        $rotuloObservacao = 'Resposta para: ' . $partes[1];
+                                        $textoObservacao = $partes[2];
+                                    }
+                                @endphp
                                 <div class="timeline-observacao">
-                                    <strong>Observação:</strong> {{ $historico->observacao }}
+                                    <strong>{{ $rotuloObservacao }}</strong><br>{{ $textoObservacao }}
                                 </div>
                             @endif
                             @if($historico->nome_documento_solicitado)
@@ -164,6 +179,7 @@
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
                             'Indeferido' => 'badge-indeferido',
+                            'Despacho' => 'badge-despacho',
                             default => 'badge-analise'
                         };
                     @endphp
@@ -212,70 +228,125 @@
                     </ul>
                 </div>
             @endif
-
-            {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
-            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1.25rem 0 1rem 0;">
-            <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
-                @csrf
-                @method('PATCH')
-
-                <label for="status" class="info-label">Atualizar Status do Requerimento</label>
-                <div class="form-status">
-                    <select name="status" id="status" class="select-status" required onchange="toggleMensagemIndeferido()">
-                        <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
-                        <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
-                        <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
-                    </select>
-
-                    <button type="submit" class="btn-atualizar">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/>
-                        </svg>
-                        Atualizar Status
-                    </button>
-                </div>
-
-                {{-- Campo para anexar documentos do setor/servidor --}}
-                <div style="margin-top: 15px;">
-                    <label for="arquivos_servidor" class="info-label">Anexar Documento / Parecer / Despacho (opcional):</label>
-                    <input type="file" name="arquivos[]" id="arquivos_servidor" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
-                    <small style="color: #6b7280; font-size: 0.78rem; display: block; margin-top: 4px;">Você pode anexar um ou mais documentos (PDF, imagens, documentos Word) para ficarem registrados no histórico desta tramitação.</small>
-                </div>
-
-                <div id="campo-mensagem" style="display: {{ $requerimento->status == 'Indeferido' ? 'block' : 'none' }}; margin-top: 15px;">
-                    <label for="observacao" class="info-label">Instrução de correção / Motivo do Indeferimento:</label>
-                    <textarea
-                        name="observacao"
-                        id="observacao"
-                        class="form-control"
-                        rows="3"
-                        placeholder="Descreva o motivo ou o que o aluno precisa corrigir..."
-                        {{ $requerimento->status == 'Indeferido' ? 'required' : '' }}
-                    >{{ old('observacao') }}</textarea>
-                    {{-- Seleção para Solicitar Novo Documento --}}
-                    <div style="margin-bottom: 12px; margin-top:10px;">
-                        <label for="solicita_novo_documento" class="info-label">Deseja solicitar o envio de um documento ao aluno?</label>
-                        <select name="solicita_novo_documento" id="solicita_novo_documento" class="select-status" style="width: 100%;" onchange="toggleCampoNomeDocumento()">
-                            <option value="0" {{ old('solicita_novo_documento') == '0' ? 'selected' : '' }}>Não</option>
-                            <option value="1" {{ old('solicita_novo_documento') == '1' ? 'selected' : '' }}>Sim, solicitar documento</option>
-                        </select>
-                    </div>
-
-                    <div id="box-nome-documento" style="display: {{ old('solicita_novo_documento') == '1' ? 'block' : 'none' }};">
-                        <label for="nome_documento_solicitado" class="info-label">Nome/Tipo do documento solicitado:</label>
-                        <input
-                            type="text"
-                            name="nome_documento_solicitado"
-                            id="nome_documento_solicitado"
-                            class="select-status"
-                            placeholder="Ex: Atestado Médico, Comprovante de Residência..."
-                            value="{{ old('nome_documento_solicitado') }}"
-                            style="width: 100%; border-radius: 6px; border: 1px solid #d1d5db; padding: 8px;"
-                        >
-                    </div>
-                </div>
-            </form>
         </div>
+
+        <section class="card-painel painel-acoes" aria-labelledby="titulo-acoes-requerimento">
+            <h2 id="titulo-acoes-requerimento" class="painel-acoes-titulo">Ações do requerimento</h2>
+            @if($requerimento->setor_retorno_id)
+                <details class="acao-item" name="acao-requerimento" open>
+                    <summary class="acao-resumo">
+                        <span class="acao-textos">
+                            <span class="acao-titulo">Responder encaminhamento</span>
+                            <span class="acao-descricao">Devolver para {{ $requerimento->setorRetorno?->setor_sigla }}</span>
+                        </span>
+                    </summary>
+                    <div class="acao-conteudo">
+                    <form action="{{ route('setor.requerimentos.responderEncaminhamento', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="acao" value="responder_encaminhamento">
+                        <label for="resposta_encaminhamento" class="info-label">Resposta</label>
+                        <textarea name="observacao" id="resposta_encaminhamento" class="form-control" rows="4" required>{{ old('observacao') }}</textarea>
+                        <div class="acao-arquivos">
+                            <label for="arquivos_resposta" class="info-label">Anexar documentos (opcional)</label>
+                            <input type="file" name="arquivos[]" id="arquivos_resposta" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                        </div>
+                        <button type="submit" class="btn-atualizar">Enviar resposta e devolver</button>
+                    </form>
+                    </div>
+                </details>
+            @else
+                <details class="acao-item" name="acao-requerimento" {{ old('acao') === 'atualizar_status' ? 'open' : '' }}>
+                    <summary class="acao-resumo">
+                        <span class="acao-textos">
+                            <span class="acao-titulo">Atualizar status</span>
+                            <span class="acao-descricao">Em análise, indeferido ou concluído</span>
+                        </span>
+                    </summary>
+                    <div class="acao-conteudo">
+                        <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="acao" value="atualizar_status">
+
+                            <label for="status" class="info-label">Novo status</label>
+                            <div class="form-status">
+                                <select name="status" id="status" class="select-status" required onchange="toggleMensagemIndeferido()">
+                                    <option value="Em Análise" {{ old('status', $requerimento->status) == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
+                                    <option value="Indeferido" {{ old('status', $requerimento->status) == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
+                                    <option value="Concluído" {{ old('status', $requerimento->status) == 'Concluído' ? 'selected' : '' }}>Concluído</option>
+                                </select>
+
+                                <button type="submit" class="btn-atualizar">Salvar status</button>
+                            </div>
+
+                            <div class="acao-arquivos">
+                                <label for="arquivos_servidor" class="info-label">Anexar documento ou parecer (opcional)</label>
+                                <input type="file" name="arquivos[]" id="arquivos_servidor" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                            </div>
+
+                            <div id="campo-mensagem" style="display: {{ old('status', $requerimento->status) == 'Indeferido' ? 'block' : 'none' }};">
+                                <label for="observacao" class="info-label">Motivo do indeferimento</label>
+                                <textarea
+                                    name="observacao"
+                                    id="observacao"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="Informe o motivo e o que precisa ser corrigido."
+                                    {{ old('status', $requerimento->status) == 'Indeferido' ? 'required' : '' }}
+                                >{{ old('observacao') }}</textarea>
+                                <div class="acao-campo-secundario">
+                                    <label for="solicita_novo_documento" class="info-label">Solicitar documento ao aluno?</label>
+                                    <select name="solicita_novo_documento" id="solicita_novo_documento" class="select-status" onchange="toggleCampoNomeDocumento()">
+                                        <option value="0" {{ old('solicita_novo_documento') == '0' ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ old('solicita_novo_documento') == '1' ? 'selected' : '' }}>Sim</option>
+                                    </select>
+                                </div>
+                                <div id="box-nome-documento" style="display: {{ old('solicita_novo_documento') == '1' ? 'block' : 'none' }};">
+                                    <label for="nome_documento_solicitado" class="info-label">Documento solicitado</label>
+                                    <input
+                                        type="text"
+                                        name="nome_documento_solicitado"
+                                        id="nome_documento_solicitado"
+                                        class="select-status campo-documento-solicitado"
+                                        placeholder="Ex.: Atestado médico"
+                                        value="{{ old('nome_documento_solicitado') }}"
+                                    >
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+
+                <details class="acao-item" name="acao-requerimento" {{ old('acao') === 'encaminhar' ? 'open' : '' }}>
+                    <summary class="acao-resumo">
+                        <span class="acao-textos">
+                            <span class="acao-titulo">Encaminhar para outro setor</span>
+                            <span class="acao-descricao">Selecionar destino e registrar orientação</span>
+                        </span>
+                    </summary>
+                    <div class="acao-conteudo">
+                        <form action="{{ route('setor.requerimentos.encaminhar', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="acao" value="encaminhar">
+                            <label for="setor_destino_id" class="info-label">Setor de destino</label>
+                            <select name="setor_destino_id" id="setor_destino_id" class="select-status" required>
+                                <option value="">Selecione um setor</option>
+                                @foreach($setoresDestino as $setorDestino)
+                                    <option value="{{ $setorDestino->id }}" {{ old('setor_destino_id') == $setorDestino->id ? 'selected' : '' }}>{{ $setorDestino->setor_nome }} ({{ $setorDestino->setor_sigla }})</option>
+                                @endforeach
+                            </select>
+                            <label for="observacao_encaminhamento" class="info-label acao-label-secundario">Orientação</label>
+                            <textarea name="observacao" id="observacao_encaminhamento" class="form-control" rows="4" required>{{ old('observacao') }}</textarea>
+                            <div class="acao-arquivos">
+                                <label for="arquivos_encaminhamento" class="info-label">Anexar documentos (opcional)</label>
+                                <input type="file" name="arquivos[]" id="arquivos_encaminhamento" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                            </div>
+                            <button type="submit" class="btn-atualizar">Encaminhar</button>
+                        </form>
+                    </div>
+                </details>
+            @endif
+        </section>
 
         {{-- DADOS DO ALUNO --}}
 

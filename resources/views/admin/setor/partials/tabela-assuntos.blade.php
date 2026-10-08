@@ -22,7 +22,6 @@
                     <th class="col-descricao">Descrição do Requerimento</th>
                     <th class="col-observacao">Observação / Requisito</th>
                     <th class="col-docs">Documentos</th>
-                    <th class="col-ordem">Ordem</th>
                     <th class="col-ativo">Ativo</th>
                     <th class="col-acoes">Ações</th>
                 </tr>
@@ -54,7 +53,6 @@
                                 {{ $docsCount }}  Anexos
                             </span>
                         </td>
-                        <td style="text-align: center; color: #6b7280;">{{ $assunto->ordem }}</td>
                         <td style="text-align: center;">
                             @if($assunto->ativo)
                                 <span style="color: #059669; font-weight: 600; font-size: 0.75rem;">Sim</span>
@@ -62,17 +60,45 @@
                                 <span style="color: #dc2626; font-weight: 600; font-size: 0.75rem;">Não</span>
                             @endif
                         </td>
-                        <td style="text-align: center;">
-                            <button type="button"
-                                    class="btn-editar-sm"
-                                    onclick="togglePainelAssunto('{{ $panelId }}')"
-                                    title="Editar requerimento e gerenciar documentos">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                </svg>
-                                Editar
-                            </button>
+                        <td style="text-align: center; display: grid; grid-template-columns: 6fr 1fr; align-items: center;">
+                            <div>
+                                <button type="button"
+                                        class="btn-editar-sm"
+                                        onclick="togglePainelAssunto('{{ $panelId }}')"
+                                        title="Editar requerimento e gerenciar documentos">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                    Editar
+                                </button>
+</div>
+                            <div class="arrow-actions" style="width: 5px;">
+                                <!-- Botão Subir -->
+                                 <!-- Verificação: se for o primeiro item da lista, mostra apenas a seta pra baixo -->
+                                 @if ($assunto->ordem > $assunto->min('ordem'))
+                                    <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'up']) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="arrow-btn up" aria-label="Subir">
+                                            <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endif
+
+                                <!-- Botão Descer -->
+                                 @if ($assunto->ordem < $assunto->max('ordem'))
+                                    <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'down']) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="arrow-btn down" aria-label="Descer">
+                                            <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </td>
                     </tr>
 
@@ -101,15 +127,17 @@
                                                placeholder="Ex: Necessita assinatura do coordenador"
                                                class="input-tabela">
                                     </div>
-                                    <div style="width: 80px;">
-                                        <label class="label-campo">Ordem</label>
+                                    <div style="flex: 4; min-width: 220px;">
+                                        <label class="label-campo">Link da norma (opcional)</label>
                                         <input form="{{ $formUpdateId }}"
-                                               type="number"
-                                               name="ordem"
-                                               value="{{ $assunto->ordem }}"
-                                               class="input-tabela"
-                                               style="text-align: center;">
+                                               type="url"
+                                               name="link_norma"
+                                               value="{{ $assunto->link_norma }}"
+                                               placeholder="https://..."
+                                               maxlength="2048"
+                                               class="input-tabela">
                                     </div>
+
                                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;">
                                         <label class="label-campo">Ativo</label>
                                         <input form="{{ $formUpdateId }}"

@@ -132,9 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const radioSelecionado = form.querySelector('input[name="objetoDoRequerimento"]:checked');
     radioSelecionado?.dispatchEvent(new Event('change', { bubbles: true }));
 
-    if (rascunho?.etapa === '1' || rascunho?.etapa === '2') {
-        mudarPasso(rascunho.etapa);
-    }
+    mudarPasso(1);
     form.dataset.suspendDraft = 'false';
 
     const btnEnviar = form.querySelector('button[type="submit"]');

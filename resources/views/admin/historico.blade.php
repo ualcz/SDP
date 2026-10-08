@@ -54,7 +54,7 @@
                 <div>
                     <span class="info-label">Nº Protocolo</span>
                     <h1 class="card-titulo" style="font-size: 1.5rem; color: #2563eb;">
-                        {{ $requerimento->numero_protocolo }}
+                        {{ $requerimento->id }}
                     </h1>
                 </div>
                 @php
@@ -63,6 +63,7 @@
                         'Em Análise' => 'badge-analise',
                         'Concluído' => 'badge-concluido',
                         'Indeferido' => 'badge-indeferido',
+                        'Despacho' => 'badge-despacho',
                         default => 'badge-analise'
                     };
                 @endphp

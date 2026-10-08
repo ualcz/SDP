@@ -20,7 +20,8 @@ class RequerimentoPdfController extends Controller
         string $setorNome,
         ?string $setorChave = null,
         ?string $objeto = null,
-        ?string $mensagem = null
+        ?string $mensagem = null,
+        ?string $numeroProtocolo = null
     ): DomPDF {
         return Pdf::loadView('pdf.requerimento', [
             'aluno' => $aluno,
@@ -28,6 +29,7 @@ class RequerimentoPdfController extends Controller
             'setorChave' => $setorChave,
             'objeto' => $objeto,
             'mensagem' => $mensagem,
+            'numeroProtocolo' => $numeroProtocolo,
         ])->setPaper('a4', 'portrait');
     }
 
@@ -71,7 +73,8 @@ class RequerimentoPdfController extends Controller
             setorNome: $dados['setorNome'],
             setorChave: $dados['setorChave'],
             objeto: $dados['objeto'],
-            mensagem: $dados['mensagem']
+            mensagem: $dados['mensagem'],
+            numeroProtocolo: $dados['numeroProtocolo']
         );
 
         $nomeArquivo = 'Requerimento_' . Str::slug($dados['aluno']->nome) . '_' . date('Ymd_His') . '.pdf';
@@ -83,10 +86,10 @@ class RequerimentoPdfController extends Controller
         return $pdf->stream($nomeArquivo);
     }
 
-    public function gerarComprovante($numeroProtocolo, Request $request)
+    public function gerarComprovante($id, Request $request)
     {
         $requerimento = Requerimento::with('usuario','setor')
-            ->where('numero_protocolo', $numeroProtocolo)
+            ->where('id', $id)
             ->firstOrFail();
         $dados = [
             'nomeRequerente' => $requerimento->usuario->nome, 
@@ -100,7 +103,7 @@ class RequerimentoPdfController extends Controller
             objeto: $requerimento->objetoDoRequerimento,
             setor: $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla,
             dataSolicitacao: $requerimento->created_at,
-            numeroProtocolo: $requerimento->numero_protocolo
+            numeroProtocolo: $requerimento->id
         );
 
         $nomeArquivo = 'Comprovante_' . Str::slug($requerimento->usuario->nome) . '_' . date('Ymd_His') . '.pdf';
@@ -149,6 +152,7 @@ class RequerimentoPdfController extends Controller
             'setorChave' => (string) ($modeloAtivo['id'] ?? $setorParam),
             'objeto' => $objeto,
             'mensagem' => $mensagem,
+            'numeroProtocolo' => $request->query('numero_protocolo'),
         ];
     }
 }

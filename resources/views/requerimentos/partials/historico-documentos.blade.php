@@ -6,6 +6,7 @@
     $deveExibirTodosDocumentos = $documentos->isNotEmpty() && (
         ($historico?->status ?? null) === 'Concluído'
         || ($historico?->status ?? null) === 'Indeferido'
+        || ($historico?->status ?? null) === 'Despacho'
         || ($requerimento?->status ?? null) === 'Concluído'
         || (($historico?->status ?? null) === 'Em Análise' && !empty($historico?->solicita_novo_documento))
     );

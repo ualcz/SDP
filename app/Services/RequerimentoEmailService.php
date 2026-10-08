@@ -16,7 +16,6 @@ class RequerimentoEmailService
 
         $emailsAluno = array_filter([
             $aluno->email_pessoal,
-            $aluno->email,
             $emailAdicional,
         ]);
 

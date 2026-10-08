@@ -67,7 +67,7 @@
                                 </td>
                                 <td class="req-col-protocolo">
                                     <span class="req-badge-protocolo">
-                                        #{{ $requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo ?? 'S/N' }}
+                                        #{{ $requerimento['id'] ?? $requerimento->id ?? 'S/N' }}
                                     </span>
                                 </td>
                                 <td class="req-col-setor">
@@ -79,9 +79,9 @@
                                     {{ $requerimento['objetoDoRequerimento'] ?? $requerimento->objetoDoRequerimento }}
                                 </td>
                                 @if($requerimento->status)
-                                    <td class="req-col-objeto {{ $requerimento->status }}">
+                                    <td class="req-col-objeto {{ $requerimento->status_aluno }}">
                                         <span>
-                                            {{ $requerimento->status ?? '-'}}
+                                            {{ $requerimento->status_aluno }}
                                         </span>
                                     </td>
                                 @endif
@@ -103,7 +103,7 @@
                     <div class="req-card-top">
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <span class="req-badge-protocolo">
-                                #{{ $requerimento['numero_protocolo'] ?? $requerimento->numero_protocolo ?? 'S/N' }}
+                                #{{ $requerimento['id'] ?? $requerimento->id ?? 'S/N' }}
                             </span>
                             <span class="req-text-setor">
                                 {{ $requerimento->setor?->setor_sigla ?? $requerimento->setor_sigla ?? 'N/A' }}
@@ -119,8 +119,8 @@
                     </div>
 
                     <div class="req-card-actions">
-                        <div class="req-card-status {{ $requerimento->status }}">
-                            <span>{{ $requerimento->status }}</span>
+                        <div class="req-card-status {{ $requerimento->status_aluno }}">
+                            <span>{{ $requerimento->status_aluno }}</span>
                         </div>
                         <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
                     </div>

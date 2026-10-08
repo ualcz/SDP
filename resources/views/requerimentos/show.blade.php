@@ -5,7 +5,7 @@
 @section('content')
 <div class="detalhes-container">
     <x-btn-voltar/>
-    <a href="{{ route('requerimentos.gerar-comprovante', ['numero_protocolo' => $requerimento->numero_protocolo]) }}"
+    <a href="{{ route('requerimentos.gerar-comprovante', ['id' => $requerimento->id]) }}"
     target="_blank"
     class="req-btn-imprimir"
     >
@@ -126,12 +126,12 @@
                 <div>
                     <span class="info-label">Nº Protocolo</span>
                     <h1 class="card-titulo" style="font-size: 1.5rem; color: #2563eb;">
-                        {{ $requerimento->numero_protocolo }}
+                        {{ $requerimento->id }}
                     </h1>
                 </div>
                 <div>
                     @php
-                        $statusClass = match($requerimento->status) {
+                        $statusClass = match($requerimento->status_aluno) {
                             'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
@@ -143,7 +143,7 @@
                         <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10"/>
                         </svg>
-                        {{ $requerimento->status }}
+                        {{ $requerimento->status_aluno }}
                     </span>
                 </div>
             </div>

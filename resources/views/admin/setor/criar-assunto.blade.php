@@ -49,6 +49,16 @@
                        class="input-tabela">
             </div>
 
+            <div>
+                <label class="label-campo">Link da norma (opcional)</label>
+                <input type="url"
+                       name="link_norma"
+                       value="{{ old('link_norma') }}"
+                       placeholder="https://..."
+                       maxlength="2048"
+                       class="input-tabela">
+            </div>
+
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                 <div style="flex: 4; min-width: 280px;">
                     <label class="label-campo">Observação / Requisito</label>
@@ -79,11 +89,12 @@
             </div>
 
             <div id="container-tabela-anexos" style="display: none; overflow-x: auto;">
-                <table class="tabela-docs-nested" style="margin-bottom: 0; background: #fff;">
+                <table class="tabela-docs-nested" style="min-width: 820px; margin-bottom: 0; background: #fff;">
                     <thead>
                         <tr>
-                            <th style="min-width: 200px;">Documento *</th>
-                            <th style="min-width: 240px;">Orientações</th>
+                            <th style="min-width: 190px;">Documento *</th>
+                            <th style="min-width: 220px;">Orientações</th>
+                            <th style="min-width: 220px;">Link do modelo</th>
                             <th style="width: 80px; text-align: center;">Obrigatório</th>
                             <th style="width: 50px; text-align: center;">Ações</th>
                         </tr>
@@ -125,17 +136,19 @@ function adicionarAnexoRow() {
                    required
                    class="input-tabela"
                    style="font-size: 0.8125rem;">
-                 <input type="url"
-                     name="documentos[${index}][link_modelo]"
-                     placeholder="Link do modelo (opcional, https://...)"
-                     maxlength="2048"
-                     class="input-tabela"
-                     style="font-size: 0.8125rem; margin-top: 4px;">
         </td>
         <td>
             <input type="text"
                    name="documentos[${index}][descricao]"
-                   placeholder="Opcional..."
+                   placeholder="Instruções para o aluno (opcional)"
+                   class="input-tabela"
+                   style="font-size: 0.8125rem;">
+        </td>
+        <td>
+            <input type="url"
+                   name="documentos[${index}][link_modelo]"
+                   placeholder="https://..."
+                   maxlength="2048"
                    class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>

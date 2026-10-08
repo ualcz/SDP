@@ -28,7 +28,6 @@
         $listaObjetos = array_values($modeloAtivo['objetos'] ?? []);
         $colunasObjetos = array_chunk($listaObjetos, (int) ceil(count($listaObjetos) / 2));
         $objSelecionado = trim($objeto ?? '');
-        $prefixoProcesso = $modeloAtivo['processo_prefixo'] ?? '23720';
         $emailSetor = $modeloAtivo['rodape_contato'] ?? $modeloAtivo['email'] ?? '';
         $endereco = $aluno->endereco;
         $cidadeUf = $endereco?->cidade ? $endereco->cidade . ($endereco->estado ? ' - ' . $endereco->estado : '') : '';
@@ -40,26 +39,18 @@
 
     <table class="topo">
         <tr>
-            <td class="logo"><img src="{{ $logoIfba }}" alt="IFBA"></td>
-            <td class="instituto">
-                INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA<br>
-                <span class="campus">CAMPUS SEABRA</span><br>
-                <span class="setor">{{ strtoupper($setorNomeOficial) }}</span>
-            </td>
-            <td class="processo">
-                <div class="processo-label">Número do Processo</div>
-                <div class="numero-boxes">
-                    @foreach(str_split($prefixoProcesso) as $digito)<span>{{ $digito }}</span>@endforeach
-                    @foreach(range(1, 6) as $i)<span></span>@endforeach
-                    <span class="separador">/</span>
-                    @foreach(str_split(date('Y')) as $digito)<span>{{ $digito }}</span>@endforeach
-                    <span class="separador">-</span><span></span><span></span>
+            <td class="cabecalho">
+                <img class="logo" src="{{ $logoIfba }}" alt="IFBA">
+                <div class="instituto">
+                    INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DA BAHIA<br>
+                    <span class="campus">CAMPUS SEABRA</span><br>
+                    <span class="setor">{{ strtoupper($setorNomeOficial) }}</span>
                 </div>
             </td>
         </tr>
     </table>
 
-    <div class="titulo">REQUERIMENTO Nº <span class="ano">{{ date('Y') }}/</span>________________</div>
+    <div class="titulo">REQUERIMENTO Nº {{ $numeroProtocolo ?: '________________' }}</div>
 
     <div class="secao">
         <div class="secao-titulo">IDENTIFICAÇÃO DO REQUERENTE</div>
@@ -75,9 +66,7 @@
                 <td><span class="rotulo">Nº do CPF</span><span class="valor">{{ $aluno->cpf ?? '' }}</span></td>
             </tr>
             <tr>
-                <td><span class="rotulo">Nº da TURMA (para estudante do IFBA)</span><span class="valor">{{ $aluno->turma_codigo ?? '' }}</span></td>
-                <td colspan="2"><span class="rotulo">Documento de Identificação (para público externo ao IFBA)</span><span class="valor"></span></td>
-                <td><span class="rotulo">Tipo de documentação (especificar)</span><span class="valor"></span></td>
+                <td colspan="4"><span class="rotulo">Nº da TURMA</span><span class="valor">{{ $aluno->turma_codigo ?? '' }}</span></td>
             </tr>
             <tr>
                 <td colspan="2"><span class="rotulo">Endereço</span><span class="valor">{{ $endereco?->rua ?? '' }}</span></td>

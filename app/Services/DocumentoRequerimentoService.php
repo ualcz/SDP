@@ -34,7 +34,8 @@ class DocumentoRequerimentoService
                 setorNome: $setorNome,
                 setorChave: $setorChave,
                 objeto: $objeto,
-                mensagem: $mensagem
+                mensagem: $mensagem,
+                numeroProtocolo: $requerimento?->numero_protocolo
             );
             $conteudo = $pdf->output();
 
