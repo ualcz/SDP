@@ -235,4 +235,9 @@ class EnvioEmailController extends Controller
         $requerimento->numero_protocolo = $ano . '/' . $requerimento->id;
         $requerimento->save();
     }
+
+    public function report(Request $request)
+    {
+        return view('emails.report');
+    }
 }

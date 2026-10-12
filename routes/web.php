@@ -32,6 +32,8 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
+Route::get('/report', [EnvioEmailController::class, 'report'])->name('report');
+
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

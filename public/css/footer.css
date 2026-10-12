@@ -53,6 +53,18 @@ body {
     filter: brightness(0) invert(1);
 }
 
+.footer-link:hover {
+    background-color: #9a9daa;
+    padding: 4px 20px;
+    border-radius: 4px;
+    color: #1a1f2e;
+}
+.footer-link {
+    background-color: #252b3c;
+    padding: 4px 20px;
+    border-radius: 4px;
+}
+
 .footer-brand-name {
     font-size: 16px;
     font-weight: 700;

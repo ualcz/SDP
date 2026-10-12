@@ -36,12 +36,12 @@
                         class="nav-link {{ request()->routeIs('admin.dashboard', 'servidor.dashboard') ? 'active' : '' }}">
                             <span>Dashboard</span>
                         </a>
-                        
+
                             <a href="{{ route('admin.consultar-requerimentos') }}"
                             class="nav-link {{ request()->routeIs('admin.consultar-requerimentos') ? 'active' : '' }}">
                                 <span>Consultar requerimentos</span>
                             </a>
-                       
+
                         @else
                             {{-- vou adicionar uma página home que terá informações do sistema e devs --}}
 
@@ -197,6 +197,9 @@
                     <div class="footer-brand-name">SDP</div>
                     <div class="footer-brand-sub">Sistema de Protocolos e Requerimentos</div>
                 </div>
+            </div>
+            <div class="footer-links">
+                <a href="{{ route('report') }}" class="footer-link ">Entre em Contato</a>
             </div>
 
         </div>
