@@ -33,7 +33,11 @@ class AdminSetorController extends Controller
         $setores = $consulta->get();
         $modelos = $setores; // compatibilidade com as views
 
-        return view('admin.setor.index', compact('setores', 'modelos'));
+        $usuarios = Usuario::where('role', '!=', 'aluno')
+        ->orderBy('nome')
+        ->get();
+
+        return view('admin.setor.index', compact('setores', 'modelos', 'usuarios'));
     }
 
     public function create()

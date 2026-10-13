@@ -152,4 +152,48 @@
         </tbody>
     </table>
 </div>
+
+<div class="admin-card">
+    <h2 style="font-size: 1.25rem; font-weight: 500; margin:0; margin-bottom: 1rem; color: #111827; ">Gerenciamento de Notificações</h2>
+    <p>Selecione abaixo os usuários que vão receber email de sugestões e reclamações do sistema quando um aluno o fizer:</p>
+    <div>
+        <form action="">
+            @csrf
+             @if(auth()->user()->role === 'admin')
+           {{-- Responsáveis pelo Setor --}}
+            <div class="form-group col-span-12">
+
+
+                @php
+                    $selecionados = old('responsaveis', isset($modelo->responsaveis) ? $modelo->responsaveis->pluck('id')->toArray() : []);
+
+                    // Reordena a coleção: quem está em $selecionados fica em primeiro (true > false)
+                    $usuariosOrdenados = $usuarios->sortByDesc(function ($usuario) use ($selecionados) {
+                        return in_array($usuario->id, $selecionados);
+                    });
+                @endphp
+
+                <input type="text" id="buscar-usuario" placeholder="🔍 Digite para buscar um usuário..."
+                    style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+
+                <div id="lista-responsaveis" style="max-height: 200px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; background-color: #f8fafc;">
+                    @foreach($usuariosOrdenados as $usuario)
+                        @php $checked = in_array($usuario->id, $selecionados); @endphp
+                        <label class="usuario-item" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='transparent'">
+                            <input type="checkbox" name="responsaveis[]" value="{{ $usuario->id }}" {{ $checked ? 'checked' : '' }} style="width: 16px; height: 16px; accent-color: #2563eb;">
+                            <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
+                                <strong>{{ $usuario->nome }}</strong> <span style="color: #64748b;">({{ $usuario->matricula ?? $usuario->email }})</span>
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                <button type="submit" class="btn-acao">Salvar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
 @endsection
