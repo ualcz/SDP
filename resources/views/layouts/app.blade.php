@@ -70,16 +70,38 @@
                             </a>
                         @endif
                         @auth
-                            @if(auth()->user()->ehResponsavel())
-                                @foreach(auth()->user()->setoresSobResponsabilidade as $setor)
-                                    <a href="{{ route('setor.responsavel.dashboard', $setor->id) }}"
-                                    class="nav-link {{ request()->is("setor/{$setor->id}*") ? 'active' : '' }}">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            @if(auth()->user()->ehResponsavel() && auth()->user()->setoresSobResponsabilidade->count() > 0)
+                                @php
+                                    $setorAtivo = auth()->user()->setoresSobResponsabilidade->first(function($setor) {
+                                        return request()->is("setor/{$setor->id}*");
+                                    });
+                                @endphp
+
+                                <div class="dropdown-setores">
+                                    <button type="button" class="dropdown-toggle-btn {{ $setorAtivo ? 'active' : '' }}" onclick="toggleDropdownSetores(event)">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink: 0;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                            </svg>
+                                            <span style="overflow: hidden; text-overflow: ellipsis;">
+                                                {{ $setorAtivo ? ($setorAtivo->setor_sigla ?? $setorAtivo->nome) : 'Seus Setores' }}
+                                            </span>
+                                        </div>
+                                        <svg class="dropdown-arrow {{ $setorAtivo ? 'rotated' : '' }}" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink: 0;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                                         </svg>
-                                        <span>{{ $setor->setor_sigla ?? $setor->nome }}</span>
-                                    </a>
-                                @endforeach
+                                    </button>
+
+                                    {{-- Lista de opções do Dropdown --}}
+                                    <div class="dropdown-menu-setores" id="menuSetores">
+                                        @foreach(auth()->user()->setoresSobResponsabilidade as $setor)
+                                            <a href="{{ route('setor.responsavel.dashboard', $setor->id) }}"
+                                            class="dropdown-item {{ request()->is("setor/{$setor->id}*") ? 'active' : '' }}">
+                                                <span>{{ $setor->setor_sigla ?? $setor->nome }}</span>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
                             @endif
                         @endauth
                     </nav>
@@ -208,7 +230,32 @@
             SDP &mdash; IFBA Campus Seabra &copy; {{ date('Y') }}
         </div>
     </footer>
+    <script>
+    function toggleDropdownSetores(event) {
+        event.stopPropagation();
+        const menu = document.getElementById('menuSetores');
+        const arrow = event.currentTarget.querySelector('.dropdown-arrow');
 
+        menu.classList.toggle('show');
+        if (arrow) {
+            arrow.classList.toggle('rotated');
+        }
+    }
+
+    // Fecha o dropdown ao clicar fora
+    window.addEventListener('click', function() {
+        const menu = document.getElementById('menuSetores');
+        if (menu && menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            const arrow = document.querySelector('.dropdown-toggle-btn .dropdown-arrow');
+            if (arrow) {
+                // Se não houver um setor ativo, remove a rotação da seta
+                @if(!$setorAtivo)
+                    arrow.classList.remove('rotated');
+                @endif
+            }
+        }
+    });
+    </script>
 </body>
-
 </html>

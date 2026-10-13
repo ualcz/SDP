@@ -140,6 +140,92 @@ a {
     background: #fef2f2;
 }
 
+.dropdown-setores {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.dropdown-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.dropdown-toggle-btn:hover,
+.dropdown-toggle-btn.active {
+    background-color: #f0fdf4;
+    color: #059669;
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.dropdown-arrow.rotated {
+    transform: rotate(180deg);
+}
+
+/* O menu agora flutua elegantemente abaixo do botão (estilo dropdown de navbar) */
+.dropdown-menu-setores {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    padding: 6px;
+    gap: 2px;
+    z-index: 1000;
+    margin-left: 0;
+}
+
+/* Classe acionada via JavaScript para abrir */
+.dropdown-menu-setores.show {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 8px 12px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.dropdown-item.active {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-weight: 600;
+}
+
 /* ________________ conteudo ________________ */
 
 .container {
@@ -205,6 +291,8 @@ a {
     .container {
         margin-bottom: 40px;
     }
+
+
 }
 
 
