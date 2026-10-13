@@ -158,11 +158,18 @@
 
         <div class="form-group">
             <label for="nome">Seu Nome</label>
-            <input type="text" id="nome" name="nome" class="form-control" {{ auth()->user()->nome ? 'readonly' : '' }} required value="{{ auth()->user()->nome ?? ($aluno->nome ?? '') }}">
+            <input type="text" id="nome" name="nome" class="form-control"
+                {{ auth()->check() && auth()->user()->nome ? 'readonly' : '' }}
+                required
+                value="{{ auth()->check() ? (auth()->user()->nome ?? '') : ($aluno->nome ?? '') }}">
         </div>
+
         <div class="form-group">
             <label for="email">Seu Email</label>
-            <input type="email" id="email" name="email" class="form-control" {{ auth()->user()->email ? 'readonly' : '' }} required value="{{ auth()->user()->email ?? ($aluno->email ?? '') }}">
+            <input type="email" id="email" name="email" class="form-control"
+                {{ auth()->check() && auth()->user()->email ? 'readonly' : '' }}
+                required
+                value="{{ auth()->check() ? (auth()->user()->email ?? '') : ($aluno->email ?? '') }}">
         </div>
 
         <div class="form-group">
