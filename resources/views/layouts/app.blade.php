@@ -248,12 +248,7 @@
         if (menu && menu.classList.contains('show')) {
             menu.classList.remove('show');
             const arrow = document.querySelector('.dropdown-toggle-btn .dropdown-arrow');
-            if (arrow) {
-                // Se não houver um setor ativo, remove a rotação da seta
-                @if(!$setorAtivo)
-                    arrow.classList.remove('rotated');
-                @endif
-            }
+
         }
     });
     </script>
