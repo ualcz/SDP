@@ -11,6 +11,8 @@ use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DocumentoRequerimentoController;
+use App\Http\Controllers\ReportController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +34,8 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/report', [EnvioEmailController::class, 'report'])->name('report');
+Route::get('/report', [ReportController::class, 'report'])->name('report');
+Route::post('/report', [ReportController::class, 'store'])->name('send.report');
 
 Route::post('/login', [LoginController::class, 'login']);
 
