@@ -221,7 +221,7 @@
                 </div>
             </div>
             <div class="footer-links">
-                <a href="{{ route('report') }}" class="footer-link ">Entre em Contato</a>
+                <a href="{{ route('report') }}" class="footer-link ">Reportar</a>
             </div>
 
         </div>

@@ -55,7 +55,7 @@ class LoginController extends Controller
                 return redirect()->route('servidor.dashboard');
             }
 
-            return redirect()->route('requerimentos.aluno');
+            return redirect()->route('requerimentos.aluno.novo');
         }
 
         /*
@@ -190,7 +190,7 @@ if (!$jwt) {
             return redirect()->route('servidor.dashboard');
         }
 
-        return redirect('/requerimentos/aluno');
+        return redirect('/requerimentos/aluno/novo');
     }
 
     /*
