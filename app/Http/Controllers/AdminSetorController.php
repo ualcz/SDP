@@ -33,7 +33,8 @@ class AdminSetorController extends Controller
         $setores = $consulta->get();
         $modelos = $setores; // compatibilidade com as views
 
-        $usuarios = Usuario::where('role', '!=', 'aluno')
+        $usuarios = Usuario::with('reportRecipient')
+        ->where('role', '!=', 'aluno')
         ->orderBy('nome')
         ->get();
 

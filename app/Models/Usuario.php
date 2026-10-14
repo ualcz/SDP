@@ -104,4 +104,8 @@ class Usuario extends Authenticatable
     {
         return $this->hasOne(Endereco::class, 'usuario_id');
     }
+    public function reportRecipient(): HasOne
+    {
+        return $this->hasOne(ReportRecipient::class, 'user_id', 'id');
+    }
 }

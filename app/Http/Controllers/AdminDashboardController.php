@@ -6,6 +6,7 @@ use App\Models\Requerimento;
 use App\Charts\QtdRequerimentoMeses;
 use App\Charts\RequerimentoPorSetor;
 use App\Charts\StatusSetorChart;
+use App\Models\ReportRecipient;
 
 
 class AdminDashboardController extends Controller
@@ -19,7 +20,7 @@ class AdminDashboardController extends Controller
                 now()->startOfWeek(),
                 now()->endOfWeek()
             ])->count();
-        } else { 
+        } else {
             $totalRecebidos = Requerimento::whereBetween('created_at', [
                 now()->startOfMonth(),
                 now()->endOfMonth()
@@ -35,5 +36,23 @@ class AdminDashboardController extends Controller
             'periodo' => $periodo,
             'notFound' => 'Nenhum registro encontrado.'
         ]);
+    }
+
+    public function updateNotifications(Request $request)
+    {
+        // Remove todos os registros atuais da tabela separada
+        ReportRecipient::truncate();
+
+        // Altere de 'user_ids' para 'responsaveis'
+        if ($request->has('responsaveis')) {
+            foreach ($request->responsaveis as $userId) {
+                ReportRecipient::create([
+                    'user_id' => $userId,
+                    'is_active' => true,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Destinatários atualizados com sucesso!');
     }
 }

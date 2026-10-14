@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ReportRecipient;
 
 class ReportController extends Controller
 {
@@ -21,11 +22,17 @@ class ReportController extends Controller
             'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $destinatarios = [
-            '20261SEAADS0004@ifba.edu.br',
-            'cimenflor@gmail.com',
-            // adicione seus emails aqui depois
-        ];
+        $destinatarios = ReportRecipient::where('is_active', true)
+            ->with('usuario')
+            ->get()
+            ->pluck('usuario.email')
+            ->filter()
+            ->toArray();
+
+        if (empty($destinatarios)) {
+            $destinatarios = ['20261seaads0004@ifba.edu.br'];
+        }
+
 
         // Envia o e-mail
         Mail::send([], [], function ($message) use ($validatedData, $request, $destinatarios) {

@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
-
+    Route::post('/admin/notifications/update', [AdminDashboardController::class, 'updateNotifications'])->name('admin.notifications.update');
     // Gerenciamento de Setores e Assuntos de Requerimentos
     Route::get('/admin/setores/criar', [AdminSetorController::class, 'create'])->name('admin.setores.create');
     Route::post('/admin/setores', [AdminSetorController::class, 'store'])->name('admin.setores.store');

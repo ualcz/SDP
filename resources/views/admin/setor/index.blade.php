@@ -82,6 +82,40 @@
     .btn-voltar:hover {
         background: #f3f4f6;
     }
+
+    .remetentes-list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+
+    .remetente-item {
+        padding: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: #f9fafb;
+    }
+
+    .remetentes-edit {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transform: translateY(-10px);
+        transition: max-height 0.3s ease-out, opacity 0.2s ease-out, transform 0.2s ease-out;
+        visibility: hidden;
+        margin-top: 12px;
+    }
+
+    .remetentes-edit.is-open {
+        max-height: 500px;
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        transition: max-height 0.4s ease-in, opacity 0.3s ease-in, transform 0.3s ease-in;
+    }
+
 </style>
 
 <div class="admin-card">
@@ -154,24 +188,43 @@
 </div>
 
 <div class="admin-card">
-    <h2 style="font-size: 1.25rem; font-weight: 500; margin:0; margin-bottom: 1rem; color: #111827; ">Gerenciamento de Notificações</h2>
-    <p>Selecione abaixo os usuários que vão receber email de sugestões e reclamações do sistema quando um aluno o fizer:</p>
-    <div>
-        <form action="">
-            @csrf
-             @if(auth()->user()->role === 'admin')
-           {{-- Responsáveis pelo Setor --}}
-            <div class="form-group col-span-12">
-
-
                 @php
-                    $selecionados = old('responsaveis', isset($modelo->responsaveis) ? $modelo->responsaveis->pluck('id')->toArray() : []);
-
-                    // Reordena a coleção: quem está em $selecionados fica em primeiro (true > false)
+                    $selecionados = old('responsaveis', \App\Models\ReportRecipient::pluck('user_id')->toArray());
                     $usuariosOrdenados = $usuarios->sortByDesc(function ($usuario) use ($selecionados) {
                         return in_array($usuario->id, $selecionados);
                     });
                 @endphp
+    <h2 style="font-size: 1.25rem; font-weight: 500; margin:0; margin-bottom: 1rem; color: #111827; ">Gerenciamento de Notificações</h2>
+    <p>Destinatários Atuais:</p>
+    <div class="remetentes-list">
+        @php
+            $destinatariosAtuais = \App\Models\ReportRecipient::with('usuario')
+            ->get()
+            ->pluck('usuario')
+            ->filter();
+            @endphp
+
+        @if($destinatariosAtuais->count() > 0)
+            @foreach ($destinatariosAtuais as $destinatario)
+                <div class='remetente-item'>
+                    <h3 style="margin-bottom: 10px; font-weight: 700; color: #111827; font-size: 1.25rem;">{{ $destinatario->nome }}</h3>
+                    <p style="font-size: 1rem;">{{ $destinatario->email }}</p>
+                    <p style="color:#717274; font-size: 0.875rem;">{{ $destinatario->matricula ?? '_' }}</p>
+                </div>
+            @endforeach
+        @else
+        <p style="color: #64748b; font-size: 0.875rem;">Nenhum responsável configurado no momento.</p>
+        @endif
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+        <button class="btn-acao" onclick="editarDestinatarios()">Editar Destinatários</button>
+    </div>
+    <div class='remetentes-edit'>
+        <p class="mb-4">Selecione os servidores ou administradores que receberão as notificações <br>por e-mail sempre que um aluno enviar uma sugestão ou reclamação pelo sistema.</p>
+        <form action="{{ route('admin.notifications.update') }}" method="POST">
+            @csrf
+             @if(auth()->user()->role === 'admin')
+            <div class="form-group col-span-12">
 
                 <input type="text" id="buscar-usuario" placeholder="🔍 Digite para buscar um usuário..."
                     style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
@@ -182,7 +235,7 @@
                         <label class="usuario-item" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='transparent'">
                             <input type="checkbox" name="responsaveis[]" value="{{ $usuario->id }}" {{ $checked ? 'checked' : '' }} style="width: 16px; height: 16px; accent-color: #2563eb;">
                             <span style="font-size: 0.875rem; color: #1e293b;" class="usuario-texto">
-                                <strong>{{ $usuario->nome }}</strong> <span style="color: #64748b;">({{ $usuario->matricula ?? $usuario->email }})</span>
+                                <strong>{{ $usuario->nome }}</strong> <span style="color: #64748b;">({{ $usuario->email }})</span>
                             </span>
                         </label>
                     @endforeach
@@ -196,4 +249,24 @@
 
     </div>
 </div>
+<script>
+    document.getElementById('buscar-usuario').addEventListener('input', function() {
+        const termo = this.value.toLowerCase();
+        const itens = document.querySelectorAll('.usuario-item');
+
+        itens.forEach(item => {
+            const texto = item.querySelector('.usuario-texto').textContent.toLowerCase();
+            if (texto.includes(termo)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    function editarDestinatarios() {
+        const editSection = document.querySelector('.remetentes-edit');
+        editSection.classList.toggle('is-open');
+    }
+</script>
 @endsection
