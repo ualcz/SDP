@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DocumentoRequerimentoController;
+use App\Http\Controllers\ModeloController;
 use App\Http\Controllers\ReportController;
 
 
@@ -154,6 +155,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/requerimentos/visualizar-blade', [RequerimentoPdfController::class, 'visualizarBlade'])->name('requerimentos.visualizar-blade');
     Route::get('/requerimentos/gerar-pdf', [RequerimentoPdfController::class, 'gerarPdf'])->name('requerimentos.gerar-pdf');
     Route::get('/requerimentos/{id}/gerar-comprovante', [RequerimentoPdfController::class, 'gerarComprovante'])->name('requerimentos.gerar-comprovante');
+    Route::get('/aluno/declaracao-ciencia/gerar', [ModeloController::class, 'gerarModelo'])->name('modelos.gerar-modelo');
 
     /*
     |--------------------------------------------------------------------------
