@@ -93,6 +93,14 @@ function restaurarRascunhoRequerimento(form) {
 }
 
 function mudarPasso(passo) {
+    if (passo === 2) {
+        const radioChecked = document.querySelector('input[name="objetoDoRequerimento"]:checked');
+        if (!radioChecked) {
+            alert('Por favor, selecione um Objeto do Requerimento antes de prosseguir.');
+            return;
+        }
+    }
+
     document.querySelectorAll('.form-step').forEach(el => {
         el.style.display = 'none';
     });
