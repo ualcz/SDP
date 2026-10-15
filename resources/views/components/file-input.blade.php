@@ -9,7 +9,8 @@
 
 @php
     $id = 'file_input_' . Str::random(8);
-    $defaultHelpText =$required ? 'Campo obrigatório.' : 'Opcional. Adicione outros arquivos se desejar.';
+    $isObrigatorio = filter_var($required, FILTER_VALIDATE_BOOLEAN);
+    $defaultHelpText = $isObrigatorio ? 'Campo obrigatório.' : 'Opcional. Adicione outros arquivos se desejar.';
 @endphp
 
 <style>
@@ -56,7 +57,7 @@
 <div class="campo" style="margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 12px;">
     <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
         {{ $label }}
-        @if($required)
+        @if($isObrigatorio)
             <span style="color: #e53e3e;" title="Campo obrigatório">*</span>
         @endif
     </label>
@@ -66,12 +67,12 @@
     </small>
 
 
-    <label @class(['custom-file-upload', 'obrigatorio' => $required])>
+    <label @class(['custom-file-upload', 'obrigatorio' => $isObrigatorio])>
         <input
             type="file"
             name="{{ $name }}"
             @if($multiple) multiple @endif
-            @if($required) required @endif
+            @if($isObrigatorio) data-obrigatorio="true" @endif
             accept="{{ $accept }}"
             onchange="atualizarFeedbackInline_{{ $id }}(this)"
             {{ $attributes }}

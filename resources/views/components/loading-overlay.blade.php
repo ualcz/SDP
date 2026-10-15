@@ -77,26 +77,31 @@
         const loadingText = document.getElementById('loadingText');
 
         if (form && loadingOverlay && loadingText) {
-            form.addEventListener('submit', function () {
-                if (form.checkValidity()) {
-                    loadingOverlay.style.display = 'flex';
-                    loadingOverlay.setAttribute('aria-hidden', 'false');
-
-                    const btnSubmit = form.querySelector('button[type="submit"], input[type="submit"]');
-                    if (btnSubmit) {
-                        btnSubmit.disabled = true;
-                    }
-
-                    let index = 0;
-                    setInterval(() => {
-                        index = (index + 1) % mensagens.length;
-                        loadingText.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingText.textContent = mensagens[index];
-                            loadingText.style.opacity = '1';
-                        }, 200);
-                    }, 2000);
+            form.addEventListener('submit', function (e) {
+                if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+                    return;
                 }
+
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.setAttribute('aria-hidden', 'false');
+
+                const btnSubmit = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (btnSubmit) {
+                    btnSubmit.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        btnSubmit.disabled = true;
+                    }, 50);
+                }
+
+                let index = 0;
+                setInterval(() => {
+                    index = (index + 1) % mensagens.length;
+                    loadingText.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingText.textContent = mensagens[index];
+                        loadingText.style.opacity = '1';
+                    }, 200);
+                }, 2000);
             });
         }
     });
