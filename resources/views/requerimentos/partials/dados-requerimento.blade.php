@@ -73,40 +73,44 @@
                     $assuntoItem = $assuntosMap[$descricao] ?? null;
                     $obs = $assuntoItem['observacao'] ?? null;
                     $indexAssunto = $loop->index;
-                    $isChecked = old('objetoDoRequerimento') ? (old('objetoDoRequerimento') === $descricao) : $loop->first;
+                    $isChecked = old('objetoDoRequerimento') === $descricao;
                 @endphp
-                <label style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 8px; cursor: pointer;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <input type="radio" 
-                               name="objetoDoRequerimento" 
-                               value="{{ $descricao }}" 
-                               onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }})" 
+                <label class="opcao-objeto-card {{ $isChecked ? 'opcao-selecionada' : '' }}">
+                    <span class="opcao-header">
+                        <input type="radio"
+                               class="opcao-radio"
+                               name="objetoDoRequerimento"
+                               value="{{ $descricao }}"
+                               onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }}); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
                                {{ $isChecked ? 'checked' : '' }}>
-                        {{ $descricao }}
+                        <span class="opcao-titulo">{{ $descricao }}</span>
                         @if(!empty($assuntoItem['link_norma']))
                             <a href="{{ $assuntoItem['link_norma'] }}"
                                target="_blank"
                                rel="noopener noreferrer"
                                aria-label="Consultar norma de {{ $descricao }}"
                                title="Consultar norma"
-                               style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 1px solid #e6904f; border-radius: 50%; color: #e6904f; font-size: 12px; font-weight: 700; text-decoration: none;">
-                                ?
-                            </a>
+                               onclick="event.stopPropagation()"
+                               class="opcao-norma-btn">?</a>
                         @endif
                     </span>
                     @if(!empty($obs))
-                        <small style="color: #e6904f; margin-left: 22px; font-size: 0.78rem;">{{ $obs }}</small>
+                        <span class="opcao-observacao">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                            {{ $obs }}
+                        </span>
                     @endif
                 </label>
             @endforeach
-            <label style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 8px; cursor: pointer;">
-                <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <label class="opcao-objeto-card {{ old('objetoDoRequerimento') === 'outro' ? 'opcao-selecionada' : '' }}">
+                <span class="opcao-header">
                     <input type="radio"
+                           class="opcao-radio"
                            name="objetoDoRequerimento"
                            value="outro"
-                           onchange="alternarObjetoOutro(true)"
+                           onchange="alternarObjetoOutro(true); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
                            {{ old('objetoDoRequerimento') === 'outro' ? 'checked' : '' }}>
-                    Outro
+                    <span class="opcao-titulo">Outro</span>
                 </span>
             </label>
         </div>
