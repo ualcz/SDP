@@ -7,7 +7,7 @@
 
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
-<section id="inicio" class="fade-up">    
+<section id="inicio" class="fade-up">
     <div class="container">
         <div class="hero-wrapper">
             <div class="hero-text">
@@ -38,7 +38,7 @@
 </section>
 
 <section id="funcionalidades" class="fade-up">
-    <div class="container">
+    <div>
         <h2>Funcionalidades do SDP</h2>
         <div class="cards-grid">
             <div class="card">
