@@ -191,7 +191,7 @@ class EnvioEmailController extends Controller
 
             // Salva no banco e no storage os documentos enviados vinculados ao histórico inicial
             $historicoInicial = $requerimento->historicos()->first();
-            app(DocumentoRequerimentoService::class)->salvarDocumentosIniciais(
+            $docsIniciaisSalvos = app(DocumentoRequerimentoService::class)->salvarDocumentosIniciais(
                 requerimento: $requerimento,
                 historico: $historicoInicial,
                 documentosInput: $request->file('documentos', []),
@@ -214,18 +214,36 @@ class EnvioEmailController extends Controller
             mensagem: $motivo
         );
 
-        $mailable = new InformacoesAlunoMail(
-            aluno: $aluno,
-            setorNome: $setor->setor_nome,
-            mensagem: $motivo,
-            arquivos: $resultadoPdf['arquivos_nao_mesclados'],
-            objeto: $objeto,
-            setorChave: (string) $setor->id,
-            requerimento: $requerimento,
-            pdfRequerimento: $resultadoPdf['pdf']
-        );
+        // Mapeia os caminhos dos arquivos não mesclados que já estão salvos no storage local
+        $anexosNaoMescladosCaminhos = [];
+        if (!empty($resultadoPdf['arquivos_nao_mesclados']) && !empty($docsIniciaisSalvos)) {
+            foreach ($resultadoPdf['arquivos_nao_mesclados'] as $arqNaoMesclado) {
+                $nomeArq = ($arqNaoMesclado instanceof \Illuminate\Http\UploadedFile)
+                    ? $arqNaoMesclado->getClientOriginalName()
+                    : (is_string($arqNaoMesclado) ? basename($arqNaoMesclado) : null);
 
-        $servicoEmail->enviar($mailable, $destinatarios);
+                if ($nomeArq) {
+                    $docSalvo = collect($docsIniciaisSalvos)->first(fn($d) => $d->nome_original === $nomeArq);
+                    if ($docSalvo && !empty($docSalvo->caminho)) {
+                        $anexosNaoMescladosCaminhos[] = $docSalvo->caminho;
+                    }
+                }
+            }
+        }
+
+        // Despacha o envio de e-mail para processamento em segundo plano (Queue)
+        if ($requerimento) {
+            \App\Jobs\EnviarEmailRequerimentoJob::dispatch(
+                requerimentoId: $requerimento->id,
+                destinatarios: $destinatarios,
+                pdfDocumentoId: $resultadoPdf['pdf']['documento_id'] ?? null,
+                anexosNaoMescladosCaminhos: $anexosNaoMescladosCaminhos,
+                mensagem: $motivo,
+                objeto: $objeto,
+                setorNome: $setor->setor_nome,
+                setorChave: (string) $setor->id
+            );
+        }
 
         return back()->with('sucesso', 'Requerimento enviado com sucesso!');
     }

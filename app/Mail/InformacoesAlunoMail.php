@@ -75,8 +75,14 @@ class InformacoesAlunoMail extends Mailable
         $anexos = [];
 
         if ($this->pdfRequerimento !== null) {
-            $anexos[] = Attachment::fromData(fn () => $this->pdfRequerimento['conteudo'], $this->pdfRequerimento['nome'])
-                ->withMime('application/pdf');
+            if (!empty($this->pdfRequerimento['caminho']) && \Illuminate\Support\Facades\Storage::disk('local')->exists($this->pdfRequerimento['caminho'])) {
+                $anexos[] = Attachment::fromStorageDisk('local', $this->pdfRequerimento['caminho'])
+                    ->as($this->pdfRequerimento['nome'] ?? 'Requerimento.pdf')
+                    ->withMime('application/pdf');
+            } elseif (!empty($this->pdfRequerimento['conteudo'])) {
+                $anexos[] = Attachment::fromData(fn () => $this->pdfRequerimento['conteudo'], $this->pdfRequerimento['nome'] ?? 'Requerimento.pdf')
+                    ->withMime('application/pdf');
+            }
         }
 
         foreach ($this->arquivos as $arquivo) {
@@ -84,8 +90,12 @@ class InformacoesAlunoMail extends Mailable
                 $anexos[] = Attachment::fromPath($arquivo->getRealPath())
                     ->as($arquivo->getClientOriginalName())
                     ->withMime($arquivo->getMimeType());
-            } elseif (is_string($arquivo) && file_exists($arquivo)) {
-                $anexos[] = Attachment::fromPath($arquivo);
+            } elseif (is_string($arquivo)) {
+                if (file_exists($arquivo)) {
+                    $anexos[] = Attachment::fromPath($arquivo);
+                } elseif (\Illuminate\Support\Facades\Storage::disk('local')->exists($arquivo)) {
+                    $anexos[] = Attachment::fromStorageDisk('local', $arquivo);
+                }
             }
         }
 

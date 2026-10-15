@@ -80,6 +80,8 @@ class DocumentoRequerimentoService
             'pdf' => [
                 'nome' => $nomePdf,
                 'conteudo' => $conteudo,
+                'documento_id' => $documentoSalvo?->id ?? null,
+                'caminho' => $documentoSalvo?->caminho ?? null,
             ],
             'arquivos_nao_mesclados' => $arquivosNaoMesclados,
         ];
