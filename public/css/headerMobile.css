@@ -1,54 +1,79 @@
+/* ==========================================================================
+   Header Mobile & Menu Gaveta (Drawer)
+   Design com Hierarquia Visual, Equilíbrio e Toque Ergonômico
+   ========================================================================== */
+
+.site-header {
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
 .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: solid 1px rgb(227, 227, 227);
-    padding: 10px 15px;
+    padding: 10px 16px;
     position: relative;
-}
-
-.header-logo {
-    width: 35px;
-    height: auto;
-    object-fit: contain;
-    margin-right: 8px;
 }
 
 .header-brand {
     display: flex;
     align-items: center;
     text-decoration: none;
+    gap: 10px;
+}
+
+.header-logo {
+    width: 32px;
+    height: auto;
+    object-fit: contain;
 }
 
 .header-brand-text {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .header-brand-title {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: #119B70;
     line-height: 1.1;
-    margin-bottom: 0;
+    letter-spacing: -0.02em;
 }
 
 .header-brand-subtitle {
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.72rem;
+    font-weight: 500;
     line-height: 1.1;
-    color: #555;
+    color: #64748b;
 }
 
 .hamburger-btn {
     display: flex;
-    background: none;
-    border: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     cursor: pointer;
-    color: #333;
-    padding: 5px;
+    color: #334155;
+    transition: background-color 0.2s, color 0.2s;
 }
+
+.hamburger-btn:hover {
+    background-color: #f1f5f9;
+    color: #119B70;
+}
+
+/* ==========================================================================
+   Overlay e Container da Gaveta
+   ========================================================================== */
 
 .mobile-overlay {
     position: fixed;
@@ -56,7 +81,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -71,84 +97,377 @@
 .header-menu-container {
     position: fixed;
     top: 0;
-    right: -280px;
-    width: 280px;
-    height: 100vh;
+    right: -320px;
+    width: 290px;
+    max-width: 86vw;
+    height: 100%;
+    max-height: 100dvh;
     background: #ffffff;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    padding: 60px 20px 20px 20px;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    transition: right 0.3s ease-in-out;
+    padding: 14px 16px;
+    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.12);
+    transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 999;
     overflow-y: auto;
-    gap: 20px;
+    box-sizing: border-box;
 }
 
 .header-menu-container.is-open {
     right: 0;
 }
 
-.mobile-close-btn {
-    display: block;
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #333;
+/* ==========================================================================
+   Cabeçalho do Drawer (Topo)
+   ========================================================================== */
+
+.mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
 }
+
+.drawer-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drawer-logo {
+    width: 26px;
+    height: auto;
+    object-fit: contain;
+}
+
+.drawer-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #119B70;
+    display: block;
+    line-height: 1;
+}
+
+.drawer-subtitle {
+    font-size: 0.7rem;
+    color: #64748b;
+    display: block;
+    line-height: 1.2;
+}
+
+.mobile-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #475569;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.mobile-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* ==========================================================================
+   Card de Identificação do Usuário
+   ========================================================================== */
+
+.mobile-user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+}
+
+.user-avatar-badge {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #119B70, #059669);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(17, 155, 112, 0.2);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3px;
+    flex-wrap: wrap;
+}
+
+.user-role-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.user-role-badge.role-administrador {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.user-role-badge.role-servidor {
+    background: #fefce8;
+    color: #a16207;
+    border-color: #fef08a;
+}
+
+.user-matricula {
+    font-size: 0.72rem;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Separadores e Rótulos de Seção
+   ========================================================================== */
+
+.menu-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 8px 0;
+}
+
+.menu-section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    padding-left: 4px;
+    margin: 6px 0 4px 0;
+}
+
+/* ==========================================================================
+   Lista de Navegação
+   ========================================================================== */
 
 .header-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.header-user {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-}
-
-.guest-mobile-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    gap: 3px;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.profile {
-    padding: 5px 20px;
-    background-color: #119B70;
-    color:#fff;
+    padding: 7px 10px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 0.88rem;
     font-weight: 500;
-    border-radius: 5px;
-    width: fit-content;
+    color: #334155;
+    transition: all 0.15s ease;
+    min-height: 38px;
 }
 
-.btn-logout {
-    padding: 5px 20px;
-    background-color: #fe9a91;
-    color:#600909;
-    font-weight: 500;
-    border-radius: 5px;
-    width: fit-content;
+.nav-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 7px;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
 }
 
-.active {
+.nav-link:hover {
+    background: #f8fafc;
     color: #119B70;
-    font-weight: 700;
+}
+
+.nav-link:hover .nav-icon {
+    background: #e2e8f0;
+    color: #119B70;
+}
+
+.nav-link.active {
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+}
+
+.nav-link.active .nav-icon {
+    background: #d1fae5;
+    color: #047857;
+}
+
+/* ==========================================================================
+   Dropdown de Setores (para Responsáveis)
+   ========================================================================== */
+
+.dropdown-setores {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dropdown-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: none;
+    background: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+}
+
+.dropdown-toggle-btn .dropdown-arrow {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.dropdown-toggle-btn .dropdown-arrow.rotated {
+    transform: rotate(180deg);
+}
+
+.dropdown-toggle-btn:hover {
+    background: #f8fafc;
+    color: #119B70;
+}
+
+.dropdown-menu-setores {
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: 24px;
+    margin: 4px 0;
+}
+
+.dropdown-menu-setores.show {
+    display: flex;
+}
+
+.dropdown-item {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.dropdown-item:hover, .dropdown-item.active {
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Rodapé do Drawer (Ações / Sair)
+   ========================================================================== */
+
+.mobile-drawer-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-logout-modern {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+    border-radius: 9px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn-logout-modern:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.btn-logout-modern:active {
+    transform: scale(0.99);
+}
+
+.btn-login-modern {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 16px;
+    background: #119B70;
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(17, 155, 112, 0.25);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-login-modern:hover {
+    background: #0d7f5b;
+}
+
+.guest-mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
