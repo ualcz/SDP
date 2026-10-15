@@ -45,23 +45,22 @@
                     $primeiroNome = $nomes[0] ?? 'Usuário';
                     $sobrenome = count($nomes) > 1 ? end($nomes) : '';
                     $iniciais = mb_strtoupper(mb_substr($primeiroNome, 0, 1) . ($sobrenome ? mb_substr($sobrenome, 0, 1) : ''));
-                    $roleNome = $usuario->isAdmin() ? 'Administrador' : ($usuario->isServidor() ? 'Servidor' : 'Aluno');
-                    $linkPerfil = $usuario->isServidor() ? route('servidor.dashboard') : route('requerimentos.aluno');
+                    $linkPerfil = $usuario->isAluno() ? route('requerimentos.aluno') : ($usuario->isServidor() ? route('servidor.dashboard') : route('admin.dashboard'));
                 @endphp
 
-                {{-- Card de Perfil com Hierarquia Visual --}}
-                <div class="mobile-user-card">
+                {{-- Card de Perfil clicável --}}
+                <a href="{{ $linkPerfil }}" class="mobile-user-card" style="text-decoration: none; cursor: pointer;">
                     <div class="user-avatar-badge">{{ $iniciais }}</div>
                     <div class="user-info">
-                        <div class="user-name" title="{{ $nomeCompleto }}">{{ $nomeCompleto }}</div>
-                        <div class="user-meta">
-                            <span class="user-role-badge role-{{ strtolower($roleNome) }}">{{ $roleNome }}</span>
-                            @if(!empty($usuario->matricula))
-                                <span class="user-matricula">{{ $usuario->matricula }}</span>
-                            @endif
-                        </div>
+                        <div class="user-name" title="{{ $nomeCompleto }}">{{ $primeiroNome }}</div>
+                        @if(!empty($usuario->matricula))
+                            <div class="user-matricula" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">{{ $usuario->matricula }}</div>
+                        @endif
                     </div>
-                </div>
+                    <svg style="margin-left: auto; color: #94a3b8; flex-shrink: 0;" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
 
                 <div class="menu-divider"></div>
 
