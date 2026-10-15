@@ -189,7 +189,7 @@
 
 <div class="admin-card">
                 @php
-                    $selecionados = old('responsaveis', \App\Models\ReportRecipient::pluck('user_id')->toArray());
+                    $selecionados = old('responsaveis', \App\Models\ReportRecipient::pluck('usuario_id')->toArray());
                     $usuariosOrdenados = $usuarios->sortByDesc(function ($usuario) use ($selecionados) {
                         return in_array($usuario->id, $selecionados);
                     });

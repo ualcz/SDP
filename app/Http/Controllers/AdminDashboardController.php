@@ -47,7 +47,7 @@ class AdminDashboardController extends Controller
         if ($request->has('responsaveis')) {
             foreach ($request->responsaveis as $userId) {
                 ReportRecipient::create([
-                    'user_id' => $userId,
+                    'usuario_id' => $userId,
                     'is_active' => true,
                 ]);
             }

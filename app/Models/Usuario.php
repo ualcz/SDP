@@ -106,6 +106,6 @@ class Usuario extends Authenticatable
     }
     public function reportRecipient(): HasOne
     {
-        return $this->hasOne(ReportRecipient::class, 'user_id', 'id');
+        return $this->hasOne(ReportRecipient::class, 'usuario_id', 'id');
     }
 }
