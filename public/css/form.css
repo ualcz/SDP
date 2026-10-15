@@ -148,9 +148,9 @@
 }
 
 .opcao-objeto-card.opcao-selecionada {
-    border-color: #059669;
+    border-color: #94a3b8;
     background-color: #f0fdf4;
-    box-shadow: 0 1px 3px rgba(5, 150, 105, 0.12);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .opcao-header {
@@ -189,7 +189,7 @@
     height: 18px;
     border-radius: 50%;
     background: #e0f2fe;
-    border: 1px solid #bae6fd;
+    border: none;
     color: #0284c7;
     font-size: 11px;
     font-weight: 700;
@@ -202,7 +202,6 @@
 .opcao-norma-btn:hover {
     background: #0284c7;
     color: #ffffff;
-    border-color: #0284c7;
 }
 
 .opcao-observacao {
@@ -212,7 +211,6 @@
     margin-top: 8px;
     padding: 8px 12px;
     background: #fffbeb;
-    border: 1px solid #fde68a;
     border-radius: 6px;
     color: #78350f;
     font-size: 0.83rem;
@@ -228,8 +226,6 @@
 
 .opcao-objeto-card.opcao-selecionada .opcao-observacao {
     background: #ffffff;
-    border: 1px solid #86efac;
-    border-left: 4px solid #059669;
     color: #0f172a;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
