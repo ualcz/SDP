@@ -13,57 +13,6 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: curl, fileinfo, gd, mbstring, pdo_mysql, xml, zip
-        tools: composer:v2
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@v4
-      id: composer-cache
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-8.3-composer-${{ hashFiles('composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-8.3-composer-
-
-    - name: Install PHP dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-
-    - name: Refresh Laravel autoload and package manifest
-      run: |
-        cp .env.example .env || touch .env
-        composer dump-autoload --no-dev --optimize --no-scripts
-        php artisan config:clear
-        php artisan package:discover --ansi
-
-        
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-        cache: 'npm'
-
-    - name: Cache Node.js dependencies
-      uses: actions/cache@v4
-      id: npm-cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-22-npm-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-22-npm-
-
-    - name: Install JavaScript dependencies and build assets
-      run: |
-        if [ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]; then
-          npm ci
-        fi
-        npm run build
-
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -71,11 +20,3 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: ./
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/tests/**
-          README.md
-          phpunit.xml
-          .env.example
