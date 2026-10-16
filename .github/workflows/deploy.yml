@@ -35,8 +35,12 @@ jobs:
 
     - name: Refresh Laravel autoload and package manifest
       run: |
+        cp .env.example .env || touch .env
         composer dump-autoload --no-dev --optimize --no-scripts
+        php artisan config:clear
         php artisan package:discover --ansi
+
+        
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
