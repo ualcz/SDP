@@ -20,6 +20,9 @@ jobs:
         extensions: curl, fileinfo, gd, mbstring, pdo_mysql, xml, zip
         tools: composer:v2
 
+    - name: Create Temporary Environment File
+      run: cp .env.example .env || touch .env
+
     - name: Cache Composer dependencies
       uses: actions/cache@v4
       id: composer-cache
@@ -37,7 +40,6 @@ jobs:
 
     - name: Refresh Laravel autoload and package manifest
       run: |
-        cp .env.example .env || touch .env
         composer dump-autoload --no-dev --optimize --no-scripts
         php artisan config:clear
         php artisan package:discover --ansi
