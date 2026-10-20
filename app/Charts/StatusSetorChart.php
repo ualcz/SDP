@@ -48,7 +48,7 @@ class StatusSetorChart
             ->setTitle('Status por Setor')
             ->addData($emAnalise, 'Em Análise')
             ->addData($emAberto, 'Em Aberto')
-            ->addData($emAberto, 'Despacho')
+            ->addData($emDespacho, 'Despacho')
             ->addData($emIndeferimento, 'Infererido')
             ->setXAxis($setores)
             ->setHeight(220)
