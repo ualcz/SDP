@@ -87,7 +87,7 @@
                                 @endif
                                 <td class="req-col-acoes">
                                     {{-- --}}
-                                    <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
+                                    <a href="{{ route('requerimentos.aluno.visualizar', $requerimento->id) }}" class="req-btn-imprimir">Ver mais</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -122,7 +122,7 @@
                         <div class="req-card-status {{ $requerimento->status_aluno }}">
                             <span>{{ $requerimento->status_aluno }}</span>
                         </div>
-                        <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
+                        <a href="{{ route('requerimentos.aluno.visualizar', $requerimento->id) }}" class="req-btn-imprimir">Ver mais</a>
                     </div>
                 </div>
             @endforeach

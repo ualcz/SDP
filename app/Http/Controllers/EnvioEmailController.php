@@ -231,9 +231,9 @@ class EnvioEmailController extends Controller
             }
         }
 
-        // Despacha o envio de e-mail para processamento em segundo plano (Queue)
+        // Envia durante a requisição para não depender de um worker de fila.
         if ($requerimento) {
-            \App\Jobs\EnviarEmailRequerimentoJob::dispatch(
+            \App\Jobs\EnviarEmailRequerimentoJob::dispatchSync(
                 requerimentoId: $requerimento->id,
                 destinatarios: $destinatarios,
                 pdfDocumentoId: $resultadoPdf['pdf']['documento_id'] ?? null,
