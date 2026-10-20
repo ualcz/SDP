@@ -87,7 +87,7 @@
                                 @endif
                                 <td class="req-col-acoes">
                                     {{-- --}}
-                                    <a href="/requerimentos/aluno/visualizar/{{ $requerimento->id }}" class="req-btn-imprimir">Ver mais</a>
+                                    <a href="{{ route('requerimentos.aluno.visualizar', ['id' => $requerimento->id]) }}" class="req-btn-imprimir">Ver mais</a>
                                 </td>
                             </tr>
                         @endforeach
