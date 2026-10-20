@@ -94,7 +94,7 @@ if (!$jwt) {
         return redirect()->route('servidor.dashboard');
     }
 
-    return redirect('/requerimentos/aluno');
+    return redirect()->route('requerimentos.aluno');
 }
 
         $dados = $suap->meusDados($jwt);
@@ -190,7 +190,7 @@ if (!$jwt) {
             return redirect()->route('servidor.dashboard');
         }
 
-        return redirect('/requerimentos/aluno/novo');
+        return redirect()->route('requerimentos.aluno.novo');
     }
 
     /*
