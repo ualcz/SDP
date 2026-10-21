@@ -25,12 +25,11 @@ jobs:
       id: composer-cache
       with:
         path: vendor
-        key: ${{ runner.os }}-php-8.3-composer-${{ hashFiles('composer.lock') }}
+        key: ${{ runner.os }}-php-8.3-composer-production-${{ hashFiles('composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-8.3-composer-
+          ${{ runner.os }}-php-8.3-composer-production-
 
     - name: Install PHP dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: |
         composer config --global process-timeout 600
         composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-progress --no-scripts
@@ -71,6 +70,10 @@ jobs:
         ARGS: "-rlgoDzcv --delete"
         TARGET: ${{ secrets.SSH_TARGET_DIR }}
         EXCLUDE: "/node_modules/, /tests/, /storage/framework/, /storage/app/private/, /.git*, README.md, phpunit.xml, .env.example, .env"
+        SCRIPT_BEFORE: |
+          cd ${{ secrets.SSH_TARGET_DIR }}
+          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+        SCRIPT_BEFORE_REQUIRED: true
         SCRIPT_AFTER: |
           cd ${{ secrets.SSH_TARGET_DIR }}
           php artisan config:clear
