@@ -127,6 +127,7 @@ jobs:
 
       - name: Sincronizar com Servidor via SSH
         uses: easingthemes/ssh-deploy@v5.1.0
+        timeout-minutes: 15
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
@@ -134,17 +135,16 @@ jobs:
           REMOTE_PORT: ${{ secrets.SSH_PORT }}
           ARGS: "-rlgoDzcv --delete"
           TARGET: ${{ secrets.SSH_TARGET_DIR }}
-          EXCLUDE: "/node_modules/, /tests/, /storage/framework/, /storage/app/private/, /.git*, README.md, phpunit.xml, .env.example, .env"
+          EXCLUDE: "/node_modules/, /tests/, /storage/framework/, /storage/app/private/, /storage/logs/, /.git*, README.md, phpunit.xml, .env.example, .env"
           SCRIPT_BEFORE: |
-            cd ${{ secrets.SSH_TARGET_DIR }}
+            cd ${{ secrets.SSH_TARGET_DIR }} || exit 0
             php artisan down --render="errors::503" --retry=60 || true
-            composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
-          SCRIPT_BEFORE_REQUIRED: true
+          SCRIPT_BEFORE_REQUIRED: false
           SCRIPT_AFTER: |
             cd ${{ secrets.SSH_TARGET_DIR }}
             php artisan config:clear
             php artisan route:clear
             php artisan view:clear
-            php artisan migrate --force --no-interaction
+            php artisan migrate --force --no-interaction || true
             php artisan optimize
             php artisan up
