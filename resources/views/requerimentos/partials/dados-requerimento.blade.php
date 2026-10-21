@@ -137,9 +137,10 @@
 
     <!-- 3. Justificativa / Motivo -->
     <fieldset>
-        <legend>Justificativa / Motivo</legend>
+        <legend>Justificativa / Motivo <span style="color: #dc2626; font-weight: bold;" title="Campo Obrigatório">*</span></legend>
         <div class="campo">
-            <textarea name="motivo" rows="4" placeholder="Descreva os motivos da sua solicitação...">{{ old('motivo') }}</textarea>
+            <textarea name="motivo" id="campoMotivo" rows="4" placeholder="Descreva os motivos da sua solicitação..." required>{{ old('motivo') }}</textarea>
+            <small style="color: #dc2626; display: none; margin-top: 4px; font-weight: 500;" id="erro-motivo">Por favor, preencha a Justificativa / Motivo antes de prosseguir.</small>
         </div>
     </fieldset>
 

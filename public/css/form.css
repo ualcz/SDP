@@ -83,6 +83,13 @@
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo textarea:focus {
+    border-color: #059669;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
 }
 
 .campo input[readonly] {

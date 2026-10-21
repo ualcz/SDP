@@ -99,6 +99,22 @@ function mudarPasso(passo) {
             alert('Por favor, selecione um Objeto do Requerimento antes de prosseguir.');
             return;
         }
+
+        const motivo = document.querySelector('textarea[name="motivo"]');
+        const erroMotivo = document.getElementById('erro-motivo');
+        if (!motivo || !motivo.value.trim()) {
+            if (erroMotivo) erroMotivo.style.display = 'block';
+            if (motivo) {
+                motivo.style.borderColor = '#dc2626';
+                motivo.focus();
+                motivo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            alert('Por favor, preencha a Justificativa / Motivo antes de prosseguir.');
+            return;
+        } else {
+            if (erroMotivo) erroMotivo.style.display = 'none';
+            if (motivo) motivo.style.borderColor = '';
+        }
     }
 
     document.querySelectorAll('.form-step').forEach(el => {
@@ -221,6 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.bloco-documentos-assunto').forEach(bloco => {
         observer.observe(bloco, { attributes: true, attributeFilter: ['style'] });
     });
+
+    // Limpa aviso de erro da justificativa ao digitar
+    const campoMotivo = form.querySelector('textarea[name="motivo"]');
+    if (campoMotivo) {
+        campoMotivo.addEventListener('input', () => {
+            const erroMotivo = document.getElementById('erro-motivo');
+            if (campoMotivo.value.trim()) {
+                campoMotivo.style.borderColor = '';
+                if (erroMotivo) erroMotivo.style.display = 'none';
+            }
+        });
+    }
 
     // Estado inicial
     verificarDocumentosObrigatorios();

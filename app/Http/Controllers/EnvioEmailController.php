@@ -23,7 +23,7 @@ class EnvioEmailController extends Controller
             'objeto'               => 'nullable|string|max:255',
             'objetoDoRequerimento' => 'nullable|string|max:255',
             'objeto_outro'         => 'nullable|string|max:255',
-            'motivo'               => 'nullable|string|max:3000',
+            'motivo'               => 'required|string|max:3000',
             'mensagem'             => 'nullable|string|max:3000',
             'email_pessoal'        => 'nullable|email|max:255',
             'telefone'             => 'nullable|string|max:30',
@@ -248,7 +248,16 @@ class EnvioEmailController extends Controller
             );
         }
 
-        return back()->with('sucesso', 'Requerimento enviado com sucesso!');
+        if ($request->ajax() || $request->wantsJson()) {
+            session()->flash('sucesso', 'Requerimento enviado com sucesso!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Requerimento enviado com sucesso!',
+                'redirect' => route('requerimentos.aluno.meusRequerimentos'),
+            ]);
+        }
+
+        return redirect()->route('requerimentos.aluno.meusRequerimentos')->with('sucesso', 'Requerimento enviado com sucesso!');
     }
 
     public function gerarNumeroProtocolo(Requerimento $requerimento){
