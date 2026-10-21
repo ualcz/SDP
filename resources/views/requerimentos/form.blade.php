@@ -8,7 +8,7 @@
 
 <div class="form-box">
     <!-- Overlay de Carregamento -->
-   <x-loading-overlay form-id="formRequerimento" />
+    <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav">
