@@ -3,80 +3,148 @@ name: Deploy via SSH
 on:
   push:
     branches:
-      - main # Mude para master se a sua branch principal tiver esse nome
+      - main
 
 jobs:
-  web-deploy:
-    name: Deploy
+  # =========================================================================
+  # 1. VALIDAÇÃO: Impede que código quebrado chegue à produção
+  # =========================================================================
+  validate:
+    name: Validar Código
     runs-on: ubuntu-latest
+
     steps:
-    - name:  Get latest code
-      uses: actions/checkout@v4
+      - name: Baixar código
+        uses: actions/checkout@v4
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: curl, fileinfo, gd, mbstring, pdo_mysql, xml, zip
-        tools: composer:v2
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: curl, fileinfo, gd, mbstring, pdo_mysql, xml, zip
+          tools: composer:v2
 
-    - name: Cache Composer dependencies
-      uses: actions/cache@v4
-      id: composer-cache
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-8.3-composer-production-${{ hashFiles('composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-8.3-composer-production-
+      - name: 1. Validação de Sintaxe PHP (PHP Lint)
+        run: |
+          echo "Verificando sintaxe de todos os arquivos PHP..."
+          find app routes config database -type f -name "*.php" -exec php -l {} +
 
-    - name: Install PHP dependencies
-      run: |
-        composer config --global process-timeout 600
-        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-progress --no-scripts
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-8.3-composer-dev-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.3-composer-dev-
 
-    - name: Refresh Laravel autoload and package manifest
-      run: |
-        composer dump-autoload --no-dev --optimize --no-scripts
+      - name: Instalar dependências para validação
+        run: |
+          composer config --global process-timeout 600
+          composer install --prefer-dist --no-interaction --no-progress
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-        cache: 'npm'
+      - name: 2. Validar integridade das rotas e framework
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan route:list
 
-    - name: Cache Node.js dependencies
-      uses: actions/cache@v4
-      id: npm-cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-22-npm-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-22-npm-
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
 
-    - name: Install JavaScript dependencies and build assets
-      run: |
-        if [ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]; then
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-22-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-22-npm-
+
+      - name: 3. Validar compilação do front-end (Vite)
+        run: |
           npm ci
-        fi
-        npm run build
+          npm run build
 
-    - name: Deploy via SSH com Chave
-      uses: easingthemes/ssh-deploy@v5.1.0
-      with:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        REMOTE_HOST: ${{ secrets.SSH_HOST }}
-        REMOTE_USER: ${{ secrets.SSH_USER }}
-        REMOTE_PORT: ${{ secrets.SSH_PORT }}
-        ARGS: "-rlgoDzcv --delete"
-        TARGET: ${{ secrets.SSH_TARGET_DIR }}
-        EXCLUDE: "/node_modules/, /tests/, /storage/framework/, /storage/app/private/, /.git*, README.md, phpunit.xml, .env.example, .env"
-        SCRIPT_BEFORE: |
-          cd ${{ secrets.SSH_TARGET_DIR }}
-          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
-        SCRIPT_BEFORE_REQUIRED: true
-        SCRIPT_AFTER: |
-          cd ${{ secrets.SSH_TARGET_DIR }}
-          php artisan config:clear
-          php artisan route:clear
-          php artisan view:clear
-          php artisan migrate --no-interaction
+  # =========================================================================
+  # 2. DEPLOY: Só executa se o job 'validate' passar com 100% de sucesso
+  # =========================================================================
+  deploy:
+    name: Deploy para Produção
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: curl, fileinfo, gd, mbstring, pdo_mysql, xml, zip
+          tools: composer:v2
+
+      - name: Cache Composer dependencies (produção)
+        uses: actions/cache@v4
+        id: composer-cache
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-8.3-composer-production-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.3-composer-production-
+
+      - name: Instalar dependências de produção
+        run: |
+          composer config --global process-timeout 600
+          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-progress --no-scripts
+
+      - name: Refresh Laravel autoload
+        run: composer dump-autoload --no-dev --optimize --no-scripts
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-22-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-22-npm-
+
+      - name: Compilar assets para produção
+        run: |
+          if [ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]; then
+            npm ci
+          fi
+          npm run build
+
+      - name: Sincronizar com Servidor via SSH
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          ARGS: "-rlgoDzcv --delete"
+          TARGET: ${{ secrets.SSH_TARGET_DIR }}
+          EXCLUDE: "/node_modules/, /tests/, /storage/framework/, /storage/app/private/, /.git*, README.md, phpunit.xml, .env.example, .env"
+          SCRIPT_BEFORE: |
+            cd ${{ secrets.SSH_TARGET_DIR }}
+            php artisan down --render="errors::503" --retry=60 || true
+            composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+          SCRIPT_BEFORE_REQUIRED: true
+          SCRIPT_AFTER: |
+            cd ${{ secrets.SSH_TARGET_DIR }}
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan migrate --force --no-interaction
+            php artisan optimize
+            php artisan up
