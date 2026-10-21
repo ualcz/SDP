@@ -42,7 +42,7 @@ class StatusSetorChart
             $emAnalise[] = $total > 0 ? round($analise) : 0;
             $emAberto[] = $total > 0 ? round($aberto) : 0;
             $emDespacho[] = $total > 0 ? round($despacho) : 0;
-            $emIndeferimento[] = $total > 0 ? round($despacho) : 0;
+            $emIndeferimento[] = $total > 0 ? round($indeferido) : 0;
         }
         $progressBarChart = (new LarapexChart)->horizontalBarChart()
             ->setTitle('Status por Setor')
