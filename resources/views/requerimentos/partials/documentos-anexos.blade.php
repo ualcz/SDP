@@ -17,7 +17,6 @@
                 $docs = $assuntoItem['documentos_obrigatorios'] ?? [];
             @endphp
 
-            
             <div class="bloco-documentos-assunto" id="bloco-doc-{{ $idx }}" style="{{ $isAssuntoAtivo ? '' : 'display: none;' }}">
                 <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px;">
                     <span style="font-size: 12px; color: #15803d; text-transform: uppercase; font-weight: 600; display: block;">Assunto Selecionado:</span>
