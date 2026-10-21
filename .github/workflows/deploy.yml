@@ -37,15 +37,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-8.3-composer-dev-
 
+      - name: Preparar ambiente e diretórios de cache
+        run: |
+          cp .env.example .env
+          mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache/data storage/app/public
+          mkdir -p bootstrap/cache
+          chmod -R 775 storage bootstrap/cache
+
       - name: Instalar dependências para validação
         run: |
           composer config --global process-timeout 600
-          composer install --prefer-dist --no-interaction --no-progress
+          composer install --prefer-dist --no-interaction --no-progress --no-scripts
+          composer dump-autoload --optimize --no-scripts
 
       - name: 2. Validar integridade das rotas e framework
         run: |
-          cp .env.example .env
           php artisan key:generate
+          php artisan package:discover --ansi
           php artisan route:list
 
       - name: Configurar Node.js
