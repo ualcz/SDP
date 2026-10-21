@@ -12,6 +12,7 @@ use App\Services\Pdf\PdfMergerService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class DocumentoRequerimentoService
 {
@@ -112,6 +113,10 @@ class DocumentoRequerimentoService
 
         // Salva no disco 'local' (storage/app/private/...)
         $caminhoSalvo = $arquivo->storeAs($pastaDestino, $nomeArquivoArmazenado, 'local');
+
+        if ($caminhoSalvo === false) {
+            throw new RuntimeException('Não foi possível salvar o documento no armazenamento local.');
+        }
 
         return DocumentoRequerimento::create([
             'requerimento_id'           => $requerimento->id,

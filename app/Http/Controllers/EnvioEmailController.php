@@ -198,8 +198,11 @@ class EnvioEmailController extends Controller
                 arquivosComplementares: $request->file('arquivos', []),
                 usuario: $aluno
             );
-        } catch (\Exception $e) {
-            logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            logger()->error('Não foi possível salvar requerimento e documentos no BD/armazenamento.', [
+                'exception' => $e,
+            ]);
+            throw $e;
         }
 
         $resultadoPdf = app(DocumentoRequerimentoService::class)->gerarESalvarPdfRequerimento(
