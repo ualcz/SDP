@@ -44,18 +44,14 @@
                             @endif
                             @if(!empty($doc['arquivo_modelo']))
                                 <a href="{{ route('documentos-assunto.modelo', $doc['id']) }}"
-                                   style="display: inline-flex; align-items: center; gap: 5px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600;">
-                                    Baixar modelo preenchido em PDF
-                                </a>
-                            @elseif(!empty($doc['link_modelo']))
-                                <a href="{{ $doc['link_modelo'] }}" target="_blank" rel="noopener noreferrer"
-                                   style="display: inline-flex; align-items: center; gap: 5px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600;">
-                                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                   style="display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600; text-decoration: underline;"
+                                   title="Baixar modelo preenchido com seus dados em formato PDF">
+                                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                         <polyline points="7 10 12 15 17 10"></polyline>
                                         <line x1="12" y1="15" x2="12" y2="3"></line>
                                     </svg>
-                                    Baixar modelo
+                                    Baixar modelo preenchido (PDF)
                                 </a>
                             @endif
 

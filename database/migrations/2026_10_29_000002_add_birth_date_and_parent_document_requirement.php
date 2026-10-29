@@ -8,23 +8,31 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('usuarios', function (Blueprint $table) {
-            $table->date('data_nascimento')->nullable();
-        });
+        if (!Schema::hasColumn('usuarios', 'data_nascimento')) {
+            Schema::table('usuarios', function (Blueprint $table) {
+                $table->date('data_nascimento')->nullable();
+            });
+        }
 
-        Schema::table('documentos_assunto', function (Blueprint $table) {
-            $table->boolean('exige_documentos_responsaveis')->default(false);
-        });
+        if (!Schema::hasColumn('documentos_assunto', 'exige_documentos_responsaveis')) {
+            Schema::table('documentos_assunto', function (Blueprint $table) {
+                $table->boolean('exige_documentos_responsaveis')->default(false);
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('documentos_assunto', function (Blueprint $table) {
-            $table->dropColumn('exige_documentos_responsaveis');
-        });
+        if (Schema::hasColumn('documentos_assunto', 'exige_documentos_responsaveis')) {
+            Schema::table('documentos_assunto', function (Blueprint $table) {
+                $table->dropColumn('exige_documentos_responsaveis');
+            });
+        }
 
-        Schema::table('usuarios', function (Blueprint $table) {
-            $table->dropColumn('data_nascimento');
-        });
+        if (Schema::hasColumn('usuarios', 'data_nascimento')) {
+            Schema::table('usuarios', function (Blueprint $table) {
+                $table->dropColumn('data_nascimento');
+            });
+        }
     }
 };

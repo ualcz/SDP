@@ -40,6 +40,7 @@
             {{-- Documentos existentes já salvos no banco --}}
             @foreach($assunto->documentos as $doc)
                 @php($formDocDeleteId = 'form-doc-delete-' . $doc->id)
+                @php($formDocRemoverModeloId = 'form-doc-remover-modelo-' . $doc->id)
 
                 {{-- Form de exclusão do documento individual se necessário --}}
                 <form id="{{ $formDocDeleteId }}" action="{{ route('admin.documentos.destroy', $doc->id) }}" method="POST"
@@ -47,6 +48,14 @@
                     @csrf
                     @method('DELETE')
                 </form>
+
+                @if($doc->arquivo_modelo)
+                    <form id="{{ $formDocRemoverModeloId }}" action="{{ route('admin.documentos.remover-modelo', $doc->id) }}" method="POST"
+                          onsubmit="return confirm('Deseja remover o arquivo modelo DOCX deste anexo?');">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
 
                 <tr>
                     <td>
@@ -69,9 +78,25 @@
                     </td>
                     <td>
                         @if($doc->arquivo_modelo)
-                            <small style="display:block; margin-bottom:4px; color:#047857;">Modelo DOCX cadastrado</small>
-                        @elseif($doc->link_modelo)
-                            <small style="display:block; margin-bottom:4px; color:#64748b;">Link externo antigo mantido</small>
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap;">
+                                <a href="{{ route('admin.documentos.baixar-modelo', $doc->id) }}"
+                                   target="_blank"
+                                   style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border-radius: 4px; text-decoration: none; font-weight: 600;"
+                                   title="Baixar arquivo DOCX do modelo atual">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Baixar DOCX
+                                </a>
+                                <button form="{{ $formDocRemoverModeloId }}"
+                                        type="submit"
+                                        style="background: none; border: none; color: #ef4444; font-size: 0.72rem; cursor: pointer; padding: 2px 4px;"
+                                        title="Remover modelo DOCX cadastrado">
+                                    ✕ Remover
+                                </button>
+                            </div>
                         @endif
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
                                type="file"
@@ -79,6 +104,9 @@
                                accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                class="input-tabela"
                                style="font-size: 0.75rem;">
+                        <small style="display:block; font-size:0.68rem; color:#64748b; margin-top:2px;">
+                            {{ $doc->arquivo_modelo ? 'Envie outro se desejar substituir' : 'Selecione um arquivo .docx' }}
+                        </small>
                     </td>
                     <td style="text-align: center;">
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif

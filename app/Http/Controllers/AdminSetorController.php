@@ -404,6 +404,33 @@ class AdminSetorController extends Controller
             ->with('success', 'Documento removido com sucesso!');
     }
 
+    public function baixarModeloDocx($documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if (!$documento->arquivo_modelo || !Storage::disk('local')->exists($documento->arquivo_modelo)) {
+            abort(404, 'Modelo DOCX não encontrado no servidor.');
+        }
+
+        $nome = \Illuminate\Support\Str::slug($documento->nome ?: 'modelo') . '.docx';
+
+        return Storage::disk('local')->download($documento->arquivo_modelo, $nome);
+    }
+
+    public function removerModeloDocx($documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if ($documento->arquivo_modelo) {
+            Storage::disk('local')->delete($documento->arquivo_modelo);
+            $documento->update(['arquivo_modelo' => null]);
+        }
+
+        return redirect()->back()->with('success', 'Modelo DOCX removido com sucesso!');
+    }
+
     private function atualizarArquivoModelo(DocumentoAssunto $documento, mixed $arquivo): void
     {
         if (!$arquivo) {
