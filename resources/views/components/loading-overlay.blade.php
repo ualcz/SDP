@@ -272,7 +272,7 @@
                         btnSubmit.style.pointerEvents = '';
                         btnSubmit.disabled = false;
                     }
-                    alert('Erro de conexão ou falha ao enviar o requerimento. Por favor, tente novamente.');
+                    alert(networkError.message || 'Erro de conexão ou falha ao enviar o requerimento. Por favor, tente novamente.');
                     console.error(networkError);
                 }
             });
