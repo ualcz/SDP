@@ -40,17 +40,21 @@ class AdminDashboardController extends Controller
 
     public function updateNotifications(Request $request)
     {
-        // Remove todos os registros atuais da tabela separada
-        ReportRecipient::truncate();
+        try {
+            // Remove todos os registros atuais da tabela separada
+            ReportRecipient::truncate();
 
-        // Altere de 'user_ids' para 'responsaveis'
-        if ($request->has('responsaveis')) {
-            foreach ($request->responsaveis as $userId) {
-                ReportRecipient::create([
-                    'usuario_id' => $userId,
-                    'is_active' => true,
-                ]);
+            // Altere de 'user_ids' para 'responsaveis'
+            if ($request->has('responsaveis')) {
+                foreach ($request->responsaveis as $userId) {
+                    ReportRecipient::create([
+                        'usuario_id' => $userId,
+                        'is_active' => true,
+                    ]);
+                }
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->with('error', 'Não foi possível atualizar os destinatários. Migration pendente no banco de dados.');
         }
 
         return back()->with('success', 'Destinatários atualizados com sucesso!');
