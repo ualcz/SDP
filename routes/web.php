@@ -88,6 +88,7 @@ Route::middleware(['auth', 'setor.config'])->group(function () {
     Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
     Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
     Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
+    Route::get('/admin/documentos/{id}/visualizar-modelo', [AdminSetorController::class, 'visualizarModeloPdf'])->name('admin.documentos.visualizar-modelo');
     Route::get('/admin/documentos/{id}/baixar-modelo', [AdminSetorController::class, 'baixarModeloDocx'])->name('admin.documentos.baixar-modelo');
     Route::delete('/admin/documentos/{id}/remover-modelo', [AdminSetorController::class, 'removerModeloDocx'])->name('admin.documentos.remover-modelo');
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');

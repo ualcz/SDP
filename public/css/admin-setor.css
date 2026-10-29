@@ -439,3 +439,193 @@ main.container:has(.admin-card) {
 .btn-destaque-anexo:active {
     transform: translateY(0);
 }
+
+/* ==========================================================================
+   ESTILIZAÇÃO MODERNA E ALINHADA DA TABELA DE ANEXOS / MODELOS DOCX
+   ========================================================================== */
+.tabela-docs-nested {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.tabela-docs-nested th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+.tabela-docs-nested td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle !important;
+    font-size: 0.8125rem;
+}
+.tabela-docs-nested tr:last-child td {
+    border-bottom: none;
+}
+.tabela-docs-nested tr:hover td {
+    background-color: #fafbfc;
+}
+
+/* Card do Modelo DOCX Existente */
+.doc-modelo-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.doc-modelo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.badge-docx {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    background: #dbeafe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+.doc-modelo-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.btn-doc-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #047857;
+    background: #d1fae5;
+    border: 1px solid #a7f3d0;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.btn-doc-view:hover {
+    background: #a7f3d0;
+    color: #065f46;
+}
+.btn-doc-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #0369a1;
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-doc-download:hover {
+    background: #bae6fd;
+    color: #0284c7;
+}
+.btn-doc-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-doc-remove:hover {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+/* Área de upload do DOCX */
+.doc-modelo-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.label-substituir-docx {
+    font-size: 0.68rem;
+    color: #64748b;
+    font-weight: 600;
+}
+.input-file-clean {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    background: #ffffff;
+    color: #334155;
+    transition: border-color 0.15s;
+}
+.input-file-clean:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+.input-file-clean::file-selector-button {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #334155;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.15s;
+}
+.input-file-clean::file-selector-button:hover {
+    background: #e2e8f0;
+}
+
+/* Dica de Tags DOCX */
+.dica-tags-docx {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: #166534;
+    line-height: 1.45;
+}
+.dica-tags-docx code {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

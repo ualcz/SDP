@@ -61,8 +61,8 @@
                                 <span style="color: #dc2626; font-weight: 600; font-size: 0.75rem;">Não</span>
                             @endif
                         </td>
-                        <td style="text-align: center; display: grid; grid-template-columns: 6fr 1fr; align-items: center;">
-                            <div>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
                                 <button type="button"
                                         class="btn-editar-sm"
                                         onclick="togglePainelAssunto('{{ $panelId }}')"
@@ -73,40 +73,39 @@
                                     </svg>
                                     Editar
                                 </button>
-</div>
-                            <div class="arrow-actions" style="width: 5px;">
-                                <!-- Botão Subir -->
-                                 <!-- Verificação: se for o primeiro item da lista, mostra apenas a seta pra baixo -->
-                                 @if ($assunto->ordem > $assunto->min('ordem'))
-                                    <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'up']) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="arrow-btn up" aria-label="Subir">
-                                            <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                @endif
+                                <div class="arrow-actions" style="display: flex; flex-direction: column; gap: 2px;">
+                                    <!-- Botão Subir -->
+                                    @if ($assunto->ordem > $assunto->min('ordem'))
+                                        <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'up']) }}" method="POST" style="margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="arrow-btn up" aria-label="Subir" style="padding: 1px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 14px; height: 14px;">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
 
-                                <!-- Botão Descer -->
-                                 @if ($assunto->ordem < $assunto->max('ordem'))
-                                    <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'down']) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="arrow-btn down" aria-label="Descer">
-                                            <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-blue-600 cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                @endif
+                                    <!-- Botão Descer -->
+                                    @if ($assunto->ordem < $assunto->max('ordem'))
+                                        <form action="{{ route('admin.reordenarAssunto', [$assunto->id, 'down']) }}" method="POST" style="margin: 0;">
+                                            @csrf
+                                            <button type="submit" class="arrow-btn down" aria-label="Descer" style="padding: 1px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 14px; height: 14px;">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                     </tr>
 
                     {{-- Painel expansível: edição + documentos --}}
                     <tr id="{{ $panelId }}" class="tr-painel-assunto" style="display: none;">
-                        <td colspan="6" style="padding: 0;">
-                            <div class="painel-edicao-assunto">
+                        <td colspan="6" style="padding: 0; background: #f8fafc;">
+                            <div class="painel-edicao-assunto" style="background: #f8fafc; padding: 18px 20px;">
                                
                                 {{-- Campos de edição --}}
                                 <div class="painel-campos">

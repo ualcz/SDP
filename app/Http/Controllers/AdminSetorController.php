@@ -404,6 +404,30 @@ class AdminSetorController extends Controller
             ->with('success', 'Documento removido com sucesso!');
     }
 
+    public function visualizarModeloPdf($documentoId, ModeloDocumentoService $service)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if (!$documento->arquivo_modelo || !Storage::disk('local')->exists($documento->arquivo_modelo)) {
+            abort(404, 'Modelo DOCX não encontrado no servidor.');
+        }
+
+        try {
+            $usuario = request()->user();
+            $caminhoPdf = $service->gerarPdfParaAluno($documento, $usuario);
+            $nome = 'modelo-' . \Illuminate\Support\Str::slug($documento->nome ?: 'termo') . '.pdf';
+
+            return response()->file($caminhoPdf, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $nome . '"',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $e) {
+            logger()->warning('Não foi possível gerar preview em PDF do modelo: ' . $e->getMessage());
+            return $this->baixarModeloDocx($documentoId);
+        }
+    }
+
     public function baixarModeloDocx($documentoId)
     {
         $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
