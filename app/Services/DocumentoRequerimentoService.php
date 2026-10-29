@@ -202,7 +202,7 @@ class DocumentoRequerimentoService
             $ehResponsavel = false;
             if (preg_match('/^(?:responsavel|pai|mae)_(\d+)$/', (string) $docAssuntoId, $matches)) {
                 $ehResponsavel = true;
-                $docAssuntoId = $matches[2];
+                $docAssuntoId = $matches[1];
             }
 
             $docAssunto = is_numeric($docAssuntoId) ? DocumentoAssunto::find($docAssuntoId) : null;
