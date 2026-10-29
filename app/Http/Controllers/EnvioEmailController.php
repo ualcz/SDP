@@ -53,6 +53,9 @@ class EnvioEmailController extends Controller
         }
 
         if (!$setor) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['errors' => ['setor' => ['O setor selecionado é inválido.']]], 422);
+            }
             return back()->withErrors(['setor' => 'O setor selecionado é inválido.']);
         }
 
@@ -120,6 +123,9 @@ class EnvioEmailController extends Controller
         );
 
         if ($destinatarios === null) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['errors' => ['geral' => ['Nenhum e-mail de destino válido foi encontrado.']]], 422);
+            }
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);
         }
 
@@ -151,6 +157,9 @@ class EnvioEmailController extends Controller
                 }
 
                 if (!empty($errosAnexos)) {
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return response()->json(['errors' => ['anexos' => $errosAnexos]], 422);
+                    }
                     return back()->withErrors($errosAnexos)->withInput();
                 }
             }
@@ -216,6 +225,11 @@ class EnvioEmailController extends Controller
             logger()->error('Não foi possível salvar requerimento e documentos no BD/armazenamento.', [
                 'exception' => $e,
             ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Ocorreu um erro ao salvar ou processar o requerimento: ' . $e->getMessage()
+                ], 500);
+            }
             throw $e;
         }
 

@@ -224,27 +224,34 @@
 
                     clearInterval(intervalId);
 
+                    const contentType = response.headers.get('content-type') || '';
+                    const isJson = contentType.includes('application/json');
+
                     if (response.ok) {
-                        const data = await response.json();
+                        if (isJson) {
+                            const data = await response.json();
 
-                        // Mostra o ícone de certo (sucesso)
-                        if (loadingSpinner) loadingSpinner.style.display = 'none';
-                        if (loadingSuccessIcon) loadingSuccessIcon.style.display = 'flex';
-                        if (loadingSubtext) {
-                            loadingSubtext.textContent = 'Redirecionando para Meus Requerimentos...';
-                            loadingSubtext.style.display = 'block';
+                            // Mostra o ícone de certo (sucesso)
+                            if (loadingSpinner) loadingSpinner.style.display = 'none';
+                            if (loadingSuccessIcon) loadingSuccessIcon.style.display = 'flex';
+                            if (loadingSubtext) {
+                                loadingSubtext.textContent = 'Redirecionando para Meus Requerimentos...';
+                                loadingSubtext.style.display = 'block';
+                            }
+                            loadingText.textContent = data.message || successMessage;
+                            loadingText.style.color = '#065f46';
+                            loadingText.style.opacity = '1';
+
+                            const destino = data.redirect || redirectUrl || '{{ route("requerimentos.aluno.meusRequerimentos") }}';
+
+                            setTimeout(() => {
+                                window.location.href = destino;
+                            }, 1600);
+                        } else {
+                            // Se o backend respondeu com HTML (ex: redirect seguido)
+                            window.location.href = response.url || '{{ route("requerimentos.aluno.meusRequerimentos") }}';
                         }
-                        loadingText.textContent = data.message || successMessage;
-                        loadingText.style.color = '#065f46';
-                        loadingText.style.opacity = '1';
-
-                        const destino = data.redirect || redirectUrl || '{{ route("requerimentos.aluno.meusRequerimentos") }}';
-
-                        setTimeout(() => {
-                            window.location.href = destino;
-                        }, 1600);
                     } else {
-                        clearInterval(intervalId);
                         loadingOverlay.style.display = 'none';
                         loadingOverlay.setAttribute('aria-hidden', 'true');
                         if (btnSubmit) {
@@ -253,15 +260,19 @@
                         }
 
                         let msg = 'Ocorreu um erro ao enviar o requerimento. Por favor, tente novamente.';
-                        try {
-                            const errData = await response.json();
-                            if (errData.errors) {
-                                const erros = Object.values(errData.errors).flat();
-                                msg = erros.join('\n');
-                            } else if (errData.message) {
-                                msg = errData.message;
-                            }
-                        } catch (errJson) {}
+                        if (isJson) {
+                            try {
+                                const errData = await response.json();
+                                if (errData.errors) {
+                                    const erros = Object.values(errData.errors).flat();
+                                    msg = erros.join('\n');
+                                } else if (errData.message) {
+                                    msg = errData.message;
+                                }
+                            } catch (errJson) {}
+                        } else {
+                            msg = 'Falha no envio (código ' + response.status + '). Por favor, tente novamente.';
+                        }
                         alert(msg);
                     }
                 } catch (networkError) {
