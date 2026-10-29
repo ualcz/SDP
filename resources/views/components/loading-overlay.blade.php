@@ -238,10 +238,6 @@
                         loadingText.style.color = '#065f46';
                         loadingText.style.opacity = '1';
 
-                        if (form.dataset.draftKey) {
-                            sessionStorage.removeItem(form.dataset.draftKey);
-                        }
-
                         const destino = data.redirect || redirectUrl || '{{ route("requerimentos.aluno.meusRequerimentos") }}';
 
                         setTimeout(() => {

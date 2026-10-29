@@ -42,11 +42,8 @@
         </div>
     @endif
 
-        <form id="formRequerimento" action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data"
-            data-draft-key="requerimento-{{ auth()->id() }}-{{ $modeloAtivo['id'] ?? 'geral' }}"
-            data-restore-draft="{{ $errors->any() ? 'false' : 'true' }}"
-            data-clear-draft="{{ session()->has('sucesso') ? 'true' : 'false' }}">
-        @csrf
+        <form id="formRequerimento" action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
+            @csrf
         <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
         <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
 
