@@ -4,7 +4,194 @@
 @php($tabelaDocsId = 'tabela-docs-' . $assunto->id)
 @php($emptyDocsId = 'empty-docs-' . $assunto->id)
 
+<style>
+/* Estilos Scoped para a Tabela de Documentos / Modelos DOCX */
+.tabela-docs-nested {
+    width: 100%;
+    border-collapse: collapse !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+.tabela-docs-nested thead {
+    background: #f1f5f9 !important;
+}
+.tabela-docs-nested thead th {
+    background: #f1f5f9 !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+    padding: 10px 12px !important;
+    font-size: 0.78rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: none !important;
+    border-bottom: 2px solid #cbd5e1 !important;
+    white-space: nowrap;
+}
+.tabela-docs-nested tbody td {
+    padding: 10px 12px !important;
+    border: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    vertical-align: middle !important;
+    background: #ffffff !important;
+}
+.tabela-docs-nested tbody tr:hover td {
+    background: #f8fafc !important;
+}
+.box-modelo-docx {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.box-modelo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.tag-docx-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #1e40af;
+    background: #dbeafe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.4px;
+}
+.btn-group-modelo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-modelo-acao {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-decoration: none;
+    line-height: 1.2;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.btn-modelo-ver {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+.btn-modelo-ver:hover {
+    background: #bbf7d0;
+    color: #166534;
+}
+.btn-modelo-baixar {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+.btn-modelo-baixar:hover {
+    background: #bae6fd;
+    color: #0284c7;
+}
+.btn-modelo-remover {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 3px 6px;
+}
+.btn-modelo-remover:hover {
+    background: #fecaca;
+    color: #991b1b;
+}
+.box-modelo-substituir {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.label-substituir-text {
+    font-size: 0.68rem;
+    color: #64748b;
+    font-weight: 600;
+}
+.box-modelo-vazio {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.hint-modelo-vazio {
+    font-size: 0.68rem;
+    color: #64748b;
+}
+.input-file-clean {
+    width: 100%;
+    padding: 3px 5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.73rem;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+.input-file-clean::file-selector-button {
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #334155;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 6px;
+}
+.input-file-clean::file-selector-button:hover {
+    background: #e2e8f0;
+}
+.btn-trash-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+    background: #fff;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-trash-action:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+    color: #b91c1c;
+}
+</style>
+
 <div class="docs-secao">
+
+    {{-- Formulários de exclusão e remoção de modelo FORA da tabela para garantir HTML 100% válido --}}
+    @foreach($assunto->documentos as $doc)
+        <form id="form-doc-delete-{{ $doc->id }}" action="{{ route('admin.documentos.destroy', $doc->id) }}" method="POST"
+              onsubmit="return confirm('Deseja excluir este anexo?');" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+
+        @if($doc->arquivo_modelo)
+            <form id="form-doc-remover-modelo-{{ $doc->id }}" action="{{ route('admin.documentos.remover-modelo', $doc->id) }}" method="POST"
+                  onsubmit="return confirm('Deseja remover o arquivo modelo DOCX deste anexo?');" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
+        @endif
+    @endforeach
 
     {{-- Cabeçalho da Seção com Botão de Adicionar Anexo --}}
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; margin-bottom: 12px;">
@@ -37,7 +224,7 @@
                 <th style="width: 18%;">Orientações ao Aluno</th>
                 <th style="width: 18%;">Link Externo / Site</th>
                 <th style="width: 28%;">Modelo DOCX (Preenchível)</th>
-                <th style="width: 70px; text-align: center;">Obrigatório</th>
+                <th style="width: 75px; text-align: center;">Obrigatório</th>
                 <th style="width: 120px; text-align: center;" title="Exigir documento do responsável legal se o aluno for menor de idade">Cópia Responsável</th>
                 <th style="width: 50px; text-align: center;">Ações</th>
             </tr>
@@ -47,21 +234,6 @@
             @foreach($assunto->documentos as $doc)
                 @php($formDocDeleteId = 'form-doc-delete-' . $doc->id)
                 @php($formDocRemoverModeloId = 'form-doc-remover-modelo-' . $doc->id)
-
-                {{-- Form de exclusão do documento individual se necessário --}}
-                <form id="{{ $formDocDeleteId }}" action="{{ route('admin.documentos.destroy', $doc->id) }}" method="POST"
-                      onsubmit="return confirm('Deseja excluir este anexo?');">
-                    @csrf
-                    @method('DELETE')
-                </form>
-
-                @if($doc->arquivo_modelo)
-                    <form id="{{ $formDocRemoverModeloId }}" action="{{ route('admin.documentos.remover-modelo', $doc->id) }}" method="POST"
-                          onsubmit="return confirm('Deseja remover o arquivo modelo DOCX deste anexo?');">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                @endif
 
                 <tr>
                     <td style="vertical-align: middle;">
@@ -94,13 +266,14 @@
                     </td>
                     <td style="vertical-align: middle;">
                         @if($doc->arquivo_modelo)
-                            <div class="doc-modelo-card">
-                                <div class="doc-modelo-header">
-                                    <div class="doc-modelo-actions">
+                            <div class="box-modelo-docx">
+                                <div class="box-modelo-topo">
+                                    <span class="tag-docx-badge">DOCX</span>
+                                    <div class="btn-group-modelo">
                                         {{-- Visualizar modelo pré-preenchido em PDF --}}
                                         <a href="{{ route('admin.documentos.visualizar-modelo', $doc->id) }}"
                                            target="_blank"
-                                           class="btn-doc-view"
+                                           class="btn-modelo-acao btn-modelo-ver"
                                            title="Visualizar modelo preenchido em PDF em nova aba">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -111,7 +284,7 @@
 
                                         {{-- Baixar arquivo DOCX original --}}
                                         <a href="{{ route('admin.documentos.baixar-modelo', $doc->id) }}"
-                                           class="btn-doc-download"
+                                           class="btn-modelo-acao btn-modelo-baixar"
                                            title="Baixar arquivo DOCX do modelo atual">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -124,14 +297,14 @@
                                         {{-- Remover modelo --}}
                                         <button form="{{ $formDocRemoverModeloId }}"
                                                 type="submit"
-                                                class="btn-doc-remove"
+                                                class="btn-modelo-acao btn-modelo-remover"
                                                 title="Remover modelo DOCX cadastrado">
                                             ✕ Remover
                                         </button>
                                     </div>
                                 </div>
-                                <div class="doc-modelo-upload">
-                                    <span class="label-substituir-docx">Substituir por outro .docx:</span>
+                                <div class="box-modelo-substituir">
+                                    <span class="label-substituir-text">Substituir por outro .docx:</span>
                                     <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
                                            type="file"
                                            name="documentos[{{ $doc->id }}][arquivo_modelo]"
@@ -140,13 +313,13 @@
                                 </div>
                             </div>
                         @else
-                            <div class="doc-modelo-upload">
+                            <div class="box-modelo-vazio">
                                 <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
                                        type="file"
                                        name="documentos[{{ $doc->id }}][arquivo_modelo]"
                                        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                        class="input-file-clean">
-                                <span style="font-size: 0.68rem; color: #64748b; margin-top: 2px;">
+                                <span class="hint-modelo-vazio">
                                     Opcional: anexe um modelo <strong>.docx</strong> preenchível
                                 </span>
                             </div>
@@ -159,7 +332,7 @@
                                value="1"
                                {{ $doc->obrigatorio ? 'checked' : '' }}
                                title="Marcar como documento obrigatório"
-                               style="width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;">
+                               style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
                     </td>
                     <td style="text-align: center; vertical-align: middle;">
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
@@ -168,14 +341,14 @@
                                value="1"
                                {{ $doc->exige_documentos_responsaveis ? 'checked' : '' }}
                                title="Para alunos menores de idade, exigir documento de um responsável legal"
-                               style="width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;">
+                               style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
                     </td>
                     <td style="text-align: center; vertical-align: middle;">
                         <button form="{{ $formDocDeleteId }}"
                                 type="submit"
-                                class="btn-delete-doc-sm"
+                                class="btn-trash-action"
                                 title="Excluir este anexo">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                             </svg>
@@ -250,13 +423,13 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    style="font-size: 0.8125rem;">
         </td>
         <td style="vertical-align: middle;">
-            <div class="doc-modelo-upload">
+            <div class="box-modelo-vazio">
                 <input form="${formUpdateId}"
                        type="file"
                        name="novos_documentos[${idx}][arquivo_modelo]"
                        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                        class="input-file-clean">
-                <span style="font-size: 0.68rem; color: #64748b; margin-top: 2px;">
+                <span class="hint-modelo-vazio">
                     Opcional: modelo <strong>.docx</strong>
                 </span>
             </div>
@@ -268,7 +441,7 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    value="1"
                    checked
                    title="Marcar como obrigatório"
-                   style="width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;">
+                   style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center; vertical-align: middle;">
             <input form="${formUpdateId}"
@@ -276,14 +449,14 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    name="novos_documentos[${idx}][exige_documentos_responsaveis]"
                    value="1"
                    title="Para alunos menores de idade, exigir documento de um responsável legal"
-                   style="width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;">
+                   style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center; vertical-align: middle;">
             <button type="button"
-                    class="btn-delete-doc-sm"
+                    class="btn-trash-action"
                     title="Remover este anexo"
                     onclick="removerLinhaDocEdicao(this, '${assuntoId}')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                 </svg>

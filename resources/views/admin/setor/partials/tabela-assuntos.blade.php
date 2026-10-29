@@ -15,6 +15,18 @@
         </a>
     </div>
 
+    {{-- Formulários de update dos assuntos (fora da tabela para HTML 100% válido) --}}
+    @foreach($modelo->assuntos as $assunto)
+        <form id="form-assunto-update-{{ $assunto->id }}"
+              action="{{ route('admin.assuntos.update', $assunto->id) }}"
+              method="POST"
+              enctype="multipart/form-data"
+              style="display: none;">
+            @csrf
+            @method('PUT')
+        </form>
+    @endforeach
+
     <div style="overflow-x: auto;">
         <table class="tabela-assuntos">
             <thead>
@@ -33,15 +45,6 @@
                         $formUpdateId = 'form-assunto-update-' . $assunto->id;
                         $docsCount    = $assunto->documentos->count();
                     @endphp
-
-                    {{-- Formulário de update (fora do <tr> para ser válido no HTML) --}}
-                    <form id="{{ $formUpdateId }}"
-                          action="{{ route('admin.assuntos.update', $assunto->id) }}"
-                          method="POST"
-                          enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                    </form>
 
                     {{-- Linha principal (somente leitura) --}}
                     <tr class="tr-assunto-linha">

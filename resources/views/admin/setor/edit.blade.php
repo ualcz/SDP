@@ -4,7 +4,7 @@
 @section('tag', 'Administração')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/admin-setor.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin-setor.css') }}?v={{ file_exists(public_path('css/admin-setor.css')) ? filemtime(public_path('css/admin-setor.css')) : time() }}">
 <style>
     main.container {
         max-width: 95% !important;
