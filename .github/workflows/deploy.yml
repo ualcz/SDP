@@ -79,15 +79,4 @@ jobs:
           php artisan config:clear
           php artisan route:clear
           php artisan view:clear
-          php artisan migrate --force --no-interaction || exit $?
-          ADMIN_EXISTS=$(php artisan tinker --execute="echo \App\Models\Usuario::where('role', 'admin')->exists() ? '1' : '0';")
-          CHECK_STATUS=$?
-          if [ "$CHECK_STATUS" -ne 0 ]; then
-            exit "$CHECK_STATUS"
-          fi
-          if [ "$ADMIN_EXISTS" = "0" ]; then
-            php artisan db:seed --force
-          elif [ "$ADMIN_EXISTS" != "1" ]; then
-            echo "Não foi possível verificar se existe algum usuário administrador."
-            exit 1
-          fi
+          php artisan migrate --no-interaction
