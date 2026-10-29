@@ -35,10 +35,18 @@ class AdminSetorController extends Controller
         $setores = $consulta->get();
         $modelos = $setores; // compatibilidade com as views
 
-        $usuarios = Usuario::with('reportRecipient')
-        ->where('role', '!=', 'aluno')
-        ->orderBy('nome')
-        ->get();
+        try {
+            $usuarios = Usuario::with('reportRecipient')
+                ->where('role', '!=', 'aluno')
+                ->orderBy('nome')
+                ->get();
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Fallback caso a coluna usuario_id ainda não exista no banco (migration pendente)
+            $usuarios = Usuario::where('role', '!=', 'aluno')
+                ->orderBy('nome')
+                ->get()
+                ->each(fn($u) => $u->setRelation('reportRecipient', null));
+        }
 
         return view('admin.setor.index', compact('setores', 'modelos', 'usuarios'));
     }
