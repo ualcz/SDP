@@ -92,11 +92,12 @@
                 <table class="tabela-docs-nested" style="min-width: 820px; margin-bottom: 0; background: #fff;">
                     <thead>
                         <tr>
-                            <th style="min-width: 190px;">Documento *</th>
-                            <th style="min-width: 220px;">Orientações</th>
-                            <th style="min-width: 220px;">Modelo DOCX (opcional)</th>
-                            <th style="width: 80px; text-align: center;">Obrigatório</th>
-                            <th style="width: 170px; text-align: center;" title="Para menores, exigir uma cópia deste documento de um responsável legal">
+                            <th style="min-width: 170px;">Documento *</th>
+                            <th style="min-width: 190px;">Orientações</th>
+                            <th style="min-width: 180px;">Link Externo / Site</th>
+                            <th style="min-width: 200px;">Modelo DOCX (opcional)</th>
+                            <th style="width: 75px; text-align: center;">Obrigatório</th>
+                            <th style="width: 150px; text-align: center;" title="Para menores, exigir uma cópia deste documento de um responsável legal">
                                 Pedir cópia de responsável
                             </th>
                             <th style="width: 50px; text-align: center;">Ações</th>
@@ -144,6 +145,13 @@ function adicionarAnexoRow() {
             <input type="text"
                    name="documentos[${index}][descricao]"
                    placeholder="Instruções para o aluno (opcional)"
+                   class="input-tabela"
+                   style="font-size: 0.8125rem;">
+        </td>
+        <td>
+            <input type="url"
+                   name="documentos[${index}][link_modelo]"
+                   placeholder="https://exemplo.com/site"
                    class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>

@@ -42,17 +42,34 @@
                             @if(!empty(trim($doc['descricao'] ?? '')))
                                 <div style="display: block; background: #fffbeb; color: #78350f; padding: 10px 14px; margin: 8px 0 12px; font-size: 15px; font-weight: 600; line-height: 1.5; border: 1px solid #fcd34d;">{{ $doc['descricao'] }}</div>
                             @endif
-                            @if(!empty($doc['arquivo_modelo']))
-                                <a href="{{ route('documentos-assunto.modelo', $doc['id']) }}"
-                                   style="display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600; text-decoration: underline;"
-                                   title="Baixar modelo preenchido com seus dados em formato PDF">
-                                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                        <polyline points="7 10 12 15 17 10"></polyline>
-                                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                                    </svg>
-                                    Baixar modelo preenchido (PDF)
-                                </a>
+                            @if(!empty($doc['arquivo_modelo']) || !empty($doc['link_modelo']))
+                                <div style="display: flex; flex-wrap: wrap; gap: 14px; margin: 4px 0 12px;">
+                                    @if(!empty($doc['arquivo_modelo']))
+                                        <a href="{{ route('documentos-assunto.modelo', $doc['id']) }}"
+                                           style="display: inline-flex; align-items: center; gap: 6px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600; text-decoration: underline;"
+                                           title="Baixar modelo preenchido com seus dados em formato PDF">
+                                            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                            </svg>
+                                            Baixar modelo preenchido (PDF)
+                                        </a>
+                                    @endif
+
+                                    @if(!empty($doc['link_modelo']))
+                                        <a href="{{ $doc['link_modelo'] }}" target="_blank" rel="noopener noreferrer"
+                                           style="display: inline-flex; align-items: center; gap: 6px; color: #0284c7; font-size: 13px; line-height: 1.2; font-weight: 600; text-decoration: underline;"
+                                           title="Acessar site ou formulário externo">
+                                            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                <polyline points="15 3 21 3 21 9"></polyline>
+                                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                                            </svg>
+                                            Acessar site / formulário externo
+                                        </a>
+                                    @endif
+                                </div>
                             @endif
 
                             <x-file-input

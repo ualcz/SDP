@@ -30,15 +30,16 @@
 
     {{-- Tabela com documentos existentes e novos dinâmicos --}}
     <div style="overflow-x: auto;">
-    <table id="{{ $tabelaDocsId }}" class="tabela-docs-nested" style="min-width: 860px; {{ $hasDocs ? '' : 'display: none;' }}">
+    <table id="{{ $tabelaDocsId }}" class="tabela-docs-nested" style="min-width: 960px; {{ $hasDocs ? '' : 'display: none;' }}">
         <thead>
             <tr>
-                <th style="width: 22%;">Nome do Documento *</th>
-                <th style="width: 22%;">Orientações ao Aluno</th>
-                <th style="width: 34%;">Modelo DOCX (Preenchível)</th>
-                <th style="width: 75px; text-align: center;">Obrigatório</th>
-                <th style="width: 130px; text-align: center;" title="Exigir documento do responsável legal se o aluno for menor de idade">Cópia Responsável</th>
-                <th style="width: 55px; text-align: center;">Ações</th>
+                <th style="width: 20%;">Nome do Documento *</th>
+                <th style="width: 18%;">Orientações ao Aluno</th>
+                <th style="width: 18%;">Link Externo / Site</th>
+                <th style="width: 28%;">Modelo DOCX (Preenchível)</th>
+                <th style="width: 70px; text-align: center;">Obrigatório</th>
+                <th style="width: 120px; text-align: center;" title="Exigir documento do responsável legal se o aluno for menor de idade">Cópia Responsável</th>
+                <th style="width: 50px; text-align: center;">Ações</th>
             </tr>
         </thead>
         <tbody id="{{ $tbodyDocsId }}">
@@ -81,6 +82,15 @@
                                class="input-tabela"
                                style="font-size: 0.8125rem;"
                                placeholder="Orientações opcionais...">
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="url"
+                               name="documentos[{{ $doc->id }}][link_modelo]"
+                               value="{{ $doc->link_modelo }}"
+                               class="input-tabela"
+                               style="font-size: 0.8125rem;"
+                               placeholder="https://exemplo.com/site">
                     </td>
                     <td style="vertical-align: middle;">
                         @if($doc->arquivo_modelo)
@@ -190,8 +200,7 @@
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
         <div>
-            <strong>Tags suportadas no modelo DOCX:</strong> No seu documento do Word, você pode utilizar:
-            <code>&#123;&#123; nome &#125;&#125;</code>, <code>&#123;&#123; cpf &#125;&#125;</code>, <code>&#123;&#123; matricula &#125;&#125;</code>, <code>&#123;&#123; turma_codigo &#125;&#125;</code>, <code>&#123;&#123; email &#125;&#125;</code>, <code>&#123;&#123; telefone &#125;&#125;</code>, <code>&#123;&#123; data_nascimento &#125;&#125;</code>, <code>&#123;&#123; endereco &#125;&#125;</code> e <code>&#123;&#123; data &#125;&#125;</code>. Elas serão preenchidas automaticamente quando o aluno gerar o PDF.
+            <strong>Modelos e Links:</strong> Você pode informar um <strong>Link Externo</strong> (site/sistema/formulário) e/ou anexar um <strong>Modelo DOCX</strong>. No arquivo DOCX, use tags como <code>&#123;&#123; nome &#125;&#125;</code>, <code>&#123;&#123; cpf &#125;&#125;</code>, <code>&#123;&#123; matricula &#125;&#125;</code>, <code>&#123;&#123; turma_codigo &#125;&#125;</code>, <code>&#123;&#123; email &#125;&#125;</code>, <code>&#123;&#123; telefone &#125;&#125;</code>, <code>&#123;&#123; data_nascimento &#125;&#125;</code>, <code>&#123;&#123; endereco &#125;&#125;</code> e <code>&#123;&#123; data &#125;&#125;</code> para preenchimento automático.
         </div>
     </div>
 </div>
@@ -230,6 +239,14 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    name="novos_documentos[${idx}][descricao]"
                    class="input-tabela"
                    placeholder="Orientações opcionais..."
+                   style="font-size: 0.8125rem;">
+        </td>
+        <td style="vertical-align: middle;">
+            <input form="${formUpdateId}"
+                   type="url"
+                   name="novos_documentos[${idx}][link_modelo]"
+                   class="input-tabela"
+                   placeholder="https://exemplo.com/site"
                    style="font-size: 0.8125rem;">
         </td>
         <td style="vertical-align: middle;">
