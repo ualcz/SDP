@@ -8,6 +8,7 @@ use App\Models\Setor;
 use App\Services\DocumentoRequerimentoService;
 use App\Services\RequerimentoEmailService;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class EnvioEmailController extends Controller
@@ -303,8 +304,8 @@ class EnvioEmailController extends Controller
 
     private function temArquivoValido(mixed $arquivo): bool
     {
-        if ($arquivo instanceof UploadedFile) {
-            return $arquivo->isValid();
+        if ($arquivo instanceof \Illuminate\Http\UploadedFile) {
+            return $arquivo->isValid() && $arquivo->getSize() > 0;
         }
 
         if (is_array($arquivo)) {

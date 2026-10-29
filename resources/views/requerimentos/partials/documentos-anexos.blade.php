@@ -61,6 +61,7 @@
                                 label="{{ $doc['nome'] }}"
                                 helpText=""
                                 accept="{{ $tiposAceitos }}"
+                                :multiple="false"
                             />
                             @if($alunoMenor && !empty($doc['exige_documentos_responsaveis']))
                                 <x-file-input
