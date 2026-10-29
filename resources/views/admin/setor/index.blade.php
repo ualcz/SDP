@@ -55,7 +55,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 12px;
+        padding: 0 12px;
+        height: 32px;
+        box-sizing: border-box;
         border-radius: 6px;
         font-size: 0.8125rem;
         font-weight: 600;
@@ -66,6 +68,25 @@
     }
     .btn-acao:hover {
         background-color: #1d4ed8;
+    }
+    .btn-icon-preview {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        text-decoration: none;
+        transition: all 0.15s;
+        box-sizing: border-box;
+    }
+    .btn-icon-preview:hover {
+        background-color: #dbeafe;
+        color: #1e40af;
+        border-color: #93c5fd;
     }
     .btn-voltar {
         display: inline-flex;
@@ -172,16 +193,22 @@
                             <span class="badge-inativo">Inativo</span>
                         @endif
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center; vertical-align: middle;">
                         <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
                             <a href="{{ route('admin.setores.preview-aluno', $modelo->id) }}"
                                target="_blank"
-                               class="btn-acao"
-                               style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;"
-                               title="Visualizar formulário deste setor como aluno em nova aba">
-                                Ver como Aluno
+                               class="btn-icon-preview"
+                               title="Visualizar como Aluno em nova aba">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
                             </a>
                             <a href="{{ route('admin.setores.edit', $modelo->id) }}" class="btn-acao">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
                                 Editar
                             </a>
                         </div>
