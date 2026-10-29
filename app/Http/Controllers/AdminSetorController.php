@@ -40,15 +40,20 @@ class AdminSetorController extends Controller
                 ->where('role', '!=', 'aluno')
                 ->orderBy('nome')
                 ->get();
+
+            $reportRecipientIds = \App\Models\ReportRecipient::pluck('usuario_id')->toArray();
+            $destinatariosAtuais = \App\Models\ReportRecipient::with('usuario')->get()->pluck('usuario')->filter();
         } catch (\Illuminate\Database\QueryException $e) {
-            // Fallback caso a coluna usuario_id ainda não exista no banco (migration pendente)
+            // Fallback: coluna usuario_id ainda não existe no banco (migration pendente)
             $usuarios = Usuario::where('role', '!=', 'aluno')
                 ->orderBy('nome')
                 ->get()
                 ->each(fn($u) => $u->setRelation('reportRecipient', null));
+            $reportRecipientIds   = [];
+            $destinatariosAtuais  = collect();
         }
 
-        return view('admin.setor.index', compact('setores', 'modelos', 'usuarios'));
+        return view('admin.setor.index', compact('setores', 'modelos', 'usuarios', 'reportRecipientIds', 'destinatariosAtuais'));
     }
 
     public function create()

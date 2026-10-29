@@ -189,7 +189,7 @@
 
 <div class="admin-card">
                 @php
-                    $selecionados = old('responsaveis', \App\Models\ReportRecipient::pluck('usuario_id')->toArray());
+                    $selecionados = old('responsaveis', $reportRecipientIds ?? []);
                     $usuariosOrdenados = $usuarios->sortByDesc(function ($usuario) use ($selecionados) {
                         return in_array($usuario->id, $selecionados);
                     });
@@ -198,10 +198,7 @@
     <p>Destinatários Atuais:</p>
     <div class="remetentes-list">
         @php
-            $destinatariosAtuais = \App\Models\ReportRecipient::with('usuario')
-            ->get()
-            ->pluck('usuario')
-            ->filter();
+            $destinatariosAtuais = $destinatariosAtuais ?? collect();
             @endphp
 
         @if($destinatariosAtuais->count() > 0)
