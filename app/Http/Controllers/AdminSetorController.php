@@ -169,6 +169,37 @@ class AdminSetorController extends Controller
             ->with('success', 'Setor atualizado com sucesso!');
     }
 
+    public function previewAluno($setorId)
+    {
+        $this->autorizarSetor((int) $setorId);
+        $setor = Setor::findOrFail($setorId);
+
+        $modelos = Setor::obterSetoresFormatados();
+        $modeloChave = (int) $setorId;
+        $modeloAtivo = $modelos[$modeloChave] ?? ($modelos ? reset($modelos) : null);
+
+        if (!$modeloAtivo) {
+            abort(404, 'Setor não encontrado ou inativo.');
+        }
+
+        $setorDestino = [
+            'nome' => $modeloAtivo['setor_nome'],
+            'email' => $modeloAtivo['email'] ?? 'protocolos.seabra@ifba.edu.br',
+        ];
+
+        $alunoMenor = request()->user()->isMenorDeIdade();
+        $isVisualizacaoAdmin = true;
+
+        return view('requerimentos.form', compact(
+            'modelos',
+            'modeloChave',
+            'modeloAtivo',
+            'setorDestino',
+            'alunoMenor',
+            'isVisualizacaoAdmin'
+        ));
+    }
+
     public function createAssunto($setorId)
     {
         $this->autorizarSetor((int) $setorId);

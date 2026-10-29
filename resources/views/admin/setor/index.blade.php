@@ -173,9 +173,18 @@
                         @endif
                     </td>
                     <td style="text-align: center;">
-                        <a href="{{ route('admin.setores.edit', $modelo->id) }}" class="btn-acao">
-                            Editar
-                        </a>
+                        <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+                            <a href="{{ route('admin.setores.preview-aluno', $modelo->id) }}"
+                               target="_blank"
+                               class="btn-acao"
+                               style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;"
+                               title="Visualizar formulário deste setor como aluno em nova aba">
+                                Ver como Aluno
+                            </a>
+                            <a href="{{ route('admin.setores.edit', $modelo->id) }}" class="btn-acao">
+                                Editar
+                            </a>
+                        </div>
                     </td>
                 </tr>
             @empty

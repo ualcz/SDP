@@ -6,6 +6,24 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/form.css') }}?v={{ filemtime(public_path('css/form.css')) }}">
 
+@if($isVisualizacaoAdmin ?? false)
+    <div style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <div>
+                <strong>Modo de Pré-visualização (Visão do Aluno):</strong>
+                <span style="font-size: 0.85rem; display: block; color: #3b82f6;">Você está visualizando exatamente como o formulário, requerimentos, links e modelos DOCX/PDF aparecem para os estudantes.</span>
+            </div>
+        </div>
+        <a href="{{ route('admin.setores.edit', $modeloChave) }}" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #fff; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; color: #1d4ed8; text-decoration: none;">
+            &larr; Voltar à Edição do Setor
+        </a>
+    </div>
+@endif
+
 <div class="form-box">
     <!-- Overlay de Carregamento -->
     <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
@@ -14,7 +32,7 @@
     <div class="setores-nav">
         <strong>Setor:</strong>
         @foreach($modelos as $mod)
-            <a href="{{ route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
+            <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
                class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
                 {{ $mod['setor_sigla'] }}
             </a>

@@ -19,9 +19,31 @@
                 Setor: {{ $modelo->setor_sigla }} &mdash; {{ $modelo->setor_nome }}
             </h2>
         </div>
-        <a href="{{ auth()->user()->role === 'admin' ? route('admin.setores.index') : route('setor.responsavel.dashboard', $modelo->id) }}" class="btn-voltar">
-            &larr; Voltar
-        </a>
+        @php
+            $rotaVoltar = route('admin.setores.index');
+            if (auth()->user()->role === 'admin') {
+                $rotaVoltar = route('admin.setores.index');
+            } elseif (auth()->user()->ehResponsavelDoSetor($modelo->id)) {
+                $rotaVoltar = route('setor.responsavel.dashboard', $modelo->id);
+            } elseif (auth()->user()->isServidor()) {
+                $rotaVoltar = route('servidor.dashboard');
+            }
+        @endphp
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="{{ route('admin.setores.preview-aluno', $modelo->id) }}"
+               target="_blank"
+               style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; text-decoration: none; transition: all 0.15s;"
+               title="Abrir pré-visualização do formulário como aluno em nova aba">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Visualizar como Aluno
+            </a>
+            <a href="{{ $rotaVoltar }}" class="btn-voltar">
+                &larr; Voltar
+            </a>
+        </div>
     </div>
 
     {{-- Feedback de mensagens e erros --}}
