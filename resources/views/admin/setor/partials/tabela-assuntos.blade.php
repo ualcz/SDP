@@ -37,7 +37,8 @@
                     {{-- Formulário de update (fora do <tr> para ser válido no HTML) --}}
                     <form id="{{ $formUpdateId }}"
                           action="{{ route('admin.assuntos.update', $assunto->id) }}"
-                          method="POST">
+                          method="POST"
+                          enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                     </form>

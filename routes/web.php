@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DocumentoRequerimentoController;
+use App\Http\Controllers\DocumentoAssuntoController;
 use App\Http\Controllers\ModeloController;
 use App\Http\Controllers\ReportController;
 
@@ -128,6 +129,8 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
     })->name('requerimentos.aluno');
 
     Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
+    Route::get('/documentos-assunto/{documento}/modelo', [DocumentoAssuntoController::class, 'baixarModelo'])
+        ->name('documentos-assunto.modelo');
     Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');
     Route::get('/requerimentos/aluno/visualizar/{requerimento}', [RequerimentoController::class, 'show'])
@@ -167,4 +170,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/documentos/{documento}/baixar', [DocumentoRequerimentoController::class, 'baixar'])
         ->name('documentos.download');
 });
-

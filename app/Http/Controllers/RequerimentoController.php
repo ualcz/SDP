@@ -75,7 +75,9 @@ class RequerimentoController extends Controller
             'email' => $modeloAtivo['email'] ?? 'protocolos.seabra@ifba.edu.br',
         ];
 
-        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setorDestino'));
+        $alunoMenor = $request->user()->isMenorDeIdade();
+
+        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setorDestino', 'alunoMenor'));
     }
 
     //Método para mostrar requerimentos que já foram realizados pelo usuário;

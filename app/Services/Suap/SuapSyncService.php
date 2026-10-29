@@ -15,6 +15,7 @@ class SuapSyncService
         protected NomeScraper $nomeScraper,
         protected EnderecoScraper $enderecoScraper,
         protected TelefoneScraper $telefoneScraper,
+        protected DataNascimentoScraper $dataNascimentoScraper,
     ) {}
 
     /**
@@ -76,6 +77,11 @@ class SuapSyncService
                     $telefone = $this->telefoneScraper->extrair($paginaDadosPessoais);
                     if ($telefone) {
                         $updates['telefone'] = $telefone;
+                    }
+
+                    $dataNascimento = $this->dataNascimentoScraper->extrair($paginaDadosPessoais);
+                    if ($dataNascimento) {
+                        $updates['data_nascimento'] = $dataNascimento;
                     }
                 }
             } else {

@@ -42,7 +42,12 @@
                             @if(!empty(trim($doc['descricao'] ?? '')))
                                 <div style="display: block; background: #fffbeb; color: #78350f; padding: 10px 14px; margin: 8px 0 12px; font-size: 15px; font-weight: 600; line-height: 1.5; border: 1px solid #fcd34d;">{{ $doc['descricao'] }}</div>
                             @endif
-                            @if(!empty($doc['link_modelo']))
+                            @if(!empty($doc['arquivo_modelo']))
+                                <a href="{{ route('documentos-assunto.modelo', $doc['id']) }}"
+                                   style="display: inline-flex; align-items: center; gap: 5px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600;">
+                                    Baixar modelo preenchido em PDF
+                                </a>
+                            @elseif(!empty($doc['link_modelo']))
                                 <a href="{{ $doc['link_modelo'] }}" target="_blank" rel="noopener noreferrer"
                                    style="display: inline-flex; align-items: center; gap: 5px; margin: 4px 0 12px; color: #1d4ed8; font-size: 13px; line-height: 1.2; font-weight: 600;">
                                     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -61,6 +66,16 @@
                                 helpText=""
                                 accept="{{ $tiposAceitos }}"
                             />
+                            @if($alunoMenor && !empty($doc['exige_documentos_responsaveis']))
+                                <x-file-input
+                                    name="documentos_responsavel[{{ $doc['id'] }}]"
+                                    label="{{ $doc['nome'] }} de um responsável legal"
+                                    helpText="Anexe a cópia do documento de um responsável."
+                                    required="true"
+                                    accept="{{ $tiposAceitos }}"
+                                    :multiple="false"
+                                />
+                            @endif
                         </div>
                     @endforeach
                 @else

@@ -30,8 +30,9 @@
             <tr>
                 <th>Documento *</th>
                 <th>Orientações</th>
-                <th>Link do modelo</th>
+                <th>Modelo DOCX preenchível</th>
                 <th style="width: 80px; text-align: center;">Obrigatório</th>
+                <th style="width: 170px; text-align: center;" title="Para menores, exigir uma cópia deste documento de um responsável legal">Pedir cópia de responsável</th>
                 <th style="width: 50px; text-align: center;">Ações</th>
             </tr>
         </thead>
@@ -67,14 +68,17 @@
                                placeholder="Orientações opcionais...">
                     </td>
                     <td>
+                        @if($doc->arquivo_modelo)
+                            <small style="display:block; margin-bottom:4px; color:#047857;">Modelo DOCX cadastrado</small>
+                        @elseif($doc->link_modelo)
+                            <small style="display:block; margin-bottom:4px; color:#64748b;">Link externo antigo mantido</small>
+                        @endif
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
-                               type="url"
-                               name="documentos[{{ $doc->id }}][link_modelo]"
-                               value="{{ $doc->link_modelo }}"
+                               type="file"
+                               name="documentos[{{ $doc->id }}][arquivo_modelo]"
+                               accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                class="input-tabela"
-                               style="font-size: 0.8125rem;"
-                               placeholder="https://..."
-                               maxlength="2048">
+                               style="font-size: 0.75rem;">
                     </td>
                     <td style="text-align: center;">
                         <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
@@ -82,6 +86,15 @@
                                name="documentos[{{ $doc->id }}][obrigatorio]"
                                value="1"
                                {{ $doc->obrigatorio ? 'checked' : '' }}
+                               style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
+                    </td>
+                    <td style="text-align: center;">
+                        <input @if(isset($formUpdateId)) form="{{ $formUpdateId }}" @endif
+                               type="checkbox"
+                               name="documentos[{{ $doc->id }}][exige_documentos_responsaveis]"
+                               value="1"
+                               {{ $doc->exige_documentos_responsaveis ? 'checked' : '' }}
+                               title="Para menores, exigir uma cópia de um responsável legal"
                                style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
                     </td>
                     <td style="text-align: center;">
@@ -105,6 +118,10 @@
     <div id="{{ $emptyDocsId }}" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 6px; display: {{ $hasDocs ? 'none' : 'flex' }}; justify-content: space-between; align-items: center;">
         <span style="font-size: 0.8125rem; color: #64748b;">Nenhum anexo cadastrado ainda.</span>
     </div>
+    <small style="display:block; margin-top:8px; color:#64748b;">
+        No DOCX, use campos como <code>&#123;&#123; nome &#125;&#125;</code>, <code>&#123;&#123; cpf &#125;&#125;</code>,
+        <code>&#123;&#123; matricula &#125;&#125;</code>, <code>&#123;&#123; endereco &#125;&#125;</code> e <code>&#123;&#123; data &#125;&#125;</code>.
+    </small>
 </div>
 
 <script>
@@ -145,12 +162,11 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
         </td>
         <td>
             <input form="${formUpdateId}"
-                   type="url"
-                   name="novos_documentos[${idx}][link_modelo]"
+                   type="file"
+                   name="novos_documentos[${idx}][arquivo_modelo]"
+                   accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                    class="input-tabela"
-                   placeholder="https://..."
-                   maxlength="2048"
-                   style="font-size: 0.8125rem;">
+                   style="font-size: 0.75rem;">
         </td>
         <td style="text-align: center;">
             <input form="${formUpdateId}"
@@ -158,6 +174,14 @@ function adicionarLinhaNovoAnexoEdicao(assuntoId, formUpdateId) {
                    name="novos_documentos[${idx}][obrigatorio]"
                    value="1"
                    checked
+                   style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
+        </td>
+        <td style="text-align: center;">
+            <input form="${formUpdateId}"
+                   type="checkbox"
+                   name="novos_documentos[${idx}][exige_documentos_responsaveis]"
+                   value="1"
+                   title="Para menores, exigir uma cópia de um responsável legal"
                    style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center;">

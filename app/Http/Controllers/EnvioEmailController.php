@@ -15,9 +15,9 @@ class EnvioEmailController extends Controller
     /**
      * Envia o e-mail com as informações do aluno para seu e-mail pessoal e o setor selecionado.
      */
-    public function enviar(Request $request)
-    {
-        $request->validate([
+     public function enviar(Request $request)
+     {
+         $request->validate([
             'setor'                => 'nullable|string',
             'setor_id'             => 'nullable',
             'objeto'               => 'nullable|string|max:255',
@@ -37,6 +37,7 @@ class EnvioEmailController extends Controller
             'email_adicional'      => 'nullable|email',
             'arquivos.*'           => 'nullable|file|max:51200', // 50MB por arquivo complementar
             'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
+            'documentos_responsavel.*' => 'nullable|file|max:51200',
         ]);
 
         $setorParam = $request->input('setor_id') ?? $request->input('setor');
@@ -129,15 +130,23 @@ class EnvioEmailController extends Controller
             $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objetoTexto)->first();
 
             if ($assunto) {
-                $docsObrigatorios = $assunto->documentosObrigatorios()->get();
+                $documentosAssunto = $assunto->documentos()->get();
                 $documentosEnviados = $request->file('documentos', []);
+                $documentosResponsavel = $request->file('documentos_responsavel', []);
+                $alunoMenor = $aluno->isMenorDeIdade();
 
                 $errosAnexos = [];
-                foreach ($docsObrigatorios as $doc) {
+                foreach ($documentosAssunto as $doc) {
                     $arquivoDoc = $documentosEnviados[$doc->id] ?? null;
 
-                    if (!$arquivoDoc || !($arquivoDoc instanceof \Illuminate\Http\UploadedFile) || !$arquivoDoc->isValid()) {
+                    if ($doc->obrigatorio && !$this->temArquivoValido($arquivoDoc)) {
                         $errosAnexos[] = "O documento '{$doc->nome}' é obrigatório para a solicitação de '{$assunto->descricao}'.";
+                    }
+
+                    if ($alunoMenor && $doc->exige_documentos_responsaveis) {
+                        if (!$this->temArquivoValido($documentosResponsavel[$doc->id] ?? null)) {
+                            $errosAnexos[] = "A cópia do documento '{$doc->nome}' de um responsável legal é obrigatória.";
+                        }
                     }
                 }
 
@@ -150,6 +159,7 @@ class EnvioEmailController extends Controller
         // Coleta todos os arquivos enviados (específicos de documentos + complementares)
         $todosArquivosInput = [
             $request->file('documentos', []),
+            $request->file('documentos_responsavel', []),
             $request->file('arquivos', [])
         ];
 
@@ -191,10 +201,14 @@ class EnvioEmailController extends Controller
 
             // Salva no banco e no storage os documentos enviados vinculados ao histórico inicial
             $historicoInicial = $requerimento->historicos()->first();
+            $documentosParaSalvar = $request->file('documentos', []);
+            foreach ($request->file('documentos_responsavel', []) as $documentoId => $arquivoResponsavel) {
+                $documentosParaSalvar["responsavel_{$documentoId}"] = $arquivoResponsavel;
+            }
             $docsIniciaisSalvos = app(DocumentoRequerimentoService::class)->salvarDocumentosIniciais(
                 requerimento: $requerimento,
                 historico: $historicoInicial,
-                documentosInput: $request->file('documentos', []),
+                documentosInput: $documentosParaSalvar,
                 arquivosComplementares: $request->file('arquivos', []),
                 usuario: $aluno
             );
@@ -220,13 +234,20 @@ class EnvioEmailController extends Controller
         // Mapeia os caminhos dos arquivos não mesclados que já estão salvos no storage local
         $anexosNaoMescladosCaminhos = [];
         if (!empty($resultadoPdf['arquivos_nao_mesclados']) && !empty($docsIniciaisSalvos)) {
+            $documentosPorNomeOriginal = [];
+            foreach ($docsIniciaisSalvos as $docSalvo) {
+                $documentosPorNomeOriginal[$docSalvo->nome_original][] = $docSalvo;
+            }
+
             foreach ($resultadoPdf['arquivos_nao_mesclados'] as $arqNaoMesclado) {
                 $nomeArq = ($arqNaoMesclado instanceof \Illuminate\Http\UploadedFile)
                     ? $arqNaoMesclado->getClientOriginalName()
                     : (is_string($arqNaoMesclado) ? basename($arqNaoMesclado) : null);
 
                 if ($nomeArq) {
-                    $docSalvo = collect($docsIniciaisSalvos)->first(fn($d) => $d->nome_original === $nomeArq);
+                    $docSalvo = !empty($documentosPorNomeOriginal[$nomeArq])
+                        ? array_shift($documentosPorNomeOriginal[$nomeArq])
+                        : null;
                     if ($docSalvo && !empty($docSalvo->caminho)) {
                         $anexosNaoMescladosCaminhos[] = $docSalvo->caminho;
                     }
@@ -264,5 +285,22 @@ class EnvioEmailController extends Controller
         $ano = $requerimento->created_at?->format('Y') ?? date('Y');
         $requerimento->numero_protocolo = $ano . '/' . $requerimento->id;
         $requerimento->save();
+    }
+
+    private function temArquivoValido(mixed $arquivo): bool
+    {
+        if ($arquivo instanceof UploadedFile) {
+            return $arquivo->isValid();
+        }
+
+        if (is_array($arquivo)) {
+            foreach ($arquivo as $item) {
+                if ($this->temArquivoValido($item)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

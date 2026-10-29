@@ -13,12 +13,15 @@ class DocumentoAssunto extends Model
         'nome',
         'descricao',
         'link_modelo',
+        'arquivo_modelo',
         'obrigatorio',
+        'exige_documentos_responsaveis',
         'tipos_aceitos',
     ];
 
     protected $casts = [
         'obrigatorio' => 'boolean',
+        'exige_documentos_responsaveis' => 'boolean',
     ];
 
     /**

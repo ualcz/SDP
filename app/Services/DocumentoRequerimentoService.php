@@ -199,18 +199,24 @@ class DocumentoRequerimentoService
 
         // 1. Documentos vinculados ao assunto
         foreach ($documentosInput as $docAssuntoId => $arquivo) {
-            if ($arquivo instanceof UploadedFile && $arquivo->isValid()) {
-                $nomeDoc = 'Documento Obrigatório';
-                if (is_numeric($docAssuntoId)) {
-                    $docAssunto = DocumentoAssunto::find($docAssuntoId);
-                    if ($docAssunto && !empty($docAssunto->nome)) {
-                        $nomeDoc = $docAssunto->nome;
-                    }
-                }
+            $ehResponsavel = false;
+            if (preg_match('/^(?:responsavel|pai|mae)_(\d+)$/', (string) $docAssuntoId, $matches)) {
+                $ehResponsavel = true;
+                $docAssuntoId = $matches[2];
+            }
 
-                $doc = $this->salvarArquivo($arquivo, $requerimento, $historico, $usuario, $nomeDoc);
-                if ($doc) {
-                    $salvos[] = $doc;
+            $docAssunto = is_numeric($docAssuntoId) ? DocumentoAssunto::find($docAssuntoId) : null;
+            $nomeDoc = $docAssunto?->nome ?: 'Documento Obrigatório';
+            if ($ehResponsavel) {
+                $nomeDoc .= ' - Responsável legal';
+            }
+
+            foreach (is_array($arquivo) ? $arquivo : [$arquivo] as $arquivoIndividual) {
+                if ($arquivoIndividual instanceof UploadedFile && $arquivoIndividual->isValid()) {
+                    $doc = $this->salvarArquivo($arquivoIndividual, $requerimento, $historico, $usuario, $nomeDoc);
+                    if ($doc) {
+                        $salvos[] = $doc;
+                    }
                 }
             }
         }
