@@ -620,7 +620,6 @@ form {
      .setores-nav {
         padding: 15px;
         overflow-wrap: break-word;
-
         display: block;
     }
 
@@ -645,6 +644,7 @@ form {
         box-sizing: border-box;
         font-size: 12px;
         padding: 10px 6px;
+        margin-right: 5px;
     }
 
 }
