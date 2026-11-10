@@ -87,7 +87,7 @@
                             <span>Consultar Requerimentos</span>
                         </a>
                     @else
-                        <a href="{{ route('home') }}"
+                        <a href="{{ route('home-menu') }}"
                            class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                             <div class="nav-icon">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                     @if($usuario->isAdmin() || $usuario->ehResponsavel())
                         <div class="menu-divider" style="margin: 8px 0;"></div>
                         <div class="menu-section-label">Administração</div>
-                        
+
                         <a href="{{ route('admin.setores.index') }}" class="nav-link {{ request()->routeIs('admin.setores.*', 'admin.modelos.*') ? 'active' : '' }}">
                             <div class="nav-icon">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
