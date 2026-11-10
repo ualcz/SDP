@@ -29,8 +29,8 @@
     <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
 
     <!-- Navegação entre modelos / setores -->
-    <div class="setores-nav">
-        <strong>Selecione um setor:</strong>
+    <div class="setores-nav pulso-ao-carregar">
+        <strong>Selecione um setor que deseja abrir um requerimento:</strong>
         @foreach($modelos as $mod)
             <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
                class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
