@@ -30,7 +30,7 @@
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav">
-        <strong>Setor:</strong>
+        <strong>Selecione um setor:</strong>
         @foreach($modelos as $mod)
             <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
                class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
@@ -81,5 +81,12 @@
             });
         </script>
     @endif
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
 </div>
 @endsection
