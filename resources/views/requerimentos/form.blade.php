@@ -30,14 +30,18 @@
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav pulso-ao-carregar">
-        <strong>Setor:</strong>
-        <p>Selecione um setor para abrir um requerimento:</p>
-        @foreach($modelos as $mod)
-            <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
-               class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
-                {{ $mod['setor_sigla'] }}
-            </a>
-        @endforeach
+        <div>
+            <strong>Setor:</strong>
+            <p>Selecione um setor para abrir um requerimento:</p>
+        </div>
+        <div class="setores-nav-links">
+            @foreach($modelos as $mod)
+                <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
+                   class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
+                    {{ $mod['setor_sigla'] }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Título do Requerimento -->

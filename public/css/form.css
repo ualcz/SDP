@@ -586,14 +586,33 @@ form {
 
     .setores-nav {
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         align-items: center;
         gap: 4px;
         white-space: nowrap;
+        padding: 15px;
+        overflow-wrap: break-word;
     }
 
     .setores-nav strong {
         flex: 0 0 auto;
+        font-size: 1rem;
+        display: block;
+        font-size: 1rem;
+    }
+
+    .setores-nav p {
+        flex: 0 0 100%;
+        font-size: 0.65rem;
+        margin-bottom: 10px;
+    }
+
+    .setores-nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        /* Alinha os botões ao início (esquerda) e impede que o Flexbox force o esticamento vertical */
+        align-items: flex-start;
     }
 
     #navegacao-btn {
@@ -609,28 +628,7 @@ form {
     }
 
     .form-box {
-        padding: 20px;
-    }
-
-    .setores-nav strong {
-        font-size: 1rem;
-
-    }
-
-     .setores-nav {
-        padding: 15px;
-        overflow-wrap: break-word;
-        display: block;
-    }
-
-    .setores-nav p {
-        font-size: 0.65rem;
-        margin-bottom: 20px;
-    }
-
-    .setores-nav strong {
-        display: block;
-        font-size: 1rem;
+        padding: 0px;
     }
 
     .setores-links-container {
@@ -644,7 +642,8 @@ form {
         box-sizing: border-box;
         font-size: 12px;
         padding: 10px 6px;
-        margin-right: 5px;
+        display: inline-block;
+        width: fit-content;
     }
 
 }
