@@ -21,7 +21,12 @@
     margin-right: 10px;
     color: #1b2017;
     display: block;
-    padding-bottom: 20px;
+}
+
+.setores-nav p{
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin-bottom: 30px;
 }
 
 .setores-nav a {
@@ -68,6 +73,8 @@
 .pulso-ao-carregar {
   animation: pulso-unico 1.2s ease-in-out 1;
 }
+
+
 
 .form-box fieldset {
     border: 1px solid #ddd;
@@ -603,6 +610,41 @@ form {
 
     .form-box {
         padding: 20px;
+    }
+
+    .setores-nav strong {
+        font-size: 1rem;
+
+    }
+
+     .setores-nav {
+        padding: 15px;
+        overflow-wrap: break-word;
+
+        display: block;
+    }
+
+    .setores-nav p {
+        font-size: 0.65rem;
+        margin-bottom: 20px;
+    }
+
+    .setores-nav strong {
+        display: block;
+        font-size: 1rem;
+    }
+
+    .setores-links-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .setores-nav a {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 12px;
+        padding: 10px 6px;
     }
 
 }

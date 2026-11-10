@@ -30,7 +30,8 @@
 
     <!-- Navegação entre modelos / setores -->
     <div class="setores-nav pulso-ao-carregar">
-        <strong>Selecione um setor que deseja abrir um requerimento:</strong>
+        <strong>Setor:</strong>
+        <p>Selecione um setor para abrir um requerimento:</p>
         @foreach($modelos as $mod)
             <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
                class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
