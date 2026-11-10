@@ -14,6 +14,9 @@ class StatusSetorChart
         $setores = Setor::pluck('setor_sigla')->toArray();
 
         $emAnalise = [];
+        $emAberto = [];
+        $emDespacho = [];
+        $emIndeferimento = [];
 
         foreach ($setores as $sigla) {
             $total = Requerimento::whereHas('setor', function ($q) use ($sigla) {
@@ -24,12 +27,29 @@ class StatusSetorChart
                 $qtdAnalise->where('setor_sigla', $sigla);
             })->where('status', 'em análise')->count();
 
+            $aberto = Requerimento::whereHas('setor', function ($qtdAberto) use ($sigla) {
+                $qtdAberto->where('setor_sigla', $sigla);
+            })->where('status', 'Aberto')->count();
+
+            $despacho = Requerimento::whereHas('setor', function ($qtdDespacho) use ($sigla) {
+                $qtdDespacho->where('setor_sigla', $sigla);
+            })->where('status', 'Despacho')->count();
+
+            $indeferido = Requerimento::whereHas('setor', function ($qtdIndeferido) use ($sigla) {
+                $qtdIndeferido->where('setor_sigla', $sigla);
+            })->where('status', 'Indeferido')->count();
+
             $emAnalise[] = $total > 0 ? round($analise) : 0;
+            $emAberto[] = $total > 0 ? round($aberto) : 0;
+            $emDespacho[] = $total > 0 ? round($despacho) : 0;
+            $emIndeferimento[] = $total > 0 ? round($indeferido) : 0;
         }
         $progressBarChart = (new LarapexChart)->horizontalBarChart()
             ->setTitle('Status por Setor')
-            ->setSubtitle('Requerimentos em análise (por setor)')
             ->addData($emAnalise, 'Em Análise')
+            ->addData($emAberto, 'Em Aberto')
+            ->addData($emDespacho, 'Despacho')
+            ->addData($emIndeferimento, 'Infererido')
             ->setXAxis($setores)
             ->setHeight(220)
             ->setStacked()

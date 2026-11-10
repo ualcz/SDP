@@ -56,6 +56,7 @@
             <table class="dash-table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Tipo</th>
@@ -64,6 +65,7 @@
                 <tbody>
                     @foreach($usuarios as $user)
                         <tr>
+                            <td>{{ $user->id }}</td>
                             <td>{{ $user->nome }}</td>
                             <td>{{ $user->email }}</td>
                             @if ($user->role == 'professor')

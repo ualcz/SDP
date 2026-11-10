@@ -94,7 +94,7 @@ if (!$jwt) {
         return redirect()->route('servidor.dashboard');
     }
 
-    return redirect('/requerimentos/aluno');
+    return redirect()->route('requerimentos.aluno');
 }
 
         $dados = $suap->meusDados($jwt);
@@ -160,6 +160,7 @@ if (!$jwt) {
         |--------------------------------------------------------------------------
         */
         Auth::login($usuario);
+        $request->session()->regenerate();
 
         /*
         |--------------------------------------------------------------------------
@@ -185,12 +186,22 @@ if (!$jwt) {
         | REDIRECIONAMENTO
         |--------------------------------------------------------------------------
         */
-        if ($usuario->isProfessor()) {
-
-            return redirect()->route('servidor.dashboard');
+        if ($usuario->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard'));
         }
 
-        return redirect('/requerimentos/aluno/novo');
+        if ($usuario->isServidor()) {
+            return redirect()->intended(route('servidor.dashboard'));
+        }
+
+        if ($usuario->ehResponsavel()) {
+            $setor = $usuario->setoresSobResponsabilidade()->first();
+            return $setor
+                ? redirect()->intended(route('setor.responsavel.dashboard', $setor->id))
+                : redirect()->intended(route('admin.setores.index'));
+        }
+
+        return redirect()->intended(route('requerimentos.aluno.novo'));
     }
 
     /*

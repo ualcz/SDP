@@ -79,7 +79,9 @@ class Setor extends Model
                                 'nome'          => $d->nome,
                                 'descricao'     => $d->descricao,
                                 'link_modelo'   => $d->link_modelo,
+                                'arquivo_modelo' => $d->arquivo_modelo,
                                 'obrigatorio'   => $d->obrigatorio,
+                                'exige_documentos_responsaveis' => $d->exige_documentos_responsaveis,
                                 'tipos_aceitos' => $d->tipos_aceitos,
                             ])->values()->toArray(),
                     ];

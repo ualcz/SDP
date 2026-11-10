@@ -26,64 +26,99 @@ class ResponsavelSetorController extends Controller
 
         $this->autorizarSetor($setor);
 
-        $baseQuery = Requerimento::with(['usuario', 'assunto.setor'])
-            ->where('setor_id', $setor->id);
+        $filters = $request->validate([
+            'aluno'       => ['nullable', 'string', 'max:255'],
+            'turma'       => ['nullable', 'string', 'max:255'],
+            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Indeferido,Concluído'],
+            'data_inicio' => ['nullable', 'date'],
+            'data_fim'    => ['nullable', 'date', 'after_or_equal:data_inicio'],
+        ]);
 
-        $totalAnalise = (clone $baseQuery)
-            ->where('status', 'Em Análise')
-            ->count();
+        $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
 
-        $totalConcluidos = (clone $baseQuery)
-            ->where('status', 'Concluído')
-            ->count();
-
-        $totalIndeferidos = (clone $baseQuery)
-            ->where('status', 'Indeferido')
-            ->count();
-
-        $totalAberto = (clone $baseQuery)
-            ->where('status', 'Aberto')
-            ->count();
-
-        $query = (clone $baseQuery)->latest();
-
-        if ($request->filled('aluno')) {
-            $aluno = trim($request->input('aluno'));
-            $query->whereHas('usuario', function ($q) use ($aluno) {
-                $q->where('nome', 'like', "%{$aluno}%")
-                  ->orWhere('matricula', 'like', "%{$aluno}%");
+        if (!empty($filters['aluno'])) {
+            $query->whereHas('usuario', function ($usuarioQuery) use ($filters) {
+                $usuarioQuery->where('nome', 'like', '%' . $filters['aluno'] . '%');
             });
         }
 
-        if ($request->filled('turma')) {
-            $turma = trim($request->input('turma'));
-            $query->whereHas('usuario', function ($q) use ($turma) {
-                $q->where('turma_codigo', 'like', "%{$turma}%");
+        if (!empty($filters['turma'])) {
+            $query->whereHas('usuario', function ($usuarioQuery) use ($filters) {
+                $usuarioQuery->where('turma_codigo', 'like', '%' . $filters['turma'] . '%');
             });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
+        if (!empty($filters['data_inicio'])) {
+            $query->whereDate('created_at', '>=', $filters['data_inicio']);
+        }
+
+        if (!empty($filters['data_fim'])) {
+            $query->whereDate('created_at', '<=', $filters['data_fim']);
+        }
+
+        $requerimentos = $query
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('setor.responsavel.dashboard', compact('setor', 'requerimentos'));
+    }
+
+    public function porStatus(Request $request, $id, string $status)
+    {
+        $setor = Setor::findOrFail($id);
+
+        $this->autorizarSetor($setor);
+
+        $statusMap = [
+            'todos'      => null,
+            'Aberto'     => 'Aberto',
+            'analise'    => 'Em Análise',
+            'indeferido' => 'Indeferido',
+            'concluido'  => 'Concluído',
+        ];
+
+        $statusBanco = $statusMap[$status] ?? ucwords(str_replace('-', ' ', $status));
+
+        // Instancia a Query base
+        $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
+
+        // 1. Filtro por Status (se aplicável)
+        if ($statusBanco && $status !== 'todos') {
+            $query->where('status', $statusBanco);
+        }
+
+        // 2. Filtro por Busca Textual (Protocolo, Nome ou Matrícula)
+        if ($request->filled('busca')) {
+            $termo = $request->input('busca');
+            $query->where(function ($q) use ($termo) {
+                $q->where('numero_protocolo', 'like', "%{$termo}%")
+                  ->orWhereHas('usuario', function ($qUser) use ($termo) {
+                      $qUser->where('nome', 'like', "%{$termo}%")
+                            ->orWhere('matricula', 'like', "%{$termo}%");
+                  });
+            });
+        }
+
+        // 3. Filtro por Período de Datas
         if ($request->filled('data_inicio')) {
             $query->whereDate('created_at', '>=', $request->input('data_inicio'));
         }
-
         if ($request->filled('data_fim')) {
             $query->whereDate('created_at', '<=', $request->input('data_fim'));
         }
 
-        $requerimentos = $query->paginate(15)->appends($request->query());
+        $requerimentosAgrupados = $query->get()->groupBy('objetoDoRequerimento');
 
-        return view('setor.responsavel.dashboard', compact(
-            'setor',
-            'totalAnalise',
-            'totalConcluidos',
-            'totalIndeferidos',
-            'totalAberto',
-            'requerimentos'
-        ));
+        return view('setor.requerimentos.status', [
+            'setor'                  => $setor,
+            'requerimentosAgrupados' => $requerimentosAgrupados,
+            'statusAtual'            => $statusBanco ?? 'Todos',
+        ]);
     }
 
     public function show(Setor $setor, Requerimento $requerimento)
@@ -212,14 +247,14 @@ class ResponsavelSetorController extends Controller
             $atual->update([
                 'setor_id' => $destino->id,
                 'setor_retorno_id' => $setor->id,
-                'status' => 'Despacho',
+                'status' => 'Em Análise',
             ]);
 
             return HistoricoRequerimento::create([
                 'requerimento_id' => $atual->id,
                 'user_id' => Auth::id(),
                 'status' => $atual->status,
-                'observacao' => "Orientação para: {$destino->setor_sigla}\n{$validated['observacao']}",
+                'observacao' => "Encaminhado de {$setor->setor_nome} para {$destino->setor_nome}.\n\n{$validated['observacao']}",
             ]);
         });
 
@@ -235,7 +270,7 @@ class ResponsavelSetorController extends Controller
         }
 
         return redirect()
-            ->route('setor.responsavel.dashboard', $setor->id)
+            ->route('setor.requerimento.status', [$setor->id, 'todos'])
             ->with('success', 'Requerimento encaminhado para ' . $destino->setor_nome . '.');
     }
 
@@ -269,7 +304,7 @@ class ResponsavelSetorController extends Controller
                 'requerimento_id' => $atual->id,
                 'user_id' => Auth::id(),
                 'status' => $atual->status,
-                'observacao' => "Resposta para: {$setorOrigem->setor_sigla}\n{$validated['observacao']}",
+                'observacao' => "Resposta de {$setor->setor_nome} para {$setorOrigem->setor_nome}.\n\n{$validated['observacao']}",
             ]);
 
             return [$setorOrigem, $historico];
@@ -287,7 +322,7 @@ class ResponsavelSetorController extends Controller
         }
 
         return redirect()
-            ->route('setor.responsavel.dashboard', $setor->id)
+            ->route('setor.requerimento.status', [$setor->id, 'todos'])
             ->with('success', 'Resposta registrada e requerimento devolvido para ' . $setorOrigem->setor_nome . '.');
     }
 }

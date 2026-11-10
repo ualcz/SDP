@@ -130,6 +130,10 @@
                 </tbody>
             </table>
         </div>
+
+        <div style="margin-top: 1rem;">
+            {{ $requerimentos->links() }}
+        </div>
     @endif
 </section>
 @endsection

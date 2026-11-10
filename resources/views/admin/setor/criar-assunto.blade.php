@@ -34,7 +34,7 @@
     @endif
 
     {{-- Formulário --}}
-    <form action="{{ route('admin.setores.assuntos.store', $setor->id) }}" method="POST">
+    <form action="{{ route('admin.setores.assuntos.store', $setor->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         {{-- Campos Principais --}}
@@ -92,10 +92,14 @@
                 <table class="tabela-docs-nested" style="min-width: 820px; margin-bottom: 0; background: #fff;">
                     <thead>
                         <tr>
-                            <th style="min-width: 190px;">Documento *</th>
-                            <th style="min-width: 220px;">Orientações</th>
-                            <th style="min-width: 220px;">Link do modelo</th>
-                            <th style="width: 80px; text-align: center;">Obrigatório</th>
+                            <th style="min-width: 170px;">Documento *</th>
+                            <th style="min-width: 190px;">Orientações</th>
+                            <th style="min-width: 180px;">Link Externo / Site</th>
+                            <th style="min-width: 200px;">Modelo DOCX (opcional)</th>
+                            <th style="width: 75px; text-align: center;">Obrigatório</th>
+                            <th style="width: 150px; text-align: center;" title="Para menores, exigir uma cópia deste documento de um responsável legal">
+                                Pedir cópia de responsável
+                            </th>
                             <th style="width: 50px; text-align: center;">Ações</th>
                         </tr>
                     </thead>
@@ -147,8 +151,14 @@ function adicionarAnexoRow() {
         <td>
             <input type="url"
                    name="documentos[${index}][link_modelo]"
-                   placeholder="https://..."
-                   maxlength="2048"
+                   placeholder="https://exemplo.com/site"
+                   class="input-tabela"
+                   style="font-size: 0.8125rem;">
+        </td>
+        <td>
+            <input type="file"
+                   name="documentos[${index}][arquivo_modelo]"
+                   accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                    class="input-tabela"
                    style="font-size: 0.8125rem;">
         </td>
@@ -157,6 +167,13 @@ function adicionarAnexoRow() {
                    name="documentos[${index}][obrigatorio]"
                    value="1"
                    checked
+                   style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
+        </td>
+        <td style="text-align: center;">
+            <input type="checkbox"
+                   name="documentos[${index}][exige_documentos_responsaveis]"
+                   value="1"
+                   title="Para menores, exigir uma cópia de um responsável legal"
                    style="width: 15px; height: 15px; accent-color: #2563eb; cursor: pointer;">
         </td>
         <td style="text-align: center;">

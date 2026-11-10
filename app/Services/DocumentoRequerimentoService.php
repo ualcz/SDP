@@ -12,6 +12,7 @@ use App\Services\Pdf\PdfMergerService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class DocumentoRequerimentoService
 {
@@ -113,6 +114,10 @@ class DocumentoRequerimentoService
         // Salva no disco 'local' (storage/app/private/...)
         $caminhoSalvo = $arquivo->storeAs($pastaDestino, $nomeArquivoArmazenado, 'local');
 
+        if ($caminhoSalvo === false) {
+            throw new RuntimeException('Não foi possível salvar o documento no armazenamento local.');
+        }
+
         return DocumentoRequerimento::create([
             'requerimento_id'           => $requerimento->id,
             'historico_requerimento_id' => $historico?->id,
@@ -194,18 +199,24 @@ class DocumentoRequerimentoService
 
         // 1. Documentos vinculados ao assunto
         foreach ($documentosInput as $docAssuntoId => $arquivo) {
-            if ($arquivo instanceof UploadedFile && $arquivo->isValid()) {
-                $nomeDoc = 'Documento Obrigatório';
-                if (is_numeric($docAssuntoId)) {
-                    $docAssunto = DocumentoAssunto::find($docAssuntoId);
-                    if ($docAssunto && !empty($docAssunto->nome)) {
-                        $nomeDoc = $docAssunto->nome;
-                    }
-                }
+            $ehResponsavel = false;
+            if (preg_match('/^(?:responsavel|pai|mae)_(\d+)$/', (string) $docAssuntoId, $matches)) {
+                $ehResponsavel = true;
+                $docAssuntoId = $matches[1];
+            }
 
-                $doc = $this->salvarArquivo($arquivo, $requerimento, $historico, $usuario, $nomeDoc);
-                if ($doc) {
-                    $salvos[] = $doc;
+            $docAssunto = is_numeric($docAssuntoId) ? DocumentoAssunto::find($docAssuntoId) : null;
+            $nomeDoc = $docAssunto?->nome ?: 'Documento Obrigatório';
+            if ($ehResponsavel) {
+                $nomeDoc .= ' - Responsável legal';
+            }
+
+            foreach (is_array($arquivo) ? $arquivo : [$arquivo] as $arquivoIndividual) {
+                if ($arquivoIndividual instanceof UploadedFile && $arquivoIndividual->isValid()) {
+                    $doc = $this->salvarArquivo($arquivoIndividual, $requerimento, $historico, $usuario, $nomeDoc);
+                    if ($doc) {
+                        $salvos[] = $doc;
+                    }
                 }
             }
         }

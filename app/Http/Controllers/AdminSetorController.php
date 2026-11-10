@@ -8,6 +8,8 @@ use App\Models\Setor;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Services\ModeloDocumentoService;
 
 class AdminSetorController extends Controller
 {
@@ -33,12 +35,25 @@ class AdminSetorController extends Controller
         $setores = $consulta->get();
         $modelos = $setores; // compatibilidade com as views
 
-        $usuarios = Usuario::with('reportRecipient')
-        ->where('role', '!=', 'aluno')
-        ->orderBy('nome')
-        ->get();
+        try {
+            $usuarios = Usuario::with('reportRecipient')
+                ->where('role', '!=', 'aluno')
+                ->orderBy('nome')
+                ->get();
 
-        return view('admin.setor.index', compact('setores', 'modelos', 'usuarios'));
+            $reportRecipientIds = \App\Models\ReportRecipient::pluck('usuario_id')->toArray();
+            $destinatariosAtuais = \App\Models\ReportRecipient::with('usuario')->get()->pluck('usuario')->filter();
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Fallback: coluna usuario_id ainda não existe no banco (migration pendente)
+            $usuarios = Usuario::where('role', '!=', 'aluno')
+                ->orderBy('nome')
+                ->get()
+                ->each(fn($u) => $u->setRelation('reportRecipient', null));
+            $reportRecipientIds   = [];
+            $destinatariosAtuais  = collect();
+        }
+
+        return view('admin.setor.index', compact('setores', 'modelos', 'usuarios', 'reportRecipientIds', 'destinatariosAtuais'));
     }
 
     public function create()
@@ -154,6 +169,37 @@ class AdminSetorController extends Controller
             ->with('success', 'Setor atualizado com sucesso!');
     }
 
+    public function previewAluno($setorId)
+    {
+        $this->autorizarSetor((int) $setorId);
+        $setor = Setor::findOrFail($setorId);
+
+        $modelos = Setor::obterSetoresFormatados();
+        $modeloChave = (int) $setorId;
+        $modeloAtivo = $modelos[$modeloChave] ?? ($modelos ? reset($modelos) : null);
+
+        if (!$modeloAtivo) {
+            abort(404, 'Setor não encontrado ou inativo.');
+        }
+
+        $setorDestino = [
+            'nome' => $modeloAtivo['setor_nome'],
+            'email' => $modeloAtivo['email'] ?? 'protocolos.seabra@ifba.edu.br',
+        ];
+
+        $alunoMenor = request()->user()->isMenorDeIdade();
+        $isVisualizacaoAdmin = true;
+
+        return view('requerimentos.form', compact(
+            'modelos',
+            'modeloChave',
+            'modeloAtivo',
+            'setorDestino',
+            'alunoMenor',
+            'isVisualizacaoAdmin'
+        ));
+    }
+
     public function createAssunto($setorId)
     {
         $this->autorizarSetor((int) $setorId);
@@ -179,7 +225,9 @@ class AdminSetorController extends Controller
             'documentos.*.nome'        => 'required_with:documentos.*.descricao,documentos.*.obrigatorio|nullable|string|max:255',
             'documentos.*.descricao'   => 'nullable|string|max:500',
             'documentos.*.link_modelo' => 'nullable|url:http,https|max:2048',
+            'documentos.*.arquivo_modelo' => 'nullable|file|mimes:docx|max:10240',
             'documentos.*.obrigatorio' => 'nullable',
+            'documentos.*.exige_documentos_responsaveis' => 'nullable',
         ], [
             'required'      => 'O campo :attribute é obrigatório.',
             'required_with' => 'O nome do documento é obrigatório ao preencher seus detalhes.',
@@ -207,17 +255,20 @@ class AdminSetorController extends Controller
             ]);
 
             if (!empty($dados['documentos']) && is_array($dados['documentos'])) {
-                foreach ($dados['documentos'] as $docData) {
+                foreach ($dados['documentos'] as $indice => $docData) {
                     $nome = isset($docData['nome']) ? trim($docData['nome']) : '';
                     if ($nome !== '') {
-                        DocumentoAssunto::create([
+                        $documento = DocumentoAssunto::create([
                             'assunto_requerimento_id' => $assunto->id,
                             'nome'                    => $nome,
                             'descricao'               => !empty($docData['descricao']) ? trim($docData['descricao']) : null,
-                            'link_modelo'             => $docData['link_modelo'] ?? null,
+                            'link_modelo'             => !empty($docData['link_modelo']) ? trim($docData['link_modelo']) : null,
                             'obrigatorio'             => !empty($docData['obrigatorio']),
+                            'exige_documentos_responsaveis' => !empty($docData['exige_documentos_responsaveis']),
                             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
                         ]);
+
+                        $this->atualizarArquivoModelo($documento, $request->file("documentos.{$indice}.arquivo_modelo"));
                     }
                 }
             }
@@ -241,16 +292,16 @@ class AdminSetorController extends Controller
             'documentos.*.nome'             => 'required|string|max:255',
             'documentos.*.descricao'        => 'nullable|string|max:500',
             'documentos.*.link_modelo'      => 'nullable|url:http,https|max:2048',
+            'documentos.*.arquivo_modelo'   => 'nullable|file|mimes:docx|max:10240',
             'documentos.*.obrigatorio'      => 'nullable',
+            'documentos.*.exige_documentos_responsaveis' => 'nullable',
             'novos_documentos'              => 'nullable|array',
             'novos_documentos.*.nome'       => 'nullable|string|max:255',
             'novos_documentos.*.descricao'  => 'nullable|string|max:500',
             'novos_documentos.*.link_modelo'=> 'nullable|url:http,https|max:2048',
+            'novos_documentos.*.arquivo_modelo' => 'nullable|file|mimes:docx|max:10240',
             'novos_documentos.*.obrigatorio'=> 'nullable',
-            'novo_documento.nome'           => 'nullable|string|max:255',
-            'novo_documento.descricao'      => 'nullable|string|max:500',
-            'novo_documento.link_modelo'    => 'nullable|url:http,https|max:2048',
-            'novo_documento.obrigatorio'    => 'nullable',
+            'novos_documentos.*.exige_documentos_responsaveis' => 'nullable',
         ]);
 
         DB::transaction(function () use ($assunto, $request, $dados) {
@@ -269,38 +320,31 @@ class AdminSetorController extends Controller
                         $doc->update([
                             'nome'        => $docData['nome'],
                             'descricao'   => $docData['descricao'] ?? null,
-                            'link_modelo' => $docData['link_modelo'] ?? null,
+                            'link_modelo' => !empty($docData['link_modelo']) ? trim($docData['link_modelo']) : null,
                             'obrigatorio' => !empty($docData['obrigatorio']),
+                            'exige_documentos_responsaveis' => !empty($docData['exige_documentos_responsaveis']),
                         ]);
+                        $this->atualizarArquivoModelo($doc, $request->file("documentos.{$docId}.arquivo_modelo"));
                     }
                 }
             }
 
             if (!empty($dados['novos_documentos']) && is_array($dados['novos_documentos'])) {
-                foreach ($dados['novos_documentos'] as $novoDoc) {
+                foreach ($dados['novos_documentos'] as $indice => $novoDoc) {
                     $nome = isset($novoDoc['nome']) ? trim($novoDoc['nome']) : '';
                     if ($nome !== '') {
-                        DocumentoAssunto::create([
+                        $documento = DocumentoAssunto::create([
                             'assunto_requerimento_id' => $assunto->id,
                             'nome'                    => $nome,
                             'descricao'               => !empty($novoDoc['descricao']) ? trim($novoDoc['descricao']) : null,
-                            'link_modelo'             => $novoDoc['link_modelo'] ?? null,
+                            'link_modelo'             => !empty($novoDoc['link_modelo']) ? trim($novoDoc['link_modelo']) : null,
                             'obrigatorio'             => !empty($novoDoc['obrigatorio']),
+                            'exige_documentos_responsaveis' => !empty($novoDoc['exige_documentos_responsaveis']),
                             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
                         ]);
+                        $this->atualizarArquivoModelo($documento, $request->file("novos_documentos.{$indice}.arquivo_modelo"));
                     }
                 }
-            }
-
-            if (!empty($dados['novo_documento']['nome'])) {
-                DocumentoAssunto::create([
-                    'assunto_requerimento_id' => $assunto->id,
-                    'nome'                    => trim($dados['novo_documento']['nome']),
-                    'descricao'               => $dados['novo_documento']['descricao'] ?? null,
-                    'link_modelo'             => $dados['novo_documento']['link_modelo'] ?? null,
-                    'obrigatorio'             => !empty($dados['novo_documento']['obrigatorio']),
-                    'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
-                ]);
             }
         });
 
@@ -310,10 +354,15 @@ class AdminSetorController extends Controller
 
     public function destroyAssunto($assuntoId)
     {
-        $assunto = AssuntoRequerimento::findOrFail($assuntoId);
+        $assunto = AssuntoRequerimento::with('documentos')->findOrFail($assuntoId);
         $this->autorizarSetor((int) $assunto->setor_id);
 
         $setorId = $assunto->setor_id;
+        foreach ($assunto->documentos as $documento) {
+            if ($documento->arquivo_modelo) {
+                Storage::disk('local')->delete($documento->arquivo_modelo);
+            }
+        }
         $assunto->delete();
 
         return redirect()->route('admin.setores.edit', $setorId)
@@ -329,18 +378,22 @@ class AdminSetorController extends Controller
             'nome'          => 'required|string|max:255',
             'descricao'     => 'nullable|string|max:500',
             'link_modelo'   => 'nullable|url:http,https|max:2048',
+            'arquivo_modelo' => 'nullable|file|mimes:docx|max:10240',
             'obrigatorio'   => 'nullable|boolean',
+            'exige_documentos_responsaveis' => 'nullable|boolean',
             'tipos_aceitos' => 'nullable|string|max:100',
         ]);
 
-        DocumentoAssunto::create([
+        $documento = DocumentoAssunto::create([
             'assunto_requerimento_id' => $assunto->id,
             'nome'                    => $dados['nome'],
             'descricao'               => $dados['descricao'] ?? null,
-            'link_modelo'             => $dados['link_modelo'] ?? null,
+            'link_modelo'             => !empty($dados['link_modelo']) ? trim($dados['link_modelo']) : null,
             'obrigatorio'             => $request->has('obrigatorio'),
+            'exige_documentos_responsaveis' => $request->has('exige_documentos_responsaveis'),
             'tipos_aceitos'           => 'pdf,jpg,jpeg,png',
         ]);
+        $this->atualizarArquivoModelo($documento, $request->file('arquivo_modelo'));
 
         return redirect()->route('admin.setores.edit', $assunto->setor_id)
             ->with('success', 'Documento anexado ao requerimento com sucesso!');
@@ -355,17 +408,21 @@ class AdminSetorController extends Controller
             'nome'          => 'required|string|max:255',
             'descricao'     => 'nullable|string|max:500',
             'link_modelo'   => 'nullable|url:http,https|max:2048',
+            'arquivo_modelo' => 'nullable|file|mimes:docx|max:10240',
             'obrigatorio'   => 'nullable|boolean',
+            'exige_documentos_responsaveis' => 'nullable|boolean',
             'tipos_aceitos' => 'nullable|string|max:100',
         ]);
 
         $documento->update([
             'nome'          => $dados['nome'],
             'descricao'     => $dados['descricao'] ?? null,
-            'link_modelo'   => $dados['link_modelo'] ?? null,
+            'link_modelo'   => !empty($dados['link_modelo']) ? trim($dados['link_modelo']) : null,
             'obrigatorio'   => $request->has('obrigatorio'),
+            'exige_documentos_responsaveis' => $request->has('exige_documentos_responsaveis'),
             'tipos_aceitos' => $dados['tipos_aceitos'] ?: 'pdf,jpg,jpeg,png',
         ]);
+        $this->atualizarArquivoModelo($documento, $request->file('arquivo_modelo'));
 
         $setorId = $documento->assunto?->setor_id;
 
@@ -379,9 +436,87 @@ class AdminSetorController extends Controller
         $this->autorizarSetor((int) $documento->assunto->setor_id);
 
         $setorId = $documento->assunto?->setor_id;
+        if ($documento->arquivo_modelo) {
+            Storage::disk('local')->delete($documento->arquivo_modelo);
+        }
         $documento->delete();
 
         return redirect()->route('admin.setores.edit', $setorId)
             ->with('success', 'Documento removido com sucesso!');
+    }
+
+    public function visualizarModeloPdf($documentoId, ModeloDocumentoService $service)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if (!$documento->arquivo_modelo || !Storage::disk('local')->exists($documento->arquivo_modelo)) {
+            abort(404, 'Modelo DOCX não encontrado no servidor.');
+        }
+
+        try {
+            $usuario = request()->user();
+            $caminhoPdf = $service->gerarPdfParaAluno($documento, $usuario);
+            $nome = 'modelo-' . \Illuminate\Support\Str::slug($documento->nome ?: 'termo') . '.pdf';
+
+            return response()->file($caminhoPdf, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $nome . '"',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $e) {
+            logger()->warning('Não foi possível gerar preview em PDF do modelo: ' . $e->getMessage());
+            return $this->baixarModeloDocx($documentoId);
+        }
+    }
+
+    public function baixarModeloDocx($documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if (!$documento->arquivo_modelo || !Storage::disk('local')->exists($documento->arquivo_modelo)) {
+            abort(404, 'Modelo DOCX não encontrado no servidor.');
+        }
+
+        $nome = \Illuminate\Support\Str::slug($documento->nome ?: 'modelo') . '.docx';
+
+        return Storage::disk('local')->download($documento->arquivo_modelo, $nome);
+    }
+
+    public function removerModeloDocx($documentoId)
+    {
+        $documento = DocumentoAssunto::with('assunto')->findOrFail($documentoId);
+        $this->autorizarSetor((int) $documento->assunto?->setor_id);
+
+        if ($documento->arquivo_modelo) {
+            Storage::disk('local')->delete($documento->arquivo_modelo);
+            $documento->update(['arquivo_modelo' => null]);
+        }
+
+        return redirect()->back()->with('success', 'Modelo DOCX removido com sucesso!');
+    }
+
+    private function atualizarArquivoModelo(DocumentoAssunto $documento, mixed $arquivo): void
+    {
+        if (!$arquivo) {
+            return;
+        }
+
+        if (!app(ModeloDocumentoService::class)->isDocx($arquivo->getRealPath())) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'arquivo_modelo' => 'O arquivo enviado não é um documento DOCX válido.',
+            ]);
+        }
+
+        $caminho = $arquivo->store('modelos_documentos', 'local');
+        if (!$caminho) {
+            throw new \RuntimeException('Não foi possível salvar o modelo DOCX no armazenamento local.');
+        }
+
+        $caminhoAnterior = $documento->arquivo_modelo;
+        $documento->update(['arquivo_modelo' => $caminho]);
+        if ($caminhoAnterior) {
+            Storage::disk('local')->delete($caminhoAnterior);
+        }
     }
 }

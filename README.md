@@ -22,6 +22,7 @@ Sistema do IFBA Campus Seabra para solicitar requerimentos academicos e administ
 - Permite login local de administradores por e-mail e senha.
 - Exibe requerimentos organizados por setor, como CORES e COTEP.
 - Recebe justificativas e anexos enviados pelo aluno.
+- Permite cadastrar modelos DOCX com campos pessoais e baixar uma cópia preenchida em PDF.
 - Gera um PDF do requerimento.
 - Envia o PDF e os anexos por e-mail ao aluno e ao setor responsavel.
 - Mantem o historico dos requerimentos no banco de dados.
@@ -88,6 +89,14 @@ SUAP_API_URL="https://suap.ifba.edu.br/api/v2"
 ```
 
 Para envio real de e-mails, altere `MAIL_MAILER` e informe os dados do servidor SMTP.
+
+### Modelos de documentos
+
+Administradores e responsáveis pelo setor podem anexar arquivos DOCX ao cadastrar ou editar os documentos exigidos. O aluno baixa o documento personalizado em PDF. Insira os marcadores no DOCX em um único trecho de texto, sem dividir o marcador entre estilos ou execuções do Word:
+
+`{{ nome }}`, `{{ cpf }}`, `{{ matricula }}`, `{{ turma_codigo }}`, `{{ email }}`, `{{ email_pessoal }}`, `{{ telefone }}`, `{{ rua }}`, `{{ numero }}`, `{{ bairro }}`, `{{ cidade }}`, `{{ estado }}`, `{{ cep }}`, `{{ endereco }}` e `{{ data }}`.
+
+O PDF personalizado pode ser impresso ou assinado digitalmente e, em seguida, anexado ao requerimento. A geração usa PhpWord e Dompdf, sem exigir Word ou LibreOffice no servidor. Para alunos menores de idade, os modelos incluem espaço para a assinatura de um responsável legal; quando configurado, também é solicitada uma cópia de um documento do responsável.
 
 ## Comandos uteis
 

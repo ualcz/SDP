@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSetorController;
 use App\Http\Controllers\ResponsavelSetorController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DocumentoRequerimentoController;
+use App\Http\Controllers\DocumentoAssuntoController;
 use App\Http\Controllers\ModeloController;
 use App\Http\Controllers\ReportController;
 
@@ -22,6 +23,22 @@ use App\Http\Controllers\ReportController;
 */
 // Route::redirect('/', '/login');
 Route::get('/', function () {
+    if (auth()->check()) {
+        $usuario = auth()->user();
+        if ($usuario->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($usuario->isServidor()) {
+            return redirect()->route('servidor.dashboard');
+        }
+        if ($usuario->ehResponsavel()) {
+            $setor = $usuario->setoresSobResponsabilidade()->first();
+            return $setor
+                ? redirect()->route('setor.responsavel.dashboard', $setor->id)
+                : redirect()->route('admin.setores.index');
+        }
+        return redirect()->route('requerimentos.aluno.novo');
+    }
     return view('home');
 })->name('home');
 /*
@@ -32,6 +49,22 @@ Route::get('/', function () {
 | Aluno / Servidor: matrícula + senha SUAP
 */
 Route::get('/login', function () {
+    if (auth()->check()) {
+        $usuario = auth()->user();
+        if ($usuario->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($usuario->isServidor()) {
+            return redirect()->route('servidor.dashboard');
+        }
+        if ($usuario->ehResponsavel()) {
+            $setor = $usuario->setoresSobResponsabilidade()->first();
+            return $setor
+                ? redirect()->route('setor.responsavel.dashboard', $setor->id)
+                : redirect()->route('admin.setores.index');
+        }
+        return redirect()->route('requerimentos.aluno.novo');
+    }
     return view('auth.login');
 })->name('login');
 
@@ -87,6 +120,10 @@ Route::middleware(['auth', 'setor.config'])->group(function () {
     Route::post('/admin/assuntos/{assuntoId}/documentos', [AdminSetorController::class, 'storeDocumento'])->name('admin.documentos.store');
     Route::put('/admin/documentos/{id}', [AdminSetorController::class, 'updateDocumento'])->name('admin.documentos.update');
     Route::delete('/admin/documentos/{id}', [AdminSetorController::class, 'destroyDocumento'])->name('admin.documentos.destroy');
+    Route::get('/admin/documentos/{id}/visualizar-modelo', [AdminSetorController::class, 'visualizarModeloPdf'])->name('admin.documentos.visualizar-modelo');
+    Route::get('/admin/documentos/{id}/baixar-modelo', [AdminSetorController::class, 'baixarModeloDocx'])->name('admin.documentos.baixar-modelo');
+    Route::delete('/admin/documentos/{id}/remover-modelo', [AdminSetorController::class, 'removerModeloDocx'])->name('admin.documentos.remover-modelo');
+    Route::get('/admin/setores/{id}/preview-aluno', [AdminSetorController::class, 'previewAluno'])->name('admin.setores.preview-aluno');
     Route::get('/admin/modelos/{id}/editar', [AdminSetorController::class, 'edit'])->name('admin.modelos.edit');
     Route::put('/admin/modelos/{id}', [AdminSetorController::class, 'update'])->name('admin.modelos.update');
     Route::post('/admin/modelos/{id}/assuntos', [AdminSetorController::class, 'storeAssunto'])->name('admin.modelos.assuntos.store');
@@ -135,6 +172,11 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::post('/requerimentos/{requerimento}/reenviar', [RequerimentoController::class, 'reenviarRequerimento'])->name('requerimentos.reenviar');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/documentos-assunto/{documento}/modelo', [DocumentoAssuntoController::class, 'baixarModelo'])
+        ->name('documentos-assunto.modelo');
+});
+
 /*
 |--------------------------------------------------------------------------
 | PAINEL / REQUERIMENTOS - SERVIDOR
@@ -167,4 +209,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/documentos/{documento}/baixar', [DocumentoRequerimentoController::class, 'baixar'])
         ->name('documentos.download');
 });
-

@@ -8,6 +8,7 @@ use App\Models\Setor;
 use App\Services\DocumentoRequerimentoService;
 use App\Services\RequerimentoEmailService;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class EnvioEmailController extends Controller
@@ -15,15 +16,15 @@ class EnvioEmailController extends Controller
     /**
      * Envia o e-mail com as informações do aluno para seu e-mail pessoal e o setor selecionado.
      */
-    public function enviar(Request $request)
-    {
-        $request->validate([
+     public function enviar(Request $request)
+     {
+         $request->validate([
             'setor'                => 'nullable|string',
             'setor_id'             => 'nullable',
             'objeto'               => 'nullable|string|max:255',
             'objetoDoRequerimento' => 'nullable|string|max:255',
             'objeto_outro'         => 'nullable|string|max:255',
-            'motivo'               => 'nullable|string|max:3000',
+            'motivo'               => 'required|string|max:3000',
             'mensagem'             => 'nullable|string|max:3000',
             'email_pessoal'        => 'nullable|email|max:255',
             'telefone'             => 'nullable|string|max:30',
@@ -37,6 +38,7 @@ class EnvioEmailController extends Controller
             'email_adicional'      => 'nullable|email',
             'arquivos.*'           => 'nullable|file|max:51200', // 50MB por arquivo complementar
             'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
+            'documentos_responsavel.*' => 'nullable|file|max:51200',
         ]);
 
         $setorParam = $request->input('setor_id') ?? $request->input('setor');
@@ -52,6 +54,9 @@ class EnvioEmailController extends Controller
         }
 
         if (!$setor) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['errors' => ['setor' => ['O setor selecionado é inválido.']]], 422);
+            }
             return back()->withErrors(['setor' => 'O setor selecionado é inválido.']);
         }
 
@@ -119,6 +124,9 @@ class EnvioEmailController extends Controller
         );
 
         if ($destinatarios === null) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['errors' => ['geral' => ['Nenhum e-mail de destino válido foi encontrado.']]], 422);
+            }
             return back()->withErrors(['geral' => 'Nenhum e-mail de destino válido foi encontrado.']);
         }
 
@@ -129,19 +137,30 @@ class EnvioEmailController extends Controller
             $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objetoTexto)->first();
 
             if ($assunto) {
-                $docsObrigatorios = $assunto->documentosObrigatorios()->get();
+                $documentosAssunto = $assunto->documentos()->get();
                 $documentosEnviados = $request->file('documentos', []);
+                $documentosResponsavel = $request->file('documentos_responsavel', []);
+                $alunoMenor = $aluno->isMenorDeIdade();
 
                 $errosAnexos = [];
-                foreach ($docsObrigatorios as $doc) {
+                foreach ($documentosAssunto as $doc) {
                     $arquivoDoc = $documentosEnviados[$doc->id] ?? null;
 
-                    if (!$arquivoDoc || !($arquivoDoc instanceof \Illuminate\Http\UploadedFile) || !$arquivoDoc->isValid()) {
+                    if ($doc->obrigatorio && !$this->temArquivoValido($arquivoDoc)) {
                         $errosAnexos[] = "O documento '{$doc->nome}' é obrigatório para a solicitação de '{$assunto->descricao}'.";
+                    }
+
+                    if ($alunoMenor && $doc->exige_documentos_responsaveis) {
+                        if (!$this->temArquivoValido($documentosResponsavel[$doc->id] ?? null)) {
+                            $errosAnexos[] = "A cópia do documento '{$doc->nome}' de um responsável legal é obrigatória.";
+                        }
                     }
                 }
 
                 if (!empty($errosAnexos)) {
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return response()->json(['errors' => ['anexos' => $errosAnexos]], 422);
+                    }
                     return back()->withErrors($errosAnexos)->withInput();
                 }
             }
@@ -150,6 +169,7 @@ class EnvioEmailController extends Controller
         // Coleta todos os arquivos enviados (específicos de documentos + complementares)
         $todosArquivosInput = [
             $request->file('documentos', []),
+            $request->file('documentos_responsavel', []),
             $request->file('arquivos', [])
         ];
 
@@ -191,15 +211,27 @@ class EnvioEmailController extends Controller
 
             // Salva no banco e no storage os documentos enviados vinculados ao histórico inicial
             $historicoInicial = $requerimento->historicos()->first();
+            $documentosParaSalvar = $request->file('documentos', []);
+            foreach ($request->file('documentos_responsavel', []) as $documentoId => $arquivoResponsavel) {
+                $documentosParaSalvar["responsavel_{$documentoId}"] = $arquivoResponsavel;
+            }
             $docsIniciaisSalvos = app(DocumentoRequerimentoService::class)->salvarDocumentosIniciais(
                 requerimento: $requerimento,
                 historico: $historicoInicial,
-                documentosInput: $request->file('documentos', []),
+                documentosInput: $documentosParaSalvar,
                 arquivosComplementares: $request->file('arquivos', []),
                 usuario: $aluno
             );
-        } catch (\Exception $e) {
-            logger()->warning('Não foi possível salvar requerimento no BD: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            logger()->error('Não foi possível salvar requerimento e documentos no BD/armazenamento.', [
+                'exception' => $e,
+            ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Ocorreu um erro ao salvar ou processar o requerimento: ' . $e->getMessage()
+                ], 500);
+            }
+            throw $e;
         }
 
         $resultadoPdf = app(DocumentoRequerimentoService::class)->gerarESalvarPdfRequerimento(
@@ -217,13 +249,20 @@ class EnvioEmailController extends Controller
         // Mapeia os caminhos dos arquivos não mesclados que já estão salvos no storage local
         $anexosNaoMescladosCaminhos = [];
         if (!empty($resultadoPdf['arquivos_nao_mesclados']) && !empty($docsIniciaisSalvos)) {
+            $documentosPorNomeOriginal = [];
+            foreach ($docsIniciaisSalvos as $docSalvo) {
+                $documentosPorNomeOriginal[$docSalvo->nome_original][] = $docSalvo;
+            }
+
             foreach ($resultadoPdf['arquivos_nao_mesclados'] as $arqNaoMesclado) {
                 $nomeArq = ($arqNaoMesclado instanceof \Illuminate\Http\UploadedFile)
                     ? $arqNaoMesclado->getClientOriginalName()
                     : (is_string($arqNaoMesclado) ? basename($arqNaoMesclado) : null);
 
                 if ($nomeArq) {
-                    $docSalvo = collect($docsIniciaisSalvos)->first(fn($d) => $d->nome_original === $nomeArq);
+                    $docSalvo = !empty($documentosPorNomeOriginal[$nomeArq])
+                        ? array_shift($documentosPorNomeOriginal[$nomeArq])
+                        : null;
                     if ($docSalvo && !empty($docSalvo->caminho)) {
                         $anexosNaoMescladosCaminhos[] = $docSalvo->caminho;
                     }
@@ -231,9 +270,9 @@ class EnvioEmailController extends Controller
             }
         }
 
-        // Despacha o envio de e-mail para processamento em segundo plano (Queue)
+        // Envia durante a requisição para não depender de um worker de fila.
         if ($requerimento) {
-            \App\Jobs\EnviarEmailRequerimentoJob::dispatch(
+            \App\Jobs\EnviarEmailRequerimentoJob::dispatchSync(
                 requerimentoId: $requerimento->id,
                 destinatarios: $destinatarios,
                 pdfDocumentoId: $resultadoPdf['pdf']['documento_id'] ?? null,
@@ -245,12 +284,38 @@ class EnvioEmailController extends Controller
             );
         }
 
-        return back()->with('sucesso', 'Requerimento enviado com sucesso!');
+        if ($request->ajax() || $request->wantsJson()) {
+            session()->flash('sucesso', 'Requerimento enviado com sucesso!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Requerimento enviado com sucesso!',
+                'redirect' => route('requerimentos.aluno.meusRequerimentos'),
+            ]);
+        }
+
+        return redirect()->route('requerimentos.aluno.meusRequerimentos')->with('sucesso', 'Requerimento enviado com sucesso!');
     }
 
     public function gerarNumeroProtocolo(Requerimento $requerimento){
         $ano = $requerimento->created_at?->format('Y') ?? date('Y');
         $requerimento->numero_protocolo = $ano . '/' . $requerimento->id;
         $requerimento->save();
+    }
+
+    private function temArquivoValido(mixed $arquivo): bool
+    {
+        if ($arquivo instanceof \Illuminate\Http\UploadedFile) {
+            return $arquivo->isValid() && $arquivo->getSize() > 0;
+        }
+
+        if (is_array($arquivo)) {
+            foreach ($arquivo as $item) {
+                if ($this->temArquivoValido($item)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

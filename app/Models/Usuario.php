@@ -27,12 +27,17 @@ class Usuario extends Authenticatable
         'senha_suap',
         'telefone',
         'turma_codigo',
+        'data_nascimento',
         'role',
     ];
 
     protected $hidden = [
         'password',
         'remember_token'
+    ];
+
+    protected $casts = [
+        'data_nascimento' => 'date',
     ];
 
     /*
@@ -49,6 +54,11 @@ class Usuario extends Authenticatable
     public function isAluno(): bool
     {
         return $this->role === 'aluno';
+    }
+
+    public function isMenorDeIdade(): bool
+    {
+        return $this->data_nascimento !== null && $this->data_nascimento->age < 18;
     }
 
     public function isProfessor(): bool

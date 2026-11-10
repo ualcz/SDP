@@ -248,3 +248,57 @@
 .grafico-pizza{
     text-align: end;
 }
+
+@media (max-width: 768px) {
+  .grafico-linha{
+        max-width: 450px;
+    }
+
+    .chart-setores{
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+  .cards {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card_individual{
+
+        margin-bottom: 10px;
+    }
+
+    .linha1 {
+        font-size: 13px;
+    }
+
+    .linha2 {
+        font-size: 18px;
+    }
+
+    .linha3 {
+        font-size: 11px;
+    }
+
+    .graficos{
+        display: grid;
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin-top: 10px;
+    }
+
+    .grafico-linha{
+        margin-bottom: 5px;
+    }
+
+    .grafico-pizza{
+        margin-bottom: 5px;
+    }
+
+    .chart-analise{
+        margin-top: 40px;
+        margin-bottom: 15px;
+    }
+}
