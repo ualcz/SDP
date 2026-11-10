@@ -26,31 +26,46 @@ class ResponsavelSetorController extends Controller
 
         $this->autorizarSetor($setor);
 
-        $requerimentos = Requerimento::where('setor_id', $setor->id);
+        $filters = $request->validate([
+            'aluno'       => ['nullable', 'string', 'max:255'],
+            'turma'       => ['nullable', 'string', 'max:255'],
+            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Indeferido,Concluído'],
+            'data_inicio' => ['nullable', 'date'],
+            'data_fim'    => ['nullable', 'date', 'after_or_equal:data_inicio'],
+        ]);
 
-        $totalAnalise = (clone $requerimentos)
-            ->where('status', 'Em Análise')
-            ->count();
+        $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
 
-        $totalConcluidos = (clone $requerimentos)
-            ->where('status', 'Concluído')
-            ->count();
+        if (!empty($filters['aluno'])) {
+            $query->whereHas('usuario', function ($usuarioQuery) use ($filters) {
+                $usuarioQuery->where('nome', 'like', '%' . $filters['aluno'] . '%');
+            });
+        }
 
-        $totalIndeferidos = (clone $requerimentos)
-            ->where('status', 'Indeferido')
-            ->count();
+        if (!empty($filters['turma'])) {
+            $query->whereHas('usuario', function ($usuarioQuery) use ($filters) {
+                $usuarioQuery->where('turma_codigo', 'like', '%' . $filters['turma'] . '%');
+            });
+        }
 
-        $totalAberto = (clone $requerimentos)
-            ->where('status', 'Aberto')
-            ->count();
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
 
-        return view('setor.responsavel.dashboard', compact(
-            'setor',
-            'totalAnalise',
-            'totalConcluidos',
-            'totalIndeferidos',
-            'totalAberto'
-        ));
+        if (!empty($filters['data_inicio'])) {
+            $query->whereDate('created_at', '>=', $filters['data_inicio']);
+        }
+
+        if (!empty($filters['data_fim'])) {
+            $query->whereDate('created_at', '<=', $filters['data_fim']);
+        }
+
+        $requerimentos = $query
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('setor.responsavel.dashboard', compact('setor', 'requerimentos'));
     }
 
     public function porStatus(Request $request, $id, string $status)
