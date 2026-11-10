@@ -286,14 +286,19 @@ class EnvioEmailController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
             session()->flash('sucesso', 'Requerimento enviado com sucesso!');
+            session()->flash('info', 'Acompanhe o andamento do requerimento pelo seu e-mail.');
+
             return response()->json([
                 'success' => true,
-                'message' => 'Requerimento enviado com sucesso!',
+                'messages' => [
+                    'sucesso' => 'Requerimento enviado com sucesso!',
+                    'info'    => 'Acompanhe o andamento do requerimento pelo seu e-mail.'
+                ],
                 'redirect' => route('requerimentos.aluno.meusRequerimentos'),
             ]);
         }
 
-        return redirect()->route('requerimentos.aluno.meusRequerimentos')->with('sucesso', 'Requerimento enviado com sucesso!');
+        return redirect()->route('requerimentos.aluno.meusRequerimentos')->with('sucesso', 'Requerimento enviado com sucesso!')->with('info', 'Acompanhe o andamento do requerimento pelo seu e-mail.');
     }
 
     public function gerarNumeroProtocolo(Requerimento $requerimento){
