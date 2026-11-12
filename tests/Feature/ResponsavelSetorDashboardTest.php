@@ -87,11 +87,33 @@ it('renders the sector dashboard with filtered and paginated requests', function
         'status' => 'Aberto',
     ]);
 
+    Requerimento::create([
+        'usuario_id' => $aluna->id,
+        'setor_id' => $setor->id,
+        'objetoDoRequerimento' => 'Histórico escolar',
+        'motivo' => 'Solicitação concluída',
+        'status' => 'Concluído',
+    ]);
+
+    $responsePadrao = $this->actingAs($responsavel)
+        ->get(route('setor.responsavel.dashboard', $setor->id));
+
+    $responsePadrao->assertOk()
+        ->assertSee('Declaração')
+        ->assertDontSee('Histórico escolar');
+
     $response = $this->actingAs($responsavel)
         ->get(route('setor.responsavel.dashboard', $setor->id) . '?aluno=Ana&turma=2026.1&status=Aberto');
 
     $response->assertOk()
         ->assertSee('Requerimentos do setor')
         ->assertSee('Ana Silva')
-        ->assertSee('Declaração');
+        ->assertSee('Declaração')
+        ->assertDontSee('Histórico escolar');
+
+    $responseConcluidos = $this->get(route('setor.responsavel.dashboard', $setor->id) . '?status=Concluído');
+
+    $responseConcluidos->assertOk()
+        ->assertSee('Histórico escolar')
+        ->assertDontSee('Declaração');
 });

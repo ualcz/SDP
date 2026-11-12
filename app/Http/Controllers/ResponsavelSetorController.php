@@ -36,6 +36,13 @@ class ResponsavelSetorController extends Controller
 
         $query = Requerimento::with('usuario')->where('setor_id', $setor->id);
 
+        if (empty($filters['status'])) {
+            $query->where(function ($statusQuery) {
+                $statusQuery->whereNull('status')
+                    ->orWhere('status', '!=', 'Concluído');
+            });
+        }
+
         if (!empty($filters['aluno'])) {
             $query->whereHas('usuario', function ($usuarioQuery) use ($filters) {
                 $usuarioQuery->where('nome', 'like', '%' . $filters['aluno'] . '%');
