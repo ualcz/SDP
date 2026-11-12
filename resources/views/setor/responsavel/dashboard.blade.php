@@ -30,6 +30,7 @@
                     <option value="Despacho" {{ request('status') == 'Despacho' ? 'selected' : '' }}>Despacho</option>
                     <option value="Indeferido" {{ request('status') == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
                     <option value="Concluído" {{ request('status') == 'Concluído' ? 'selected' : '' }}>Concluído</option>
+                    <option value="Encerrado" {{ request('status') == 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
                 </select>
             </div>
 

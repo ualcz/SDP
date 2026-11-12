@@ -50,7 +50,7 @@ class AdminConsultaController extends Controller
         } else {
             $query->where(function ($statusQuery) {
                 $statusQuery->whereNull('status')
-                    ->orWhere('status', '!=', 'Concluído');
+                    ->orWhereNotIn('status', ['Concluído', 'Encerrado']);
             });
         }
 

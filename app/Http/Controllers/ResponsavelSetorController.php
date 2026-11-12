@@ -29,7 +29,7 @@ class ResponsavelSetorController extends Controller
         $filters = $request->validate([
             'aluno'       => ['nullable', 'string', 'max:255'],
             'turma'       => ['nullable', 'string', 'max:255'],
-            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Indeferido,Concluído'],
+            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Indeferido,Concluído,Encerrado'],
             'data_inicio' => ['nullable', 'date'],
             'data_fim'    => ['nullable', 'date', 'after_or_equal:data_inicio'],
         ]);
@@ -39,7 +39,7 @@ class ResponsavelSetorController extends Controller
         if (empty($filters['status'])) {
             $query->where(function ($statusQuery) {
                 $statusQuery->whereNull('status')
-                    ->orWhere('status', '!=', 'Concluído');
+                    ->orWhereNotIn('status', ['Concluído', 'Encerrado']);
             });
         }
 
@@ -87,6 +87,7 @@ class ResponsavelSetorController extends Controller
             'analise'    => 'Em Análise',
             'indeferido' => 'Indeferido',
             'concluido'  => 'Concluído',
+            'encerrado'  => 'Encerrado',
         ];
 
         $statusBanco = $statusMap[$status] ?? ucwords(str_replace('-', ' ', $status));
@@ -157,7 +158,7 @@ class ResponsavelSetorController extends Controller
         }
 
         $validated = $request->validate([
-            'status'     => 'required|in:Em Análise,Indeferido,Concluído',
+            'status'     => 'required|in:Em Análise,Indeferido,Concluído,Encerrado',
             'observacao' => 'required_if:status,Indeferido|nullable|string',
             'solicita_novo_documento' => 'nullable|boolean',
             'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',

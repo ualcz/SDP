@@ -95,12 +95,21 @@ it('renders the sector dashboard with filtered and paginated requests', function
         'status' => 'Concluído',
     ]);
 
+    Requerimento::create([
+        'usuario_id' => $aluna->id,
+        'setor_id' => $setor->id,
+        'objetoDoRequerimento' => 'Protocolo encerrado',
+        'motivo' => 'Solicitação encerrada',
+        'status' => 'Encerrado',
+    ]);
+
     $responsePadrao = $this->actingAs($responsavel)
         ->get(route('setor.responsavel.dashboard', $setor->id));
 
     $responsePadrao->assertOk()
         ->assertSee('Declaração')
-        ->assertDontSee('Histórico escolar');
+        ->assertDontSee('Histórico escolar')
+        ->assertDontSee('Protocolo encerrado');
 
     $response = $this->actingAs($responsavel)
         ->get(route('setor.responsavel.dashboard', $setor->id) . '?aluno=Ana&turma=2026.1&status=Aberto');
@@ -115,5 +124,12 @@ it('renders the sector dashboard with filtered and paginated requests', function
 
     $responseConcluidos->assertOk()
         ->assertSee('Histórico escolar')
+        ->assertDontSee('Declaração')
+        ->assertDontSee('Protocolo encerrado');
+
+    $responseEncerrados = $this->get(route('setor.responsavel.dashboard', $setor->id) . '?status=Encerrado');
+
+    $responseEncerrados->assertOk()
+        ->assertSee('Protocolo encerrado')
         ->assertDontSee('Declaração');
 });

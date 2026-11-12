@@ -62,6 +62,7 @@
                         'Aberto' => 'badge-Aberto',
                         'Em Análise' => 'badge-analise',
                         'Concluído' => 'badge-concluido',
+                        'Encerrado' => 'badge-encerrado',
                         'Indeferido' => 'badge-indeferido',
                         'Despacho' => 'badge-despacho',
                         default => 'badge-analise'

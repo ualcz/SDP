@@ -79,6 +79,7 @@ it('hides completed requests by default and includes them when filtered', functi
         ['Declaração', 'Aberto'],
         ['Histórico escolar', 'Concluído'],
         ['Documento despachado', 'Despacho'],
+        ['Documento encerrado', 'Encerrado'],
     ] as [$objeto, $status]) {
         DB::table('requerimentos')->insert([
             'usuario_id' => $aluno->id,
@@ -96,19 +97,28 @@ it('hides completed requests by default and includes them when filtered', functi
     $padrao->assertOk()
         ->assertSee('Declaração')
         ->assertSee('Documento despachado')
-        ->assertDontSee('Histórico escolar');
+        ->assertDontSee('Histórico escolar')
+        ->assertDontSee('Documento encerrado');
 
     $concluidos = $this->get(route('admin.consultar-requerimentos', ['status' => 'Concluído']));
 
     $concluidos->assertOk()
         ->assertSee('Histórico escolar')
         ->assertDontSee('Declaração')
-        ->assertDontSee('Documento despachado');
+        ->assertDontSee('Documento despachado')
+        ->assertDontSee('Documento encerrado');
 
     $despachados = $this->get(route('admin.consultar-requerimentos', ['status' => 'Despacho']));
 
     $despachados->assertOk()
         ->assertSee('Documento despachado')
+        ->assertDontSee('Declaração')
+        ->assertDontSee('Histórico escolar');
+
+    $encerrados = $this->get(route('admin.consultar-requerimentos', ['status' => 'Encerrado']));
+
+    $encerrados->assertOk()
+        ->assertSee('Documento encerrado')
         ->assertDontSee('Declaração')
         ->assertDontSee('Histórico escolar');
 });

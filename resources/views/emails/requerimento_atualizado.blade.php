@@ -71,6 +71,26 @@ O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi
 Visualizar Requerimento
 </x-mail::button>
 
+@elseif($requerimento->status === 'Encerrado')
+# Requerimento Encerrado #{{ $requerimento->numero_protocolo }}
+
+Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
+
+O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi encerrado pelo setor responsável.
+
+@if(!empty(trim($mensagem)) && !in_array($mensagem, ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']))
+<x-mail::panel>
+**Observação do setor:**<br>
+{!! nl2br(e($mensagem)) !!}
+</x-mail::panel>
+@endif
+
+**Ação necessária:** Nenhuma ação pendente.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Visualizar Requerimento
+</x-mail::button>
+
 @else
 # Requerimento em Análise #{{ $requerimento->numero_protocolo }}
 

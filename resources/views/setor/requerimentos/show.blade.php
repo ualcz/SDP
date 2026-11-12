@@ -159,6 +159,7 @@
                             'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
+                            'Encerrado' => 'badge-encerrado',
                             'Indeferido' => 'badge-indeferido',
                             default => 'badge-analise'
                         };
@@ -260,6 +261,7 @@
                         <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
                         <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
                         <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
+                        <option value="Encerrado" {{ $requerimento->status == 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
                     </select>
 
                     <button type="submit" class="btn-atualizar">

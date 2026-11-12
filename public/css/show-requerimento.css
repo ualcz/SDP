@@ -281,6 +281,7 @@
 .badge-Aberto    { background: #fef3c7; color: #b45309; }
 .badge-analise   { background: #ede9fe; color: #6d28d9; }
 .badge-concluido { background: #d1fae5; color: #047857; }
+.badge-encerrado { background: #e2e8f0; color: #334155; }
 .badge-indeferido { background: #faddd1; color: #f8350e; }
 .badge-despacho  { background: #e0f2fe; color: #0369a1; }
 
