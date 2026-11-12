@@ -38,7 +38,7 @@
 </section>
 
 <section id="funcionalidades" class="fade-up">
-    <div>
+    <div class="container">
         <h2>Funcionalidades do SDP</h2>
         <div class="cards-grid">
             <div class="card">
