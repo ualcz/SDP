@@ -29,7 +29,7 @@
     <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
 
     <!-- Navegação entre modelos / setores -->
-    <div class="setores-nav pulso-ao-carregar">
+    {{-- <div class="setores-nav pulso-ao-carregar">
         <div>
             <strong>Setor:</strong>
             <p>Selecione um setor para abrir um requerimento:</p>
@@ -42,13 +42,13 @@
                 </a>
             @endforeach
         </div>
-    </div>
+    </div> --}}
+
+
+
 
     <!-- Título do Requerimento -->
-    <div style="text-align: center; margin-bottom: 20px; font-size: 1.2rem;">
-        <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
-        <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
-    </div>
+
 
     @if (session('sucesso'))
         <div class="sucesso">✓ {{ session('sucesso') }}</div>
@@ -70,10 +70,13 @@
         <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
         <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
 
-        {{-- Etapa 1: Identificação, Objeto e Justificativa --}}
+        {{-- Etapa 1: Escolher Setor e Identificação --}}
         @include('requerimentos.partials.dados-requerimento')
 
-        {{-- Etapa 2: Documentos e Anexos --}}
+        {{-- Etapa 2: Escolher objeto e Justificativa --}}
+        {{-- @include('requerimentos.partials.objetos-requerimento') --}}
+
+        {{-- Etapa 3: Documentos e Anexos --}}
         @include('requerimentos.partials.documentos-anexos')
     </form>
 
