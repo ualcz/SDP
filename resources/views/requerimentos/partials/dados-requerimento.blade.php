@@ -102,7 +102,7 @@
                     @endif
                 </label>
             @endforeach
-            <label class="opcao-objeto-card {{ old('objetoDoRequerimento') === 'outro' ? 'opcao-selecionada' : '' }}">
+            {{-- <label class="opcao-objeto-card {{ old('objetoDoRequerimento') === 'outro' ? 'opcao-selecionada' : '' }}">
                 <span class="opcao-header">
                     <input type="radio"
                            class="opcao-radio"
@@ -125,14 +125,14 @@
                 </svg>
                 Selecione “Outro” para liberar este campo.
             </small>
-            <input type="text" 
-                   name="objeto_outro" 
+            <input type="text"
+                   name="objeto_outro"
                    value="{{ old('objeto_outro') }}"
                    @disabled(old('objetoDoRequerimento') !== 'outro')
                    style="background-color: {{ old('objetoDoRequerimento') === 'outro' ? '#fff' : '#f1f5f9' }}; border-color: {{ old('objetoDoRequerimento') === 'outro' ? '#ccc' : '#cbd5e1' }}; color: {{ old('objetoDoRequerimento') === 'outro' ? '#111827' : '#64748b' }}; cursor: {{ old('objetoDoRequerimento') === 'outro' ? 'text' : 'not-allowed' }};"
                    placeholder="Especifique caso necessário"
                    oninput="const el = document.getElementById('nome-assunto-outro-preview'); if(el) el.textContent = 'Outro: ' + this.value;">
-        </div>
+        </div> --}}
     </fieldset>
 
     <!-- 3. Justificativa / Motivo -->
