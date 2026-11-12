@@ -32,7 +32,7 @@
                         @else
                             {{-- vou adicionar uma página home que terá informações do sistema e devs --}}
 
-                            <a href="{{ route('home') }}"
+                            <a href="{{ route('home-menu') }}"
                             class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5M5 9v11h14V9M9 20v-6h6v6"/>

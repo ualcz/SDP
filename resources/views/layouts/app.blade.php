@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="footer-links">
-                <a href="{{ route('report') }}" class="footer-link ">Reporta Error</a>
+                <a href="{{ route('report') }}" class="footer-link ">Reportar Erro</a>
             </div>
 
         </div>

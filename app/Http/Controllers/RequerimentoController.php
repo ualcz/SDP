@@ -27,12 +27,12 @@ class RequerimentoController extends Controller
             $coordenacaoPermitida = 'COADS';
         } elseif (str_starts_with($sufixoMatricula, '28')) {
             $coordenacaoPermitida = 'COMAM';
-        } else {
+        } elseif (str_starts_with($sufixoMatricula, 'SEALIC')) {
             $coordenacaoPermitida = 'COCIE';
         }
 
-        // Siglas de todas as coordenações que dependem do curso do aluno
-        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COCIE'];
+        // Siglas de todas as coordenações que dependem do curso do aluno. Se não estiver nos IFS e estiver nesse array, não deve ser exibido para o aluno.
+        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COCIE', 'BIBLIOTECA', 'DACAD'];
 
         // 1. Filtra a lista de modelos
         $modelos = array_filter($modelos, function ($mod) use ($coordenacaoPermitida, $coordenacoesRestritas) {
@@ -43,7 +43,6 @@ class RequerimentoController extends Controller
                 return $sigla === $coordenacaoPermitida;
             }
 
-            // Outros setores (ex: Biblioteca, SRA, DAE) aparecem normalmente
             return true;
         });
 

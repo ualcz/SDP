@@ -29,14 +29,19 @@
     <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
 
     <!-- Navegação entre modelos / setores -->
-    <div class="setores-nav">
-        <strong>Setor:</strong>
-        @foreach($modelos as $mod)
-            <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
-               class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
-                {{ $mod['setor_sigla'] }}
-            </a>
-        @endforeach
+    <div class="setores-nav pulso-ao-carregar">
+        <div>
+            <strong>Setor:</strong>
+            <p>Selecione um setor para abrir um requerimento:</p>
+        </div>
+        <div class="setores-nav-links">
+            @foreach($modelos as $mod)
+                <a href="{{ ($isVisualizacaoAdmin ?? false) ? route('admin.setores.preview-aluno', $mod['id']) : route('requerimentos.aluno.novo', ['setor' => $mod['id']]) }}"
+                   class="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }} btn-nav" id="navegacao-btn">
+                    {{ $mod['setor_sigla'] }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Título do Requerimento -->
@@ -81,5 +86,12 @@
             });
         </script>
     @endif
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
 </div>
 @endsection

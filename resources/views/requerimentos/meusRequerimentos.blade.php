@@ -12,6 +12,15 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             <span style="font-size: 0.95rem;">{{ session('sucesso') }}</span>
         </div>
+
+        <div style="background-color: #ececfd; border: 1px solid #1021b9; color: #232371; padding: 14px 18px; border-radius: 8px; margin-top: 5px; margin-bottom: 20px; font-weight: 500; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <circle cx="12" cy="8" r="1"/>
+            </svg>
+            <span style="font-size: 0.95rem;">{{ session('info') }}</span>
+        </div>
     @endif
 
     {{-- Filtro de Pesquisa com Campo Único --}}

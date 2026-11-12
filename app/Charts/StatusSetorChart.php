@@ -49,7 +49,7 @@ class StatusSetorChart
             ->addData($emAnalise, 'Em Análise')
             ->addData($emAberto, 'Em Aberto')
             ->addData($emDespacho, 'Despacho')
-            ->addData($emIndeferimento, 'Infererido')
+            ->addData($emIndeferimento, 'Indeferido')
             ->setXAxis($setores)
             ->setHeight(220)
             ->setStacked()
