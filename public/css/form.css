@@ -691,6 +691,26 @@ form {
     overflow: hidden;
 }
 
+.cardapio-lista::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.cardapio-lista::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.cardapio-lista::-webkit-scrollbar-thumb {
+  background: #909191;
+  border-radius: 4px;
+  max-height: 10px;
+}
+
+.cardapio-lista::-webkit-scrollbar-thumb:hover {
+  background: #5978bc;
+}
+
 #active {
     background: #e0edf5;
     border-color: #bae6fd;
