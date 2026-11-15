@@ -766,8 +766,7 @@ form {
 
 .cardapio-lista {
     list-style-type: none;
-    padding-right: 10px;
-    /* padding: 0; */
+    padding-right: 5px;
     margin: 0;
     font-size: 0.85rem;
     max-height: 180px;
