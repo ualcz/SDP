@@ -691,6 +691,30 @@ form {
     overflow: hidden;
 }
 
+/* Largura da scrollbar */
+.cardapio-lista::-webkit-scrollbar {
+  width: 8px;
+  height: 8px; /* Para scrollbar horizontal */
+}
+
+/* Fundo/trilho da scrollbar */
+.cardapio-lista::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+/* "Polegar" ou a barra que se move */
+.cardapio-lista::-webkit-scrollbar-thumb {
+  background: #909191;
+  border-radius: 4px;
+  max-height: 10px;
+}
+
+/* Cor da barra ao passar o mouse */
+.cardapio-lista::-webkit-scrollbar-thumb:hover {
+  background: #5978bc;
+}
+
 #active {
     background: #e0edf5;
     border-color: #bae6fd;
