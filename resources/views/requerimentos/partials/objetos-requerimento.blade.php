@@ -1,4 +1,11 @@
     <!-- 2. Objeto do Requerimento -->
+<div class="form-step" data-step="2">
+
+    <div style="text-align: center; margin-bottom: 40px; font-size: 1.2rem;">
+        <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
+        <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
+    </div>
+
     <fieldset>
         <legend>Objeto do Requerimento</legend>
         <div class="opcoes-objeto">
@@ -80,3 +87,11 @@
             <small style="color: #dc2626; display: none; margin-top: 4px; font-weight: 500;" id="erro-motivo">Por favor, preencha a Justificativa / Motivo antes de prosseguir.</small>
         </div>
     </fieldset>
+
+    <div class="step-nav">
+        <button type="button" class="btn-voltar" onclick="mudarPasso(1)">Anterior</button>
+        <button type="button" class="btn-enviar" onclick="mudarPasso(3)" style=";">Próximo</button>
+
+    </div>
+
+</div>

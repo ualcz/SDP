@@ -32,7 +32,7 @@ function alternarObjetoOutro(ativo) {
 }
 
 function mudarPasso(passo) {
-    if (passo === 2) {
+    if (passo === 3) {
         const radioChecked = document.querySelector('input[name="objetoDoRequerimento"]:checked');
         if (!radioChecked) {
             alert('Por favor, selecione um Objeto do Requerimento antes de prosseguir.');

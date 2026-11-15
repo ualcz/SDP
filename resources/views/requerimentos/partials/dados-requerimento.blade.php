@@ -61,12 +61,13 @@
         </button>
     </fieldset>
 
-    <div class="cardapio-container">
-        <h1 class="cardapio-titulo">Selecione o Setor</h1>
+    <fieldset class="cardapio-container">
+        <legend>Setores</legend>
+        <h1 class="cardapio-titulo">Selecione o setor desejado</h1>
             <div class="cardapio-grid">
                 @foreach($modelos as $mod)
                     @if (!empty($mod['assuntos_detalhes']) && count($mod['assuntos_detalhes']) > 0)
-                        <div class="cardapio-card">
+                        <div class="cardapio-card" id="{{ ($modeloChave ?? '') == $mod['id'] ? 'active' : '' }}">
                             <div class="cardapio-card-content">
                                 <!-- Cabeçalho do Card -->
                                 <div class="cardapio-header">
@@ -104,7 +105,7 @@
                     @endif
                 @endforeach
             </div>
-    </div>
+    </fieldset>
 
 
     <button type="button" class="btn-enviar" onclick="mudarPasso(2)" style="margin-top: 10px;">Próximo</button>
