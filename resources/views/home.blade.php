@@ -17,12 +17,26 @@
             <div class="cardapio-grid">
                 @foreach($modelos as $mod)
                     @if (!empty($mod['assuntos_detalhes']) && count($mod['assuntos_detalhes']) > 0)
-                        <div class="cardapio-card">
-                            <div class="cardapio-card-content">
-                                <div class="cardapio-header">
-                                    <span class="cardapio-sigla">{{ $mod['setor_sigla'] ?? 'SETOR' }}</span>
-                                </div>
-                                <div class="cardapio-lista-wrapper">
+                        @php $cardId = 'acordeao-' . $mod['id']; @endphp
+                        <div class="cardapio-card home-card-acordeao" id="card-home-{{ $mod['id'] }}">
+
+                            {{-- Cabeçalho clicável (sigla + seta) --}}
+                            <button type="button"
+                                    class="home-acordeao-toggle"
+                                    onclick="toggleAcordeaoHome('{{ $cardId }}', this)"
+                                    aria-expanded="false"
+                                    aria-controls="{{ $cardId }}">
+                                <span class="cardapio-sigla">{{ $mod['setor_sigla'] ?? 'SETOR' }}</span>
+                                <svg class="home-acordeao-seta" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2.5"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+
+                            {{-- Conteúdo recolhível: lista + botão --}}
+                            <div class="home-acordeao-corpo" id="{{ $cardId }}">
+                                <div class="cardapio-lista-wrapper" style="margin-top: 10px;">
                                     <strong class="cardapio-label">Opções disponíveis:</strong>
                                     <ul class="cardapio-lista">
                                         @foreach($mod['assuntos_detalhes'] as $assunto)
@@ -35,11 +49,12 @@
                                         @endforeach
                                     </ul>
                                 </div>
+                                <a href="{{ route('login', ['redirect' => route('requerimentos.aluno.novo', ['setor' => $mod['id']])]) }}"
+                                   class="cardapio-btn" style="margin-top: 12px;">
+                                    Acessar →
+                                </a>
                             </div>
-                            <a href="{{ route('login', ['redirect' => route('requerimentos.aluno.novo', ['setor' => $mod['id']])]) }}"
-                               class="cardapio-btn">
-                                Acessar →
-                            </a>
+
                         </div>
                     @endif
                 @endforeach

@@ -75,3 +75,32 @@ function closeModal(id) {
         setTimeout(() => modal.remove(), 300);
     }
 }
+
+// =============================================
+// ACORDEÃO DOS CARDS DE SETOR (somente na /)
+// =============================================
+
+function toggleAcordeaoHome(corpoId, btnToggle) {
+    const corpo = document.getElementById(corpoId);
+    if (!corpo) return;
+
+    const estaAberto = corpo.classList.contains('aberto');
+
+    // Fechar todos os outros acordeões abertos
+    document.querySelectorAll('.home-acordeao-corpo.aberto').forEach(el => {
+        if (el.id !== corpoId) {
+            el.classList.remove('aberto');
+            const btn = document.querySelector(`[aria-controls="${el.id}"]`);
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Alternar o atual
+    if (estaAberto) {
+        corpo.classList.remove('aberto');
+        btnToggle.setAttribute('aria-expanded', 'false');
+    } else {
+        corpo.classList.add('aberto');
+        btnToggle.setAttribute('aria-expanded', 'true');
+    }
+}

@@ -401,3 +401,121 @@ a.active {
     margin: 0;
     line-height: 1.5;
 }
+
+/* =============================================
+   ACORDEÃO DOS CARDS DE SETOR (somente na /)
+   ============================================= */
+
+/* ---- MOBILE: acordeão ativo (< 640px) ---- */
+@media (max-width: 639px) {
+
+    /* Remove espaço em branco excessivo na seção de setores */
+    #inicio {
+        min-height: unset !important;
+        padding: 8px 0 16px !important;
+        align-items: flex-start;
+    }
+
+    .home-card-acordeao {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    /* Botão de toggle — ocupa o topo do card, clicável */
+    .home-acordeao-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        gap: 10px;
+        border-bottom: 2px solid #f1f5f9;
+        transition: background 0.15s;
+    }
+
+    .home-acordeao-toggle:hover {
+        background: #f8fafc;
+    }
+
+    .home-acordeao-toggle .cardapio-sigla {
+        flex: 1;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* Seta animada */
+    .home-acordeao-seta {
+        flex-shrink: 0;
+        color: #64748b;
+        transition: transform 0.25s ease;
+        display: block;
+    }
+
+    .home-acordeao-toggle[aria-expanded="true"] .home-acordeao-seta {
+        transform: rotate(180deg);
+        color: #2563eb;
+    }
+
+    /* Corpo recolhível com animação via max-height */
+    .home-acordeao-corpo {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.25s ease;
+        padding: 0 16px;
+    }
+
+    .home-acordeao-corpo.aberto {
+        max-height: 600px;
+        padding: 0 16px 16px;
+    }
+}
+
+/* ---- DESKTOP: card sempre aberto, sem acordeão (≥ 640px) ---- */
+@media (min-width: 640px) {
+
+    /* Botão sem aparência de botão — só mostra a sigla como header normal */
+    .home-acordeao-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: default;
+        gap: 8px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 10px;
+        pointer-events: none; /* não clicável no desktop */
+    }
+
+    .home-acordeao-toggle .cardapio-sigla {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #0f172a;
+    }
+
+    /* Seta oculta no desktop */
+    .home-acordeao-seta {
+        display: none;
+    }
+
+    /* Corpo sempre visível no desktop */
+    .home-acordeao-corpo {
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    /* Card com padding normal */
+    .home-card-acordeao {
+        padding: 16px;
+    }
+}
