@@ -575,7 +575,82 @@ form {
 
 
 
-/* Responsividade */
+/* ===== Grid de identificação do aluno ===== */
+
+/* Desktop: flex espaçado (como o layout original) */
+.ident-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 0;
+}
+
+.ident-grid .campo {
+    flex: 1;
+    min-width: 180px;
+    margin-bottom: 10px;
+}
+
+/* UF deve ser estreito no desktop */
+.ident-grid .campo.ident-uf {
+    flex: 0 0 80px;
+    min-width: 60px;
+}
+
+/* CEP com tamanho fixo no desktop */
+.ident-grid .campo.ident-cep {
+    flex: 0 0 140px;
+    min-width: 110px;
+}
+
+/* Mobile ≤ 600px: coluna única compacta */
+@media (max-width: 600px) {
+    .ident-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .ident-grid .campo,
+    .ident-grid .campo.ident-uf,
+    .ident-grid .campo.ident-cep {
+        flex: unset;
+        min-width: 0;
+        margin-bottom: 8px;
+    }
+}
+
+/* Card de setor ativo (setor atual da URL) */
+.cardapio-card-ativo {
+    background: #e0edf5;
+    border-color: #bae6fd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Setor card: cores azuis ===== */
+.opcao-setor-card .opcao-radio {
+    accent-color: #2563eb;
+}
+
+.opcao-setor-card.opcao-selecionada {
+    border-color: #93c5fd;
+    background-color: #eff6ff;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.12);
+}
+
+.opcao-setor-card.opcao-selecionada .opcao-titulo {
+    color: #1e40af;
+}
+
+.opcao-setor-card .setor-lista-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #2563eb;
+    display: block;
+    margin-bottom: 6px;
+}
+
 
 
 @media (max-width: 600px) {

@@ -13,38 +13,46 @@ class RequerimentoController extends Controller
     {
         $modelos = Setor::obterSetoresFormatados();
 
-        $matricula = strtoupper($request->user()->matricula ?? '');
-        $coordenacaoPermitida = null;
+        $isGuest = !auth()->check();
 
-        // Remove os 5 primeiros caracteres (4 dígitos do ano + 1 do período)
-        // Exemplo: '20211180001' vira '180001'
-        $sufixoMatricula = substr($matricula, 5);
+        if ($isGuest) {
+            // Visitante: exibe todos os setores sem filtro por matrícula
+            $alunoMenor = false;
+        } else {
+            $matricula = strtoupper($request->user()->matricula ?? '');
+            $coordenacaoPermitida = null;
 
-        // Identifica o setor com base no início do código do curso
-        if (str_starts_with($sufixoMatricula, '18')) {
-            $coordenacaoPermitida = 'COINF';
-        } elseif (str_starts_with($sufixoMatricula, 'SEAADS')) {
-            $coordenacaoPermitida = 'COADS';
-        } elseif (str_starts_with($sufixoMatricula, '28')) {
-            $coordenacaoPermitida = 'COMAM';
-        } elseif (str_starts_with($sufixoMatricula, 'SEALIC')) {
-            $coordenacaoPermitida = 'COCIE';
-        }
+            // Remove os 5 primeiros caracteres (4 dígitos do ano + 1 do período)
+            // Exemplo: '20211180001' vira '180001'
+            $sufixoMatricula = substr($matricula, 5);
 
-        // Siglas de todas as coordenações que dependem do curso do aluno. Se não estiver nos IFS e estiver nesse array, não deve ser exibido para o aluno.
-        $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COCIE', 'BIBLIOTECA', 'DACAD'];
-
-        // 1. Filtra a lista de modelos
-        $modelos = array_filter($modelos, function ($mod) use ($coordenacaoPermitida, $coordenacoesRestritas) {
-            $sigla = strtoupper($mod['setor_sigla'] ?? '');
-
-            // Se o setor for uma coordenação de curso, só mantém se for a do aluno
-            if (in_array($sigla, $coordenacoesRestritas)) {
-                return $sigla === $coordenacaoPermitida;
+            // Identifica o setor com base no início do código do curso
+            if (str_starts_with($sufixoMatricula, '18')) {
+                $coordenacaoPermitida = 'COINF';
+            } elseif (str_starts_with($sufixoMatricula, 'SEAADS')) {
+                $coordenacaoPermitida = 'COADS';
+            } elseif (str_starts_with($sufixoMatricula, '28')) {
+                $coordenacaoPermitida = 'COMAM';
+            } elseif (str_starts_with($sufixoMatricula, 'SEALIC')) {
+                $coordenacaoPermitida = 'COCIE';
             }
 
-            return true;
-        });
+            // Siglas de todas as coordenações que dependem do curso do aluno.
+            $coordenacoesRestritas = ['COINF', 'COADS', 'COMAM', 'COCIE', 'BIBLIOTECA', 'DACAD'];
+
+            // 1. Filtra a lista de modelos pelo curso do aluno autenticado
+            $modelos = array_filter($modelos, function ($mod) use ($coordenacaoPermitida, $coordenacoesRestritas) {
+                $sigla = strtoupper($mod['setor_sigla'] ?? '');
+
+                if (in_array($sigla, $coordenacoesRestritas)) {
+                    return $sigla === $coordenacaoPermitida;
+                }
+
+                return true;
+            });
+
+            $alunoMenor = $request->user()->isMenorDeIdade();
+        }
 
         // 2. Define o setor selecionado via query string (?setor=...)
         $setorParam = $request->query('setor', $request->query('modelo'));
@@ -63,8 +71,9 @@ class RequerimentoController extends Controller
             }
         }
 
-        // 3. Se o setor selecionado for inválido/indisponível para o aluno, pega o primeiro da lista filtrada
-        if (!$modeloAtivo) {
+        // 3. Para visitantes sem setor na URL: não pré-seleciona nenhum card.
+        //    Para autenticados SEM setor na URL: também não pré-seleciona (troca dinâmica via JS).
+        if (!$modeloAtivo && !$isGuest && $setorParam) {
             $modeloAtivo = !empty($modelos) ? reset($modelos) : null;
         }
 
@@ -74,9 +83,7 @@ class RequerimentoController extends Controller
             'email' => $modeloAtivo['email'] ?? 'protocolos.seabra@ifba.edu.br',
         ];
 
-        $alunoMenor = $request->user()->isMenorDeIdade();
-
-        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setorDestino', 'alunoMenor'));
+        return view('requerimentos.form', compact('modelos', 'modeloChave', 'modeloAtivo', 'setorDestino', 'alunoMenor', 'isGuest'));
     }
 
     //Método para mostrar requerimentos que já foram realizados pelo usuário;

@@ -39,7 +39,10 @@ Route::get('/', function () {
         }
         return redirect()->route('requerimentos.aluno.novo');
     }
-    return view('home');
+    // Visitante: carrega a home com os setores disponíveis no topo
+    $modelos = \App\Models\Setor::obterSetoresFormatados();
+    $isGuest = true;
+    return view('home', compact('modelos', 'isGuest'));
 })->name('home');
 
 Route::get('/home', function () {
@@ -53,7 +56,11 @@ Route::get('/home', function () {
 | Admin: email + senha local
 | Aluno / Servidor: matrícula + senha SUAP
 */
-Route::get('/login', function () {
+Route::get('/login', function (Illuminate\Http\Request $request) {
+    // Preserva a URL pretendida antes do login (vinda do botão de setor na página pública)
+    if ($request->filled('redirect')) {
+        session(['url.intended' => $request->input('redirect')]);
+    }
     if (auth()->check()) {
         $usuario = auth()->user();
         if ($usuario->isAdmin()) {
@@ -163,6 +170,10 @@ Route::middleware(['auth', 'responsavel'])->group(function () {
 | PAINEL / REQUERIMENTOS - ALUNO
 |--------------------------------------------------------------------------
 */
+// Rota pública — visitantes podem ver os setores/requerimentos disponíveis;
+// ao escolher um setor são redirecionados para o login
+Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
+
 Route::middleware(['auth', 'role:aluno'])->group(function () {
     Route::get('/requerimentos/aluno', function () {
         $setores = \App\Models\Setor::where('ativo', true)->get();
@@ -170,7 +181,6 @@ Route::middleware(['auth', 'role:aluno'])->group(function () {
     })->name('requerimentos.aluno');
 
     Route::post('/requerimentos/aluno/enviar-email', [EnvioEmailController::class, 'enviar'])->name('aluno.enviar-email');
-    Route::get('/requerimentos/aluno/novo', [RequerimentoController::class, 'create'])->name('requerimentos.aluno.novo');
     Route::get('/requerimentos/aluno/meusRequerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.aluno.meusRequerimentos');
     Route::get('/requerimentos/aluno/visualizar/{requerimento}', [RequerimentoController::class, 'show'])
         ->name('requerimentos.aluno.visualizar');

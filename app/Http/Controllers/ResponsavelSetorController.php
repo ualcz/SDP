@@ -69,7 +69,7 @@ class ResponsavelSetorController extends Controller
 
         $requerimentos = $query
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->withQueryString();
 
         return view('setor.responsavel.dashboard', compact('setor', 'requerimentos'));

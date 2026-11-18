@@ -6,7 +6,50 @@
 @section('content')
 
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('css/form.css') }}?v={{ filemtime(public_path('css/form.css')) }}">
 
+{{-- ===== SELEÇÃO DE SETORES (primeira coisa que o visitante vê) ===== --}}
+@if (!empty($modelos))
+<section id="inicio" class="fade-up" style="padding-bottom: 0; padding-top: 12px;">
+    <div style="width:100%; padding: 0 8px; box-sizing: border-box;">
+
+        <div class="cardapio-container" style="border: none; box-shadow: none; padding: 0;">
+            <div class="cardapio-grid">
+                @foreach($modelos as $mod)
+                    @if (!empty($mod['assuntos_detalhes']) && count($mod['assuntos_detalhes']) > 0)
+                        <div class="cardapio-card">
+                            <div class="cardapio-card-content">
+                                <div class="cardapio-header">
+                                    <span class="cardapio-sigla">{{ $mod['setor_sigla'] ?? 'SETOR' }}</span>
+                                </div>
+                                <div class="cardapio-lista-wrapper">
+                                    <strong class="cardapio-label">Opções disponíveis:</strong>
+                                    <ul class="cardapio-lista">
+                                        @foreach($mod['assuntos_detalhes'] as $assunto)
+                                            <li class="cardapio-item">
+                                                <span class="cardapio-bullet">•</span>
+                                                <span class="cardapio-texto-assunto">
+                                                    {{ is_array($assunto) ? ($assunto['descricao'] ?? $assunto['titulo'] ?? 'Assunto') : $assunto }}
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                            <a href="{{ route('login', ['redirect' => route('requerimentos.aluno.novo', ['setor' => $mod['id']])]) }}"
+                               class="cardapio-btn">
+                                Acessar →
+                            </a>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
+    </div>
+</section>
+@else
+{{-- Fallback: hero clássico quando não há modelos --}}
 <section id="inicio" class="fade-up">
     <div class="container">
         <div class="hero-wrapper">
@@ -19,15 +62,9 @@
                     O Sistema de Requerimentos e Protocolos (SDP) foi desenvolvido para facilitar o envio, tramitação e acompanhamento de solicitações acadêmicas e administrativas, garantindo transparência e agilidade ao processo.
                 </p>
                 <div class="hero-actions">
-                    @auth
-                        <a href="{{ route('requerimentos.aluno.novo') }}" class="btn-primary">
-                            Novo Requerimento →
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn-primary">
-                            Acessar Sistema →
-                        </a>
-                    @endauth
+                    <a href="{{ route('login') }}" class="btn-primary">
+                        Acessar Sistema →
+                    </a>
                 </div>
             </div>
             <div class="hero-image">
@@ -36,7 +73,9 @@
         </div>
     </div>
 </section>
+@endif
 
+{{-- ===== SEÇÕES ORIGINAIS DA HOME ===== --}}
 <section id="funcionalidades" class="fade-up">
     <div class="container">
         <h2>Funcionalidades do SDP</h2>

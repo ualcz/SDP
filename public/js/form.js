@@ -31,7 +31,188 @@ function alternarObjetoOutro(ativo) {
     }
 }
 
+// =====================================================
+// TROCA DINÂMICA DE SETOR (sem reload de página)
+// =====================================================
+
+let setorAtualId = null; // ID do setor atualmente carregado
+
+function selecionarSetor(setorId) {
+    const setores = window.SDP_SETORES || [];
+    const setor = setores.find(s => String(s.id) === String(setorId));
+    if (!setor) return;
+
+    setorAtualId = setorId;
+
+    // 1. Destacar card selecionado
+    document.querySelectorAll('.cardapio-card').forEach(card => {
+        card.classList.remove('cardapio-card-ativo');
+        const btn = card.querySelector('.cardapio-btn');
+        if (btn) {
+            btn.classList.remove('active');
+            btn.textContent = 'Acessar Formulário →';
+        }
+    });
+    const cardAtivo = document.getElementById('card-setor-' + setorId);
+    if (cardAtivo) {
+        cardAtivo.classList.add('cardapio-card-ativo');
+        const btn = cardAtivo.querySelector('.cardapio-btn');
+        if (btn) {
+            btn.classList.add('active');
+            btn.textContent = 'Setor Selecionado ✓';
+        }
+    }
+
+    // 2. Atualizar setor_id e setor nos hidden inputs do form
+    const inputSetorId = document.querySelector('input[name="setor_id"]');
+    const inputSetor   = document.querySelector('input[name="setor"]');
+    if (inputSetorId) inputSetorId.value = setorId;
+    if (inputSetor)   inputSetor.value   = setorId;
+
+    // 3. Atualizar título e nome nas etapas 2 e 3
+    const titulo = setor.titulo || 'Requerimento Geral';
+    const nomeSetor = setor.setor_nome || 'Setor Responsável';
+    ['etapa2', 'etapa3'].forEach(sufixo => {
+        const elTitulo = document.getElementById('titulo-setor-' + sufixo);
+        const elNome   = document.getElementById('nome-setor-' + sufixo);
+        if (elTitulo) elTitulo.textContent = titulo;
+        if (elNome)   elNome.textContent   = nomeSetor;
+    });
+
+    // 4. Reconstruir lista de objetos (etapa 2)
+    const containerObjetos = document.getElementById('container-objetos');
+    if (containerObjetos) {
+        containerObjetos.innerHTML = '';
+        const assuntos = setor.assuntos_detalhes || [];
+        assuntos.forEach((assunto, idx) => {
+            const descricao = assunto.descricao || assunto.titulo || '';
+            const obs       = assunto.observacao || '';
+            const linkNorma = assunto.link_norma || '';
+
+            const label = document.createElement('label');
+            label.className = 'opcao-objeto-card';
+
+            let normaBtn = '';
+            if (linkNorma) {
+                normaBtn = `<a href="${linkNorma}" target="_blank" rel="noopener noreferrer"
+                               onclick="event.stopPropagation()" class="opcao-norma-btn"
+                               title="Consultar norma" aria-label="Consultar norma de ${descricao}">?</a>`;
+            }
+
+            let obsHtml = '';
+            if (obs) {
+                obsHtml = `<span class="opcao-observacao">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    ${obs}
+                </span>`;
+            }
+
+            label.innerHTML = `
+                <span class="opcao-header">
+                    <input type="radio" class="opcao-radio" name="objetoDoRequerimento" value="${descricao}"
+                           onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto(${idx});
+                                     document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada'));
+                                     this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');">
+                    <span class="opcao-titulo">${descricao}</span>
+                    ${normaBtn}
+                </span>
+                ${obsHtml}
+            `;
+            containerObjetos.appendChild(label);
+        });
+    }
+
+    // 5. Reconstruir blocos de documentos (etapa 3)
+    const containerDocs = document.getElementById('container-documentos');
+    if (containerDocs) {
+        containerDocs.innerHTML = '';
+        const assuntos  = setor.assuntos_detalhes || [];
+        const alunoMenor = window.SDP_MENOR || false;
+
+        assuntos.forEach((assunto, idx) => {
+            const docs = assunto.documentos_obrigatorios || [];
+            const div  = document.createElement('div');
+            div.className = 'bloco-documentos-assunto';
+            div.id        = 'bloco-doc-' + idx;
+            div.style.display = idx === 0 ? '' : 'none';
+
+            let docsHtml = '';
+            if (docs.length > 0) {
+                docsHtml += `<h3 style="font-size:1.25rem;text-align:center;margin-bottom:12px;">Documentos Obrigatórios</h3>`;
+                docs.forEach(doc => {
+                    const obrigatorioLabel = doc.obrigatorio
+                        ? '<span style="color:#dc2626;font-weight:normal;">(Obrigatório)</span>'
+                        : '<span style="color:#6b7280;font-weight:normal;">(Opcional)</span>';
+                    const descricaoBox = doc.descricao?.trim()
+                        ? `<div style="background:#fffbeb;color:#78350f;padding:10px 14px;margin:8px 0 12px;font-size:15px;font-weight:600;line-height:1.5;border:1px solid #fcd34d;">${doc.descricao}</div>`
+                        : '';
+                    const tipos = (doc.tipos_aceitos || '.pdf,.doc,.docx,.png,.jpg,.jpeg')
+                        .replace(/\s/g, '').replace(/\./g, '').split(',').map(t => '.' + t).join(',');
+                    const docId = doc.id ?? idx;
+                    docsHtml += `
+                        <div class="campo" style="background:rgb(249,235,235);padding:20px;border-radius:6px;border:1px solid rgb(255,203,203);margin-bottom:16px;">
+                            <label style="display:block;font-weight:bold;margin-bottom:4px;font-size:14px;">
+                                ${doc.nome} ${obrigatorioLabel}
+                            </label>
+                            ${descricaoBox}
+                            <input type="file" class="doc-file-input"
+                                   name="documentos[${docId}]"
+                                   accept="${tipos}"
+                                   data-obrigatorio="${doc.obrigatorio ? 'true' : 'false'}"
+                                   style="width:100%;padding:6px;border:1px solid #d1d5db;border-radius:4px;font-size:13px;background:#f9fafb;cursor:pointer;">
+                        </div>`;
+                });
+            } else {
+                docsHtml = `<p style="color:#666;font-size:14px;margin-bottom:12px;">Este assunto não possui documentos obrigatórios.</p>`;
+            }
+
+            div.innerHTML = `
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:10px 14px;margin-bottom:16px;">
+                    <span style="font-size:12px;color:#15803d;text-transform:uppercase;font-weight:600;display:block;">Assunto Selecionado:</span>
+                    <strong style="font-size:16px;color:#047857;">${assunto.descricao}</strong>
+                </div>
+                ${docsHtml}
+            `;
+            containerDocs.appendChild(div);
+        });
+
+        // Reativar verificação de documentos obrigatórios
+        if (typeof window.verificarDocumentosObrigatorios === 'function') {
+            // Re-observar os novos blocos
+            const observer = new MutationObserver(() => window.verificarDocumentosObrigatorios());
+            containerDocs.querySelectorAll('.bloco-documentos-assunto').forEach(bloco => {
+                observer.observe(bloco, { attributes: true, attributeFilter: ['style'] });
+            });
+            // Re-escutar changes de arquivo nos novos inputs
+            containerDocs.querySelectorAll('input[type="file"]').forEach(input => {
+                input.addEventListener('change', async () => {
+                    await processarCompressaoInput(input);
+                    window.verificarDocumentosObrigatorios();
+                });
+            });
+            window.verificarDocumentosObrigatorios();
+        }
+    }
+
+    // 6. Mostrar botão Próximo
+    const btnProximo = document.getElementById('btn-proximo-setor');
+    if (btnProximo) btnProximo.style.display = 'block';
+
+    // 7. Limpar seleção de objeto anterior
+    document.querySelectorAll('input[name="objetoDoRequerimento"]').forEach(r => r.checked = false);
+    mostrarDocumentosAssunto(0);
+}
+
 function mudarPasso(passo) {
+    // Etapa 1 → 2: validar se um setor foi selecionado
+    if (passo === 2 && !setorAtualId) {
+        const inputSetorId = document.querySelector('input[name="setor_id"]');
+        if (!inputSetorId || !inputSetorId.value) {
+            alert('Por favor, selecione um Setor antes de prosseguir.');
+            return;
+        }
+    }
+
     if (passo === 3) {
         const radioChecked = document.querySelector('input[name="objetoDoRequerimento"]:checked');
         if (!radioChecked) {
