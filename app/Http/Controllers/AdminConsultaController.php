@@ -68,7 +68,7 @@ class AdminConsultaController extends Controller
         }
 
         // Paginando para evitar lentidão e mantendo os parâmetros de busca na URL
-        $requerimentos = $query->latest()->paginate(15)->appends($request->query());
+        $requerimentos = $query->latest()->paginate(50)->appends($request->query());
         $setores = Setor::where('ativo', true)->orderBy('setor_sigla')->get();
 
         return view('admin.consultaRequerimento', [
