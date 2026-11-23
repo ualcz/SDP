@@ -12,6 +12,7 @@ class RequerimentoPorSetor
         $dados = Requerimento::with('setor')
             ->selectRaw('setor_id, COUNT(*) as total')
             ->groupBy('setor_id')
+            ->whereYear('created_at', now()->year)
             ->get();
 
         $valores = $dados->pluck('total')->toArray();
@@ -21,7 +22,7 @@ class RequerimentoPorSetor
 
         return (new LarapexChart)
             ->pieChart()
-            ->setTitle('Requerimentos por setor')
+            ->setTitle('Requerimentos por setor (em ' .now()->year. ')')
             ->addData($valores)
             ->setLabels($labels)
             ->setHeight(350);;
