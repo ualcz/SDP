@@ -32,16 +32,7 @@ class AdminConsultaController extends Controller
         // 3. Filtro por Setor
         if ($request->filled('setor')) {
             $setorFiltro = $request->input('setor');
-            $query->where(function ($q) use ($setorFiltro) {
-                $q->whereHas('assunto', function ($aq) use ($setorFiltro) {
-                    $aq->where('setor_id', $setorFiltro);
-                })
-                ->orWhereIn('objetoDoRequerimento', function ($sub) use ($setorFiltro) {
-                    $sub->select('descricao')
-                        ->from('assuntos_requerimentos')
-                        ->where('setor_id', $setorFiltro);
-                });
-            });
+            $query->where('setor_id', $setorFiltro);
         }
 
         // 4. Filtro por Status
