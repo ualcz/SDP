@@ -33,16 +33,20 @@
                 </select>
             </div>
 
+            @php
+                $statusSelecionado = request()->has('status') ? request('status') : 'Aberto';
+            @endphp
+
             <div class="filter-group">
                 <label class="filter-label">Status</label>
                 <select name="status" class="input-filtro">
-                    <option value="">Todos</option>
-                    <option value="Aberto" {{ request('status') == 'Aberto' ? 'selected' : '' }}>Aberto</option>
-                    <option value="Em Análise" {{ request('status') == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
-                    <option value="Despacho" {{ request('status') == 'Despacho' ? 'selected' : '' }}>Despacho</option>
-                    <option value="Indeferido" {{ request('status') == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
-                    <option value="Concluído" {{ request('status') == 'Concluído' ? 'selected' : '' }}>Concluído</option>
-                    <option value="Encerrado" {{ request('status') == 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
+                    <option value="" {{ $statusSelecionado === '' || $statusSelecionado === null ? 'selected' : '' }}>Todos</option>
+                    <option value="Aberto" {{ $statusSelecionado === 'Aberto' ? 'selected' : '' }}>Aberto</option>
+                    <option value="Em Análise" {{ $statusSelecionado === 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
+                    <option value="Despacho" {{ $statusSelecionado === 'Despacho' ? 'selected' : '' }}>Despacho</option>
+                    <option value="Indeferido" {{ $statusSelecionado === 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
+                    <option value="Concluído" {{ $statusSelecionado === 'Concluído' ? 'selected' : '' }}>Concluído</option>
+                    <option value="Encerrado" {{ $statusSelecionado === 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
                 </select>
             </div>
 

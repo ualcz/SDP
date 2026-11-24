@@ -47,11 +47,9 @@ class AdminConsultaController extends Controller
         // 4. Filtro por Status
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
-        } else {
-            $query->where(function ($statusQuery) {
-                $statusQuery->whereNull('status')
-                    ->orWhereNotIn('status', ['Concluído', 'Encerrado']);
-            });
+        } elseif (! $request->has('status')) {
+            // Primeiro acesso (parâmetro 'status' não existe na URL): filtra por 'Aberto'
+            $query->where('status', 'Aberto');
         }
 
         // 5. Filtro por Intervalo de Datas
