@@ -1,5 +1,11 @@
 <!-- Etapa 2: Documentos Obrigatórios e Anexos Complementares -->
-<div class="form-step" data-step="2" style="display: none;">
+<div class="form-step" data-step="3">
+
+    <div style="text-align: center; margin-bottom: 40px; font-size: 1.2rem;">
+        <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
+        <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
+    </div>
+
     <!-- Documentos e Anexos -->
     <fieldset class="secao-anexos">
         <legend>Documentos e Anexos</legend>
@@ -116,7 +122,7 @@
     </fieldset>
 
     <div class="step-nav">
-        <button type="button" class="btn-voltar" onclick="mudarPasso(1)">Anterior</button>
+        <button type="button" class="btn-voltar" onclick="mudarPasso(2)">Anterior</button>
         <button type="submit" class="btn-enviar" id="btn-enviar-requerimento" disabled
                 title="Anexe todos os documentos obrigatórios para enviar">
             Enviar Requerimento

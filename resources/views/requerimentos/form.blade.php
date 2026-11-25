@@ -47,7 +47,6 @@
 
 
 
-    <!-- Título do Requerimento -->
 
 
     @if (session('sucesso'))
@@ -74,7 +73,7 @@
         @include('requerimentos.partials.dados-requerimento')
 
         {{-- Etapa 2: Escolher objeto e Justificativa --}}
-        {{-- @include('requerimentos.partials.objetos-requerimento') --}}
+        @include('requerimentos.partials.objetos-requerimento')
 
         {{-- Etapa 3: Documentos e Anexos --}}
         @include('requerimentos.partials.documentos-anexos')
