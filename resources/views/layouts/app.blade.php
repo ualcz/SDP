@@ -7,6 +7,8 @@
     <title>@yield('title', 'SDP - IFBA Seabra')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modal.css') }}">
+
 </head>
 
 <body class="flex flex-col min-h-screen bg-zinc-100">
@@ -65,5 +67,7 @@
         }
     });
     </script>
+    <script src="{{ asset('js/modal.js') }}" defer></script>
+
 </body>
 </html>

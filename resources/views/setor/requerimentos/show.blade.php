@@ -210,45 +210,61 @@
                 </div>
             @endif
 
-            @if($requerimento->setor_retorno_id)
-                <div class="card-painel" style="margin-top: 1rem;">
-                    <h3 class="card-titulo">Responder ao setor {{ $requerimento->setorRetorno?->setor_nome }}</h3>
-                    <p>Registre a resposta e devolva o requerimento ao setor que o encaminhou.</p>
-                    <form action="{{ route('setor.requerimentos.responderEncaminhamento', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <label for="resposta_encaminhamento" class="info-label">Resposta</label>
-                        <textarea name="observacao" id="resposta_encaminhamento" class="form-control" rows="4" required>{{ old('observacao') }}</textarea>
-                        <div style="margin-top: 12px;">
-                            <label for="arquivos_resposta" class="info-label">Anexar documentos (opcional)</label>
-                            <input type="file" name="arquivos[]" id="arquivos_resposta" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
-                        </div>
-                        <button type="submit" class="btn-atualizar" style="margin-top: 12px;">Enviar resposta e devolver</button>
-                    </form>
-                </div>
-            @else
-                <div class="card-painel" style="margin-top: 1rem;">
-                    <h3 class="card-titulo">Encaminhar para outro setor</h3>
-                    <form action="{{ route('setor.requerimentos.encaminhar', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <label for="setor_destino_id" class="info-label">Setor de destino</label>
-                        <select name="setor_destino_id" id="setor_destino_id" class="select-status" required>
-                            <option value="">Selecione um setor</option>
-                            @foreach($setoresDestino as $setorDestino)
-                                <option value="{{ $setorDestino->id }}" {{ old('setor_destino_id') == $setorDestino->id ? 'selected' : '' }}>{{ $setorDestino->setor_nome }} ({{ $setorDestino->setor_sigla }})</option>
-                            @endforeach
-                        </select>
-                        <label for="observacao_encaminhamento" class="info-label" style="margin-top: 12px;">Orientação para o setor</label>
-                        <textarea name="observacao" id="observacao_encaminhamento" class="form-control" rows="4" required>{{ old('observacao') }}</textarea>
-                        <div style="margin-top: 12px;">
-                            <label for="arquivos_encaminhamento" class="info-label">Anexar documentos (opcional)</label>
-                            <input type="file" name="arquivos[]" id="arquivos_encaminhamento" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
-                        </div>
-                        <button type="submit" class="btn-atualizar" style="margin-top: 12px;">Encaminhar requerimento</button>
-                    </form>
-                </div>
-            @endif
 
-            {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
+
+        </div>
+
+        <div class="card-painel">
+            <h2 class="card-titulo">Ações</h2>
+            <div>
+                <nav class="acoes-nav">
+                    <ul class="acoes-lista">
+                        <li>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-deferir/concluir">
+                                    Deferir/Indeferir
+                            </button>
+                        </li>
+                        <li>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-pendencia">
+                                        Solicitar Alteração
+                            </button>
+                        </li>
+                        <li>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar">
+                                        Encaminhar
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{-- Modal de Deferimento-conclusão --}}
+<x-modal id="modal-deferir/concluir" title="Deferir/Indeferir">
+
+
+    <h1>O processo vai aqui</h1>
+            <x-slot:footer>
+            <button type="button" data-modal-close class="btn-atualizar">
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                form="form-encaminhar"
+                class="btn-atualizar"
+            >
+                Concluir requerimento
+            </button>
+        </x-slot:footer>
+</x-modal>
+
+{{-- Modal de Pendencia --}}
+<x-modal id="modal-pendencia" title="Solicitar Alteração">
+
             <div class="card-painel" style="margin-top: 1rem;">
                 <h3 class="card-titulo">Atualizar Status</h3>
                 <p>Atualize o status do requerimento conforme necessário.</p>
@@ -274,7 +290,6 @@
                         </button>
                     </div>
 
-                    {{-- Campo para anexar documentos do setor/servidor --}}
                     <div style="margin-top: 15px;">
                         <label for="arquivos_servidor" class="info-label">Anexar Documento / Parecer / Despacho (opcional):</label>
                         <input type="file" name="arquivos[]" id="arquivos_servidor" class="form-control file-input" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
@@ -291,7 +306,7 @@
                             placeholder="Descreva o motivo ou o que o aluno precisa corrigir..."
                             {{ $requerimento->status == 'Indeferido' ? 'required' : '' }}
                         >{{ old('observacao') }}</textarea>
-                        {{-- Seleção para Solicitar Novo Documento --}}
+
                         <div style="margin-bottom: 12px; margin-top:10px;">
                             <label for="solicita_novo_documento" class="info-label">Deseja solicitar o envio de um documento ao aluno?</label>
                             <select name="solicita_novo_documento" id="solicita_novo_documento" class="select-status" style="width: 100%;" onchange="toggleCampoNomeDocumento()">
@@ -315,16 +330,173 @@
                     </div>
                 </form>
             </div>
+
+            <x-slot:footer>
+            <button type="button" data-modal-close class="btn-atualizar">
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                form="form-encaminhar"
+                class="btn-atualizar"
+            >
+                Enviar solicitação de alteração
+            </button>
+        </x-slot:footer>
+</x-modal>
+
+
+{{-- Modal de encaminhamento --}}
+<x-modal id="modal-encaminhar" title="Tramitar requerimento">
+
+    @if($requerimento->setor_retorno_id)
+        <div>
+            <p>
+                Registre a resposta e devolva o requerimento
+                ao setor que o encaminhou.
+            </p>
+
+            <form
+                id="form-resposta-encaminhamento"
+                action="{{ route('setor.requerimentos.responderEncaminhamento', [$setor->id, $requerimento->id]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                @csrf
+
+                <label for="resposta_encaminhamento" class="info-label">
+                    Resposta
+                </label>
+
+                <textarea
+                    name="observacao"
+                    id="resposta_encaminhamento"
+                    class="form-control"
+                    rows="4"
+                    required
+                >{{ old('observacao') }}</textarea>
+
+                <div style="margin-top: 12px;">
+                    <label for="arquivos_resposta" class="info-label">
+                        Anexar documentos (opcional)
+                    </label>
+
+                    <input
+                        type="file"
+                        name="arquivos[]"
+                        id="arquivos_resposta"
+                        class="form-control file-input"
+                        multiple
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    >
+                </div>
+            </form>
         </div>
 
-        {{-- DADOS DO ALUNO --}}
+        <x-slot:footer>
+            <button type="button" data-modal-close class="btn-atualizar">
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                form="form-resposta-encaminhamento"
+                class="btn-atualizar"
+            >
+                Enviar resposta e devolver
+            </button>
+        </x-slot:footer>
 
 
-        {{-- ENDEREÇO DO ALUNO --}}
+    @else
+        <div>
+            <h3 class="card-titulo">Encaminhar para outro setor</h3>
+
+            <form
+                id="form-encaminhar"
+                action="{{ route('setor.requerimentos.encaminhar', [$setor->id, $requerimento->id]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                @csrf
+
+                <label for="setor_destino_id" class="info-label">
+                    Setor de destino
+                </label>
+
+                <select
+                    name="setor_destino_id"
+                    id="setor_destino_id"
+                    class="select-status"
+                    required
+                >
+                    <option value="">Selecione um setor</option>
+
+                    @foreach($setoresDestino as $setorDestino)
+                        <option
+                            value="{{ $setorDestino->id }}"
+                            {{ old('setor_destino_id') == $setorDestino->id ? 'selected' : '' }}
+                        >
+                            {{ $setorDestino->setor_nome }}
+                            ({{ $setorDestino->setor_sigla }})
+                        </option>
+                    @endforeach
+                </select>
+
+                <label
+                    for="observacao_encaminhamento"
+                    class="info-label"
+                    style="margin-top: 12px;"
+                >
+                    Orientação para o setor
+                </label>
+
+                <textarea
+                    name="observacao"
+                    id="observacao_encaminhamento"
+                    class="form-control"
+                    rows="4"
+                    required
+                >{{ old('observacao') }}</textarea>
+
+                <div style="margin-top: 12px;">
+                    <label for="arquivos_encaminhamento" class="info-label">
+                        Anexar documentos (opcional)
+                    </label>
+
+                    <input
+                        type="file"
+                        name="arquivos[]"
+                        id="arquivos_encaminhamento"
+                        class="form-control file-input"
+                        multiple
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    >
+                </div>
+            </form>
+        </div>
+
+        <x-slot:footer>
+            <button type="button" data-modal-close class="btn-atualizar">
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                form="form-encaminhar"
+                class="btn-atualizar"
+            >
+                Encaminhar requerimento
+            </button>
+        </x-slot:footer>
+    @endif
 
 
-    </div>
-</div>
+
+
+
+</x-modal>
 
 <script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

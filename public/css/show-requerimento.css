@@ -363,6 +363,35 @@
 }
 
 /* =========================================================
+   Ações do setor
+   ========================================================= */
+
+.acoes-lista {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.acoes-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1rem 2rem;
+    background: #F0FDF4;
+    border: 1px solid #1A9F75;
+    border-radius: 7px;
+    color: #1A9F75;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
+}
+
+
+/* =========================================================
    FORMULÁRIOS E INPUTS
    ========================================================= */
 
