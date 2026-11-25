@@ -147,11 +147,7 @@ class Requerimento extends Model
         $setor = $this->setor;
         $aluno = $this->usuario;
 
-        $emailsSetor = [];
-        if (!empty($setor->email)) {
-            $emailsSetor = is_array($setor->email) ? $setor->email : [$setor->email];
-        }
-        $emailsSetor = array_values(array_unique(array_filter(array_map('trim', $emailsSetor))));
+        $emailsSetor = $setor ? $setor->obterEmailsNotificacao() : [];
 
         $emailsAluno = array_filter([$aluno?->email_pessoal]);
         $emailsAluno = array_values(array_unique(array_filter(array_map('trim', $emailsAluno))));
@@ -166,6 +162,25 @@ class Requerimento extends Model
 
         if (!empty($to)) {
             Mail::to($to)->send(new AtualizacaoRequerimentoMail($this, $mensagem, $remetente, $arquivos, $solicitaNovoDocumento));
+        }
+    }
+
+    /**
+     * Envia e-mail de notificação para um setor sobre encaminhamento ou resposta de encaminhamento.
+     */
+    public function notificarEncaminhamento(Setor $setorOrigem, Setor $setorDestino, string $mensagem, string $tipo = 'encaminhamento', array $arquivos = []): void
+    {
+        $emailsDestino = $setorDestino->obterEmailsNotificacao();
+
+        if (!empty($emailsDestino)) {
+            Mail::to($emailsDestino)->send(new \App\Mail\EncaminhamentoRequerimentoMail(
+                requerimento: $this,
+                setorOrigem: $setorOrigem,
+                setorDestino: $setorDestino,
+                mensagem: $mensagem,
+                tipo: $tipo,
+                arquivos: $arquivos
+            ));
         }
     }
 }

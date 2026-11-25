@@ -47,15 +47,23 @@ class LoginController extends Controller
 
             Auth::login($usuario);
 
+            if ($usuario->ehResponsavel()) {
+                $setor = $usuario->setoresSobResponsabilidade()->first();
+                $default = $setor
+                    ? route('setor.responsavel.dashboard', $setor->id)
+                    : route('admin.setores.index');
+                return redirect()->intended($default);
+            }
+
             if ($usuario->isAdmin()) {
-                return redirect()->route('admin.dashboard');
+                return redirect()->intended(route('admin.dashboard'));
             }
 
-            if ($usuario->isProfessor()) {
-                return redirect()->route('servidor.dashboard');
+            if ($usuario->isProfessor() || $usuario->isServidor()) {
+                return redirect()->intended(route('servidor.dashboard'));
             }
 
-            return redirect()->route('requerimentos.aluno.novo');
+            return redirect()->intended(route('requerimentos.aluno.novo'));
         }
 
         /*
@@ -87,14 +95,22 @@ if (!$jwt) {
     Auth::login($usuario);
 
     if ($usuario->ehResponsavel()) {
-                return redirect()->route('setor.responsavel.dashboard');
-            }
-
-    if ($usuario->isProfessor()) {
-        return redirect()->route('servidor.dashboard');
+        $setor = $usuario->setoresSobResponsabilidade()->first();
+        $default = $setor
+            ? route('setor.responsavel.dashboard', $setor->id)
+            : route('admin.setores.index');
+        return redirect()->intended($default);
     }
 
-    return redirect()->route('requerimentos.aluno');
+    if ($usuario->isAdmin()) {
+        return redirect()->intended(route('admin.dashboard'));
+    }
+
+    if ($usuario->isProfessor() || $usuario->isServidor()) {
+        return redirect()->intended(route('servidor.dashboard'));
+    }
+
+    return redirect()->intended(route('requerimentos.aluno'));
 }
 
         $dados = $suap->meusDados($jwt);
@@ -186,19 +202,19 @@ if (!$jwt) {
         | REDIRECIONAMENTO
         |--------------------------------------------------------------------------
         */
-        if ($usuario->isAdmin()) {
-            return redirect()->intended(route('admin.dashboard'));
-        }
-
-        if ($usuario->isServidor()) {
-            return redirect()->intended(route('servidor.dashboard'));
-        }
-
         if ($usuario->ehResponsavel()) {
             $setor = $usuario->setoresSobResponsabilidade()->first();
             return $setor
                 ? redirect()->intended(route('setor.responsavel.dashboard', $setor->id))
                 : redirect()->intended(route('admin.setores.index'));
+        }
+
+        if ($usuario->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        if ($usuario->isServidor() || $usuario->isProfessor()) {
+            return redirect()->intended(route('servidor.dashboard'));
         }
 
         return redirect()->intended(route('requerimentos.aluno.novo'));

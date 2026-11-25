@@ -210,11 +210,20 @@
                 </div>
             @endif
 
-            @if($requerimento->setor_retorno_id)
+            @if($requerimento->setor_retorno_id && (int) $requerimento->setor_retorno_id === (int) $setor->id)
+                {{-- Setor de origem que encaminhou e está aguardando o parecer do outro setor --}}
+                <div class="card-painel" style="margin-top: 1rem; border-left: 4px solid #2563eb;">
+                    <h3 class="card-titulo" style="color: #1e40af;">Requerimento em Análise no Setor {{ $requerimento->setor?->setor_nome }}</h3>
+                    <p style="margin: 0; color: #4b5563; font-size: 0.95rem;">
+                        Este requerimento foi encaminhado para o setor <strong>{{ $requerimento->setor?->setor_nome }} ({{ $requerimento->setor?->setor_sigla }})</strong> e está aguardando manifestação/resposta.
+                    </p>
+                </div>
+            @elseif($requerimento->setor_retorno_id)
+                {{-- Setor de destino que recebeu e precisa responder/devolver --}}
                 <div class="card-painel" style="margin-top: 1rem;">
                     <h3 class="card-titulo">Responder ao setor {{ $requerimento->setorRetorno?->setor_nome }}</h3>
                     <p>Registre a resposta e devolva o requerimento ao setor que o encaminhou.</p>
-                    <form action="{{ route('setor.requerimentos.responderEncaminhamento', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('setor.requerimentos.responderEncaminhamento', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerText = 'Enviando resposta...';">
                         @csrf
                         <label for="resposta_encaminhamento" class="info-label">Resposta</label>
                         <textarea name="observacao" id="resposta_encaminhamento" class="form-control" rows="4" required>{{ old('observacao') }}</textarea>
@@ -226,9 +235,10 @@
                     </form>
                 </div>
             @else
+                {{-- Requerimento normal no setor: pode encaminhar para outro setor --}}
                 <div class="card-painel" style="margin-top: 1rem;">
                     <h3 class="card-titulo">Encaminhar para outro setor</h3>
-                    <form action="{{ route('setor.requerimentos.encaminhar', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('setor.requerimentos.encaminhar', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.innerText = 'Encaminhando...';">
                         @csrf
                         <label for="setor_destino_id" class="info-label">Setor de destino</label>
                         <select name="setor_destino_id" id="setor_destino_id" class="select-status" required>
@@ -248,6 +258,7 @@
                 </div>
             @endif
 
+            @if(!$requerimento->setor_retorno_id || (int) $requerimento->setor_id === (int) $setor->id)
             {{-- FORMULÁRIO PARA ATUALIZAR STATUS --}}
             <div class="card-painel" style="margin-top: 1rem;">
                 <h3 class="card-titulo">Atualizar Status</h3>
@@ -315,6 +326,7 @@
                     </div>
                 </form>
             </div>
+            @endif
         </div>
 
         {{-- DADOS DO ALUNO --}}
