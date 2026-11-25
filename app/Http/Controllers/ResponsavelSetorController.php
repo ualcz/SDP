@@ -278,7 +278,7 @@ class ResponsavelSetorController extends Controller
         }
 
         return redirect()
-            ->route('setor.requerimento.status', [$setor->id, 'todos'])
+            ->route('setor.responsavel.dashboard', [$setor->id, 'todos'])
             ->with('success', 'Requerimento encaminhado para ' . $destino->setor_nome . '.');
     }
 

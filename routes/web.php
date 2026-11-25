@@ -148,14 +148,14 @@ Route::middleware(['auth', 'responsavel'])->group(function () {
     Route::get('/setor/{setor_id}/dashboard', [ResponsavelSetorController::class, 'index'])
         ->name('setor.responsavel.dashboard');
     Route::get('setor/{setor}/requerimentos/{requerimento}', [ResponsavelSetorController::class, 'show'])
-    ->whereNumber('requerimento')
-    ->name('setor.requerimentos.show');
+        ->whereNumber('requerimento')
+        ->name('setor.requerimentos.show');
     Route::patch('/setor/{setor}/requerimentos/{requerimento}/atualizarStatus', [ResponsavelSetorController::class, 'atualizarStatus'])
-    ->name('setor.requerimentos.atualizarStatus');
+        ->name('setor.requerimentos.atualizarStatus');
     Route::post('/setor/{setor}/requerimentos/{requerimento}/encaminhar', [ResponsavelSetorController::class, 'encaminhar'])
-    ->name('setor.requerimentos.encaminhar');
+        ->name('setor.requerimentos.encaminhar');
     Route::post('/setor/{setor}/requerimentos/{requerimento}/responder-encaminhamento', [ResponsavelSetorController::class, 'responderEncaminhamento'])
-    ->name('setor.requerimentos.responderEncaminhamento');
+        ->name('setor.requerimentos.responderEncaminhamento');
 });
 
 /*
