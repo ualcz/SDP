@@ -227,7 +227,7 @@
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Aberto" ? '' : 'disabled' }}>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-atender" {{ ($requerimento->status == "Aberto" || $requerimento->status == "Encaminhado") ? '' : 'disabled' }}>
                                         Atender
                             </button>
                         </li>
@@ -251,6 +251,9 @@
 
 {{-- Modal de encaminhamento --}}
 @include('setor.requerimentos.partials.modal-concluir')
+
+{{-- Modal de atender --}}
+@include('setor.requerimentos.partials.modal-atender')
 
 <script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

@@ -229,7 +229,7 @@ class ResponsavelSetorController extends Controller
     {
         $this->autorizarSetor($setor);
 
-        // Se já foi encaminhado, redireciona graciosamente em vez de lançar 404
+        // Se já foi encaminhado, redireciona graciosamente em vez de lançar 404 kkkkkkkkkk
         if ((int) $requerimento->setor_id !== (int) $setor->id || $requerimento->setor_retorno_id) {
             return redirect()
                 ->route('setor.responsavel.dashboard', $setor->id)
@@ -261,7 +261,7 @@ class ResponsavelSetorController extends Controller
             $atual->update([
                 'setor_id' => $destino->id,
                 'setor_retorno_id' => $setor->id,
-                'status' => 'Em Análise',
+                'status' => 'Encaminhado',
             ]);
 
             return HistoricoRequerimento::create([
