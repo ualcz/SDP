@@ -27,10 +27,13 @@
                     <option value="">Todos</option>
                     <option value="Aberto" {{ request('status') == 'Aberto' ? 'selected' : '' }}>Aberto</option>
                     <option value="Em Análise" {{ request('status') == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
-                    <option value="Despacho" {{ request('status') == 'Despacho' ? 'selected' : '' }}>Despacho</option>
+                    {{-- <option value="Despacho" {{ request('status') == 'Despacho' ? 'selected' : '' }}>Despacho</option> --}}
+                    <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
+                    <option value="Deferido" {{ request('status') == 'Deferido' ? 'selected' : '' }}>Deferido</option>
                     <option value="Indeferido" {{ request('status') == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
+                    <option value="Encaminhado" {{ request('status') == 'Encaminhado' ? 'selected' : '' }}>Encaminhado</option>
                     <option value="Concluído" {{ request('status') == 'Concluído' ? 'selected' : '' }}>Concluído</option>
-                    <option value="Encerrado" {{ request('status') == 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
+                    {{-- <option value="Encerrado" {{ request('status') == 'Encerrado' ? 'selected' : '' }}>Encerrado</option> --}}
                 </select>
             </div>
 
