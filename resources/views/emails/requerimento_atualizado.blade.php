@@ -6,7 +6,7 @@ Olá,
 
 O aluno **{{ $requerimento->usuario?->nome ?? 'Aluno' }}** enviou novas informações / documentos para o requerimento de **{{ $requerimento->objetoDoRequerimento }}**.
 
-@if(!empty(trim($mensagem)))
+@if(!empty(trim((string) $mensagem)))
 <x-mail::panel>
 **Mensagem do Aluno:**<br>
 {!! nl2br(e($mensagem)) !!}
@@ -27,14 +27,19 @@ Analisar no Painel
 
 @else
 {{-- Enviado pelo setor para o aluno --}}
-@if($requerimento->status === 'Indeferido')
-# Requerimento Indeferido #{{ $requerimento->numero_protocolo }}
+@php
+    $temMensagemCustomizada = !empty(trim((string) $mensagem))
+        && !in_array(trim((string) $mensagem), ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']);
+@endphp
+
+@if($requerimento->status === 'Pendente')
+# Requerimento Pendente #{{ $requerimento->numero_protocolo }}
 
 Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
 
-O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi **indeferido**.
+O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** está **pendente** e precisa de sua atenção.
 
-@if(!empty(trim($mensagem)) && !in_array($mensagem, ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']))
+@if($temMensagemCustomizada)
 <x-mail::panel>
 **Motivo apontado pelo setor:**<br>
 {!! nl2br(e($mensagem)) !!}
@@ -48,8 +53,72 @@ O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi
 Corrigir e Reenviar Documento
 </x-mail::button>
 @else
-**Ação necessária:** Nenhuma ação necessária no momento. Aguarde orientações do setor caso necessário.
+**Ação necessária:** Acesse o sistema para verificar as orientações do setor e responder ao requerimento, se necessário.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Visualizar Requerimento
+</x-mail::button>
 @endif
+
+@elseif($requerimento->status === 'Encaminhado')
+# Requerimento Encaminhado #{{ $requerimento->numero_protocolo }}
+
+Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
+
+O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi **encaminhado** para outro setor dar continuidade ao atendimento.
+
+@if($temMensagemCustomizada)
+<x-mail::panel>
+**Observações do setor:**<br>
+{!! nl2br(e($mensagem)) !!}
+</x-mail::panel>
+@endif
+
+**Ação necessária:** Nenhuma ação necessária no momento. Você será avisado assim que houver uma nova atualização.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Acompanhar Requerimento
+</x-mail::button>
+
+@elseif($requerimento->status === 'Deferido')
+# Requerimento Deferido #{{ $requerimento->numero_protocolo }}
+
+Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
+
+O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi **deferido** (aprovado) pelo setor responsável.
+
+@if($temMensagemCustomizada)
+<x-mail::panel>
+**Despacho / Parecer do setor:**<br>
+{!! nl2br(e($mensagem)) !!}
+</x-mail::panel>
+@endif
+
+**Ação necessária:** Nenhuma ação pendente. Acesse o sistema para acompanhar eventuais etapas finais ou documentos emitidos.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Visualizar Requerimento
+</x-mail::button>
+
+@elseif($requerimento->status === 'Indeferido')
+# Requerimento Indeferido #{{ $requerimento->numero_protocolo }}
+
+Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
+
+O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi **indeferido** pelo setor responsável.
+
+@if($temMensagemCustomizada)
+<x-mail::panel>
+**Justificativa / Parecer do setor:**<br>
+{!! nl2br(e($mensagem)) !!}
+</x-mail::panel>
+@endif
+
+**Ação necessária:** Nenhuma ação pendente. Acesse o sistema caso queira consultar os detalhes do parecer.
+
+<x-mail::button :url="route('requerimentos.aluno.visualizar', $requerimento->id)">
+Visualizar Requerimento
+</x-mail::button>
 
 @elseif($requerimento->status === 'Concluído')
 # Requerimento Concluído #{{ $requerimento->numero_protocolo }}
@@ -58,7 +127,7 @@ Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
 
 O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi **concluído com sucesso**.
 
-@if(!empty(trim($mensagem)) && !in_array($mensagem, ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']))
+@if($temMensagemCustomizada)
 <x-mail::panel>
 **Despacho / Parecer do setor:**<br>
 {!! nl2br(e($mensagem)) !!}
@@ -78,7 +147,7 @@ Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
 
 O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** foi encerrado pelo setor responsável.
 
-@if(!empty(trim($mensagem)) && !in_array($mensagem, ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']))
+@if($temMensagemCustomizada)
 <x-mail::panel>
 **Observação do setor:**<br>
 {!! nl2br(e($mensagem)) !!}
@@ -98,7 +167,7 @@ Olá, **{{ $requerimento->usuario?->nome ?? 'Aluno(a)' }}**.
 
 O seu requerimento referente a **{{ $requerimento->objetoDoRequerimento }}** agora está **em análise** pelo setor responsável.
 
-@if(!empty(trim($mensagem)) && !in_array($mensagem, ['Status atualizado pelo setor.', 'Despacho registrado pelo setor.']))
+@if($temMensagemCustomizada)
 <x-mail::panel>
 **Observações do setor:**<br>
 {!! nl2br(e($mensagem)) !!}
