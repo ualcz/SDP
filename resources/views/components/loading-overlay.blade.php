@@ -13,6 +13,10 @@
     ]
 ])
 
+@php
+    $uid = preg_replace('/[^A-Za-z0-9_-]/', '_', (string) $formId);
+@endphp
+
 <style>
 /* Estilos do Overlay de Carregamento */
 .loading-overlay {
@@ -133,22 +137,23 @@
 }
 </style>
 
-<div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-hidden="true">
+<div id="loadingOverlay_{{ $uid }}" class="loading-overlay" style="display: none;" role="status" aria-hidden="true">
     <div class="loading-box">
-        <div id="loadingSpinner" class="spinner"></div>
-        <div id="loadingSuccessIcon" class="success-checkmark-wrapper" style="display: none;">
+        <div id="loadingSpinner_{{ $uid }}" class="spinner"></div>
+        <div id="loadingSuccessIcon_{{ $uid }}" class="success-checkmark-wrapper" style="display: none;">
             <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                 <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
                 <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
             </svg>
         </div>
-        <p id="loadingText" class="loading-text">{{ $mensagens[0] }}</p>
-        <p id="loadingSubtext" class="loading-subtext" style="display: none;"></p>
+        <p id="loadingText_{{ $uid }}" class="loading-text">{{ $mensagens[0] }}</p>
+        <p id="loadingSubtext_{{ $uid }}" class="loading-subtext" style="display: none;"></p>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const uid = @json($uid);
         const formId = @json($formId);
         const mensagens = @json($mensagens);
         const isAjax = @json($ajax);
@@ -156,13 +161,19 @@
         const successMessage = @json($successMessage);
 
         const form = document.getElementById(formId);
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        const loadingSubtext = document.getElementById('loadingSubtext');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const loadingSuccessIcon = document.getElementById('loadingSuccessIcon');
+        const loadingOverlay = document.getElementById(`loadingOverlay_${uid}`);
+        const loadingText = document.getElementById(`loadingText_${uid}`);
+        const loadingSubtext = document.getElementById(`loadingSubtext_${uid}`);
+        const loadingSpinner = document.getElementById(`loadingSpinner_${uid}`);
+        const loadingSuccessIcon = document.getElementById(`loadingSuccessIcon_${uid}`);
 
         if (!form || !loadingOverlay || !loadingText) return;
+
+        // Botão de submit pode estar dentro do form ou fora usando o atributo form="formId"
+        const getSubmitButton = () => {
+            return form.querySelector('button[type="submit"], input[type="submit"]')
+                || document.querySelector(`button[type="submit"][form="${formId}"], input[type="submit"][form="${formId}"]`);
+        };
 
         if (isAjax) {
             form.addEventListener('submit', async function (e) {
@@ -195,7 +206,7 @@
                 loadingOverlay.style.display = 'flex';
                 loadingOverlay.setAttribute('aria-hidden', 'false');
 
-                const btnSubmit = form.querySelector('button[type="submit"], input[type="submit"]');
+                const btnSubmit = getSubmitButton();
                 if (btnSubmit) {
                     btnSubmit.style.pointerEvents = 'none';
                     btnSubmit.disabled = true;
@@ -309,7 +320,7 @@
                 loadingOverlay.style.display = 'flex';
                 loadingOverlay.setAttribute('aria-hidden', 'false');
 
-                const btnSubmit = form.querySelector('button[type="submit"], input[type="submit"]');
+                const btnSubmit = getSubmitButton();
                 if (btnSubmit) {
                     btnSubmit.style.pointerEvents = 'none';
                     setTimeout(() => {

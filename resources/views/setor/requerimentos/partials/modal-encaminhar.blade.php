@@ -78,7 +78,7 @@
                 <select
                     name="setor_destino_id"
                     id="setor_destino_id"
-                    class="select-status"
+                    class="custom-select"
                     required
                 >
                     <option value="">Selecione um setor</option>
@@ -143,7 +143,33 @@
     @endif
 
 
+@if(session('sucesso'))
+        <div class="alert-sucesso">
+            {{ session('sucesso') }}
+        </div>
+    @endif
 
+    @if($requerimento->setor_retorno_id)
+        <x-loading-overlay
+            form-id="form-resposta-encaminhamento"
+            :mensagens="[
+                'Atualizando status...',
+                'Enviando email para o aluno...',
+                'Atualizando sistema...',
+                'Só mais um instante...'
+            ]"
+        />
+    @else
+        <x-loading-overlay
+            form-id="form-encaminhar"
+            :mensagens="[
+                'Atualizando status...',
+                'Enviando email para o aluno...',
+                'Atualizando sistema...',
+                'Só mais um instante...'
+            ]"
+        />
+    @endif
 
 
 </x-modal>

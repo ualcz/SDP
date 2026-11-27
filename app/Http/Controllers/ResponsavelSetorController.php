@@ -29,7 +29,7 @@ class ResponsavelSetorController extends Controller
         $filters = $request->validate([
             'aluno'       => ['nullable', 'string', 'max:255'],
             'turma'       => ['nullable', 'string', 'max:255'],
-            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Deferido,Indeferido,Concluído,Encerrado'],
+            'status'      => ['nullable', 'in:Aberto,Em Análise,Despacho,Deferido,Indeferido,Pendente,Concluído,Encerrado'],
             'data_inicio' => ['nullable', 'date'],
             'data_fim'    => ['nullable', 'date', 'after_or_equal:data_inicio'],
         ]);
@@ -87,6 +87,7 @@ class ResponsavelSetorController extends Controller
             'analise'    => 'Em Análise',
             'deferido' => 'Deferido',
             'indeferido' => 'Indeferido',
+            'pendente' => 'Pendente',
             'concluido'  => 'Concluído',
             'encerrado'  => 'Encerrado',
         ];
@@ -160,7 +161,7 @@ class ResponsavelSetorController extends Controller
         }
 
         $validated = $request->validate([
-            'status'     => 'required|in:Em Análise,Deferido,Indeferido,Concluído,Encerrado',
+            'status'     => 'required|in:Em Análise,Deferido,Indeferido,Pendente,Concluído,Encerrado',
             'observacao' => 'required_if:status,Indeferido|nullable|string',
             'solicita_novo_documento' => 'nullable|boolean',
             'nome_documento_solicitado' => 'required_if:solicita_novo_documento,1|nullable|string',
