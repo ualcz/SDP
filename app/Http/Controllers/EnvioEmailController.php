@@ -133,7 +133,9 @@ class EnvioEmailController extends Controller
         $assunto = null;
         if (empty($request->input('objeto_outro'))) {
             $objetoTexto = $request->input('objetoDoRequerimento') ?? $request->input('objeto');
-            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objetoTexto)->first();
+            $assunto = \App\Models\AssuntoRequerimento::where('setor_id', $setor->id)
+                ->where('descricao', $objetoTexto)
+                ->first();
 
             if ($assunto) {
                 $documentosAssunto = $assunto->documentos()->get();
@@ -187,9 +189,6 @@ class EnvioEmailController extends Controller
         // 3. Salva o registro no banco de dados
         $requerimento = null;
         try {
-            // Tenta encontrar o assunto pelo texto selecionado
-            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
-
             $requerimento = Requerimento::create([
                 'usuario_id'             => $aluno->id,
                 'assunto_requerimento_id' => $assunto?->id,
