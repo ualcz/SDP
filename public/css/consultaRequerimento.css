@@ -198,51 +198,75 @@
     font-size: 0.75rem;
 }
 
-.Aberto span{
-    color: rgb(245, 148, 30);
-    background-color: rgb(255, 232, 204);
-    padding: 5px 10px 5px 10px;
-    border-radius: 4px;
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-.aberto span{
-    color: rgb(245, 148, 30);
-    background-color: rgb(255, 232, 204);
-    padding: 5px 10px 5px 10px;
-    border-radius: 4px;
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-.Análise span{
-    color: rgb(78, 25, 102);
-    background-color: rgb(241, 204, 255);
-    padding: 5px 10px 5px 10px;
-    border-radius: 4px;
-    display: block;
-    width: 100%;
-    text-align: center;
-}
+/* Base comum para os spans de status */
+.aberto span,
+.Aberto span,
+.em-analise span,
+.analise span,
+.Análise span,
+.pendente span,
+.Pendente span,
+.encaminhado span,
+.Encaminhado span,
+.deferido span,
+.Deferido span,
+.indeferido span,
+.Indeferido span,
+.concluido span,
 .Concluído span,
-.Encerrado span{
-    color: rgb(18, 106, 14);
-    background-color: rgb(202, 255, 200);
-    padding: 5px 10px 5px 10px;
+.encerrado span,
+.Encerrado span {
+    padding: 5px 10px;
     border-radius: 4px;
     display: block;
     width: 100%;
     text-align: center;
+    font-weight: 500;
 }
-.Indeferido span{
-    color: rgb(135, 3, 3);
-    background-color: rgb(255, 174, 174);
-    padding: 5px 10px 5px 10px;
-    border-radius: 4px;
-    display: block;
-    width: 100%;
-    text-align: center;
+
+.aberto span,
+.Aberto span {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.em-analise span,
+.analise span,
+.Análise span {
+    background-color: #ede9fe;
+    color: #6d28d9;
+}
+
+.pendente span,
+.Pendente span {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.encaminhado span,
+.Encaminhado span {
+    background-color: #ccfbf1;
+    color: #0f766e;
+}
+
+.deferido span,
+.Deferido span {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.indeferido span,
+.Indeferido span {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.concluido span,
+.Concluído span,
+.encerrado span,
+.Encerrado span {
+    background-color: #e2e8f0;
+    color: #334155;
 }
 .Despacho span,
 .despacho span{

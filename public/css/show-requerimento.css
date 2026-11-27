@@ -789,12 +789,13 @@
 }
 
 /* Estados da Timeline */
-.status-Aberto .timeline-badge {
-    border-color: #f59e0b;
+
+.status-aberto .timeline-badge {
+    border-color: #0ea5e9;
 }
-.status-Aberto .badge-status {
-    background: #fef3c7;
-    color: #92400e;
+.status-aberto .badge-status {
+    background: #e0f2fe;
+    color: #0369a1;
 }
 
 .status-em-analise .timeline-badge {
@@ -805,8 +806,35 @@
     color: #6d28d9;
 }
 
+.status-pendente .timeline-badge {
+    border-color: #f59e0b;
+}
+.status-pendente .badge-status {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-encaminhado .timeline-badge {
+    border-color: #14b8a6;
+}
+.status-encaminhado .badge-status {
+    background: #ccfbf1;
+    color: #0f766e;
+}
+
+.status-deferido .timeline-badge {
+    border-color: #10b981;
+    background: #10b981;
+
+}
+.status-deferido .badge-status {
+    background: #d1fae5;
+    color: #047857;
+}
+
 .status-indeferido .timeline-badge {
     border-color: #ef4444;
+    background: #ef4444;
 }
 .status-indeferido .badge-status {
     background: #fee2e2;
@@ -814,12 +842,12 @@
 }
 
 .status-concluido .timeline-badge {
-    border-color: #10b981;
-    background: #10b981;
+    border-color: #64748b;
+    background: #64748b;
 }
 .status-concluido .badge-status {
-    background: #d1fae5;
-    color: #047857;
+    background: #e2e8f0;
+    color: #334155;
 }
 
 .status-despacho .timeline-badge {
