@@ -1,6 +1,6 @@
 @props([
     'name' => 'arquivos[]',
-    'label' => 'Anexos complementares',
+    'label' => 'Anexar arquivo',
     'helpText' => null,
     'multiple' => true,
     'accept' => '.pdf,.doc,.docx,.png,.jpg,.jpeg',
@@ -29,7 +29,7 @@
         border-color: #9ca3af;
     }
     .custom-file-upload input[type="file"] {
-        display: none;
+        display: none !important;
     }
     .file-upload-text {
         font-size: 13px;
@@ -49,9 +49,6 @@
         margin: 4px 0 0 0;
         padding-left: 18px;
     }
-    .obrigatorio {
-        background-color: #F9EBEB;
-    }
 </style>
 
 <div class="campo" style="margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 12px;">
@@ -67,7 +64,7 @@
     </small>
 
 
-    <label @class(['custom-file-upload', 'obrigatorio' => $isObrigatorio])>
+    <label class="custom-file-upload">
         <input
             type="file"
             name="{{ $name }}"

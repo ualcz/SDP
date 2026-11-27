@@ -36,7 +36,6 @@ class EnvioEmailController extends Controller
             'cep'                  => 'nullable|string|max:10',
             'endereco'             => 'nullable|string|max:255',
             'email_adicional'      => 'nullable|email',
-            'arquivos.*'           => 'nullable|file|max:51200', // 50MB por arquivo complementar
             'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
             'documentos_responsavel.*' => 'nullable|file|max:51200',
         ]);
@@ -134,7 +133,20 @@ class EnvioEmailController extends Controller
         $assunto = null;
         if (empty($request->input('objeto_outro'))) {
             $objetoTexto = $request->input('objetoDoRequerimento') ?? $request->input('objeto');
-            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objetoTexto)->first();
+            $assuntoQuery = \App\Models\AssuntoRequerimento::where('setor_id', $setor->id)
+                ->where('ativo', true);
+            $assuntoId = $request->input('assunto_requerimento_id');
+            $assunto = $assuntoId
+                ? $assuntoQuery->whereKey($assuntoId)->first()
+                : $assuntoQuery->where('descricao', $objetoTexto)->first();
+
+            if ($assuntoId && !$assunto) {
+                $mensagem = 'O assunto selecionado não pertence ao setor escolhido ou não está mais ativo.';
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['errors' => ['assunto' => [$mensagem]]], 422);
+                }
+                return back()->withErrors(['assunto' => $mensagem])->withInput();
+            }
 
             if ($assunto) {
                 $documentosAssunto = $assunto->documentos()->get();
@@ -166,11 +178,10 @@ class EnvioEmailController extends Controller
             }
         }
 
-        // Coleta todos os arquivos enviados (específicos de documentos + complementares)
+        // Coleta todos os arquivos enviados dos documentos configurados
         $todosArquivosInput = [
             $request->file('documentos', []),
-            $request->file('documentos_responsavel', []),
-            $request->file('arquivos', [])
+            $request->file('documentos_responsavel', [])
         ];
 
         $arquivos = [];
@@ -189,9 +200,6 @@ class EnvioEmailController extends Controller
         // 3. Salva o registro no banco de dados
         $requerimento = null;
         try {
-            // Tenta encontrar o assunto pelo texto selecionado
-            $assunto = \App\Models\AssuntoRequerimento::where('descricao', $objeto)->first();
-
             $requerimento = Requerimento::create([
                 'usuario_id'             => $aluno->id,
                 'assunto_requerimento_id' => $assunto?->id,
@@ -219,7 +227,6 @@ class EnvioEmailController extends Controller
                 requerimento: $requerimento,
                 historico: $historicoInicial,
                 documentosInput: $documentosParaSalvar,
-                arquivosComplementares: $request->file('arquivos', []),
                 usuario: $aluno
             );
         } catch (\Throwable $e) {

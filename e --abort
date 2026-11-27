@@ -1,0 +1,85 @@
+[33m3e50f6d[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: rebase (start): checkout origin/main
+[33m3308626[m[33m ([m[1;31morigin/NewStatusLogic[m[33m, [m[1;32mNewStatusLogic[m[33m)[m HEAD@{1}: commit: feat: atualizar modal de solicitação de alteração com novos campos e estilização
+[33m2c53e60[m HEAD@{2}: commit: feat: cada modal vira uma parte e atualiza modal de deferimento/conclusão
+[33mf0ca6e3[m HEAD@{3}: commit: feat: adicionar modais para ações de requerimentos e estilização correspondente
+[33mb699911[m HEAD@{4}: checkout: moving from main to NewStatusLogic
+[33m53c1710[m[33m ([m[1;32mmain[m[33m)[m HEAD@{5}: pull: Fast-forward
+[33mbbdb0be[m HEAD@{6}: checkout: moving from NewStatusLogic to main
+[33mb699911[m HEAD@{7}: commit: fix: corrigir rota de redirecionamento após resposta de encaminhamento
+[33m8fbffed[m[33m ([m[1;31morigin/form3etapas[m[33m, [m[1;32mform3etapas[m[33m)[m HEAD@{8}: checkout: moving from form3etapas to NewStatusLogic
+[33m8fbffed[m[33m ([m[1;31morigin/form3etapas[m[33m, [m[1;32mform3etapas[m[33m)[m HEAD@{9}: reset: moving to HEAD
+[33m8fbffed[m[33m ([m[1;31morigin/form3etapas[m[33m, [m[1;32mform3etapas[m[33m)[m HEAD@{10}: pull --tags origin form3etapas: Merge made by the 'ort' strategy.
+[33m94da791[m HEAD@{11}: commit: fix: corrigir rota de redirecionamento após encaminhamento de requerimento
+[33m549b889[m HEAD@{12}: checkout: moving from main to form3etapas
+[33mbbdb0be[m HEAD@{13}: pull: Fast-forward
+[33mc06177d[m HEAD@{14}: commit: feat: possibilitar que servidor responsável por um requerimento em despacho atualize os status
+[33m3121c92[m HEAD@{15}: pull: Fast-forward
+[33m492d5e1[m HEAD@{16}: commit: fix: corrige a grafia de "Infererido" para "Indeferido" no gráfico de status de setores
+[33m562bad9[m HEAD@{17}: pull: Fast-forward
+[33maca43d9[m HEAD@{18}: pull: Fast-forward
+[33m5c1e340[m HEAD@{19}: reset: moving to origin/main
+[33m579c8ef[m HEAD@{20}: pull: Fast-forward
+[33mdc11a9d[m HEAD@{21}: pull: Fast-forward
+[33m2268a2f[m HEAD@{22}: commit: Add mobile header styles and responsive layout for authentication links
+[33m146f7b9[m HEAD@{23}: commit: feat(home): ajusta estilos de layout e tipografia para melhor responsividade da home e do conteudo
+[33maab2c99[m HEAD@{24}: commit: fix(login): atualiza redirecionamento para nova rota de requerimentos de aluno
+[33m47fbf05[m HEAD@{25}: commit: feat(modelo): adiciona controlador e view para geração de declaração de ciência
+[33m7ee725f[m HEAD@{26}: commit: feat(notificacoes): adiciona gerenciamento de destinatários para notificações e atualiza a interface
+[33mce16d5d[m HEAD@{27}: pull: Fast-forward
+[33m95f32a6[m HEAD@{28}: commit: feat(setores): adiciona dropdown para seleção de setores do usuário
+[33made86b2[m HEAD@{29}: commit: fix(report): corrige erro para user deslogado
+[33mfe0db93[m HEAD@{30}: commit: feat(report): cria controlador de relatórios e atualiza rotas correspondentes
+[33mff097ea[m HEAD@{31}: commit: feat: adiciona página de contato e rota correspondente
+[33m4e5393b[m HEAD@{32}: pull: Fast-forward
+[33m3f0e352[m HEAD@{33}: commit: feat: adiciona ícone de upload ao componente de entrada de arquivos
+[33m217c14e[m HEAD@{34}: commit: refactor: altera a lógica de mudança de etapa no form para sempre iniciar na etapa 1
+[33m03cbd76[m HEAD@{35}: pull: Fast-forward
+[33m47fcbd8[m HEAD@{36}: pull: Fast-forward
+[33maf0bc10[m HEAD@{37}: pull: Fast-forward
+[33m7206ed8[m HEAD@{38}: commit: feat: adiciona verificação de responsável do setor e exibe documento solicitado no histórico
+[33m5ab7ea0[m HEAD@{39}: commit: feat: adiciona filtros na listagem de requerimentos
+[33m462d0d8[m HEAD@{40}: commit: feat: refatora a visualização de listagem de requerimentos (admin e servidor) e adiciona novo estilo CSS
+[33m425a43c[m HEAD@{41}: pull: Fast-forward
+[33m805d525[m HEAD@{42}: commit: feat: adiciona acordeão para exibir informações do aluno e endereço residencial
+[33m5b76ae6[m HEAD@{43}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33mb30b4b3[m HEAD@{44}: commit: feat: Corrige erro em cadastrar assunto de requerimento e melhora mensagens de erro.
+[33m38b575b[m HEAD@{45}: pull: Fast-forward
+[33m1f5584f[m HEAD@{46}: commit: fix: corrige a capitalização do status 'aberto' para 'Aberto' em várias partes do código. Corrige problemas de layout.
+[33m93b5360[m HEAD@{47}: commit: feat: implementa componente de overlay de carregamento reutilizável
+[33m8c7f486[m HEAD@{48}: commit: feat: adiciona funcionalidade de reenviar requerimento e notificação por e-mail
+[33meb8d233[m HEAD@{49}: pull: Fast-forward
+[33mc10d63c[m HEAD@{50}: checkout: moving from feature/historico-requerimento to main
+[33md84f099[m[33m ([m[1;31morigin/feature/historico-requerimento[m[33m, [m[1;32mfeature/historico-requerimento[m[33m)[m HEAD@{51}: commit (merge): Merge remote-tracking branch 'origin/main' into feature/historico-requerimento
+[33mb8293e6[m HEAD@{52}: checkout: moving from main to feature/historico-requerimento
+[33mc10d63c[m HEAD@{53}: pull: Fast-forward
+[33m494d158[m HEAD@{54}: checkout: moving from feature/historico-requerimento to main
+[33mb8293e6[m HEAD@{55}: commit: refactor: remove linhas em branco desnecessárias no arquivo show.blade.php
+[33m1621707[m HEAD@{56}: commit: feat: adiciona formulário para envio de documentos solicitados no histórico do requerimento
+[33m237051d[m HEAD@{57}: commit: feat: adiciona classe de estilo para status "Indeferido" nos requerimentos
+[33m0b0c3f0[m HEAD@{58}: merge origin/main: Merge made by the 'ort' strategy.
+[33m5faf300[m HEAD@{59}: commit: feat: adiciona estilos e botões para impressão de requerimentos
+[33m6204b67[m HEAD@{60}: checkout: moving from main to feature/historico-requerimento
+[33m494d158[m HEAD@{61}: pull: Fast-forward
+[33m07e8496[m HEAD@{62}: checkout: moving from feature/historico-requerimento to main
+[33m6204b67[m HEAD@{63}: commit: feat: Adiciona funcionalidade de visualização de requerimentos e solicitações de documentos
+[33m3ada7b5[m HEAD@{64}: commit: feat: Implementar histórico de requerimentos e observador para registro de alterações
+[33m07e8496[m HEAD@{65}: checkout: moving from main to feature/historico-requerimento
+[33m07e8496[m HEAD@{66}: commit: feat(dashboard): adiciona estilos de borda para os cartões de status de requerimentos
+[33me1135c1[m HEAD@{67}: commit: feat(dashboard-setor): adiciona contagem de requerimentos indeferidos e atualiza a apresentação no painel
+[33me81d144[m HEAD@{68}: pull: Fast-forward
+[33m47171ce[m HEAD@{69}: reset: moving to HEAD
+[33m47171ce[m HEAD@{70}: pull: Fast-forward
+[33mbece20b[m HEAD@{71}: commit: feat: aprimora lógica de filtragem de setores no método create
+[33m893594f[m HEAD@{72}: commit: fotos de perfil
+[33mee07bf8[m HEAD@{73}: commit: feat: adiciona funcionalidade para atualizar status de requerimentos
+[33m6e790c7[m HEAD@{74}: commit: feat: reordena usuários selecionados na criação e edição de setores
+[33m4e2eb32[m HEAD@{75}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33m7d0e90e[m HEAD@{76}: commit: feat: adiciona funcionalidade de visualização detalhada de requerimentos
+[33m18f0edf[m HEAD@{77}: commit: style: adiciona classe de fundo ao corpo da página
+[33m0535d6b[m HEAD@{78}: commit: feat: adiciona filtros de busca e data na visualização de requerimentos por status
+[33mfd6b500[m HEAD@{79}: commit: fix: corrige lógica de classe ativa na navegação do setor
+[33m78379c9[m HEAD@{80}: commit: fix: corrige formatação de variáveis e altera status de 'Em Análise' para 'aberto'
+[33m6afaf79[m HEAD@{81}: commit: feat: atualiza dashboard do setor com novos cards e funcionalidade de filtragem por status
+[33m44a224d[m HEAD@{82}: commit: feat: adiciona componente de botão "Voltar" e atualiza suas instâncias nas views
+[33m33dcae3[m HEAD@{83}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33me37894d[m HEAD@{84}: 

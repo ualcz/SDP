@@ -186,13 +186,11 @@ class DocumentoRequerimentoService
     /**
      * Salva os documentos iniciais enviados na criação do requerimento:
      * - Documentos obrigatórios (mapeados por ID do DocumentoAssunto)
-     * - Anexos complementares
      */
     public function salvarDocumentosIniciais(
         Requerimento $requerimento,
         ?HistoricoRequerimento $historico,
         array $documentosInput = [],
-        array $arquivosComplementares = [],
         ?Usuario $usuario = null
     ): array {
         $salvos = [];
@@ -217,16 +215,6 @@ class DocumentoRequerimentoService
                     if ($doc) {
                         $salvos[] = $doc;
                     }
-                }
-            }
-        }
-
-        // 2. Anexos complementares
-        foreach ($arquivosComplementares as $arquivo) {
-            if ($arquivo instanceof UploadedFile && $arquivo->isValid()) {
-                $doc = $this->salvarArquivo($arquivo, $requerimento, $historico, $usuario, 'Anexo Complementar');
-                if ($doc) {
-                    $salvos[] = $doc;
                 }
             }
         }

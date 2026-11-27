@@ -20,6 +20,7 @@ class QtdRequerimentoMeses
         ")
         ->groupBy('objeto', 'mes')
         ->orderBy('mes')
+        ->whereYear('created_at', now()->year)
         ->get();
 
     $objetos = $dados->groupBy('objeto');
@@ -55,7 +56,7 @@ class QtdRequerimentoMeses
     }
 
     return (new LarapexChart)->lineChart()
-        ->setTitle('Requerimentos por mês')
+        ->setTitle('Requerimentos por mês (em ' .now()->year. ')')
         ->setSubtitle('Cada linha representa um objeto')
         ->setDataset($series)
         ->setXAxis($meses)

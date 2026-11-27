@@ -25,8 +25,10 @@
 @endif
 
 <div class="form-box">
-    <!-- Overlay de Carregamento -->
+    @if (!($isGuest ?? false))
+    <!-- Overlay de Carregamento (apenas para usuários autenticados) -->
     <x-loading-overlay form-id="formRequerimento" :ajax="true" :redirect-url="route('requerimentos.aluno.meusRequerimentos')" />
+    @endif
 
     <!-- Navegação entre modelos / setores -->
     {{-- <div class="setores-nav pulso-ao-carregar">
@@ -64,10 +66,13 @@
         </div>
     @endif
 
+    @if (!($isGuest ?? false))
+        {{-- Formulário completo apenas para usuários autenticados --}}
         <form id="formRequerimento" action="{{ route('aluno.enviar-email') }}" method="POST" enctype="multipart/form-data">
             @csrf
         <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
         <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
+        <input type="hidden" name="assunto_requerimento_id" value="{{ old('assunto_requerimento_id', '') }}">
 
         {{-- Etapa 1: Escolher Setor e Identificação --}}
         @include('requerimentos.partials.dados-requerimento')
@@ -78,6 +83,10 @@
         {{-- Etapa 3: Documentos e Anexos --}}
         @include('requerimentos.partials.documentos-anexos')
     </form>
+    @else
+        {{-- Visitante: exibe apenas a seleção de setores --}}
+        @include('requerimentos.partials.dados-requerimento')
+    @endif
 
     <script src="{{ asset('js/form.js') }}?v={{ filemtime(public_path('js/form.js')) }}"></script>
 

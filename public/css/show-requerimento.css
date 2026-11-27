@@ -11,8 +11,12 @@
     align-items: start;
 }
 
-.protocolo-info { min-width: 0; }
-.protocolo-info .card-painel:last-child { margin-bottom: 0; }
+.protocolo-info {
+    min-width: 0;
+}
+.protocolo-info .card-painel:last-child {
+    margin-bottom: 0;
+}
 
 .card-painel,
 .historico {
@@ -29,7 +33,9 @@
     gap: 20px;
 }
 
-.card-painel { margin-bottom: 1.25rem; }
+.card-painel {
+    margin-bottom: 1.25rem;
+}
 
 .painel-acoes {
     padding: 0;
@@ -59,16 +65,20 @@
     list-style: none;
 }
 
-.acao-resumo::-webkit-details-marker { display: none; }
+.acao-resumo::-webkit-details-marker {
+    display: none;
+}
 
 .acao-resumo::after {
-    content: '+';
+    content: "+";
     color: #2563eb;
     font-size: 1.25rem;
     font-weight: 500;
 }
 
-.acao-item[open] > .acao-resumo::after { content: '-'; }
+.acao-item[open] > .acao-resumo::after {
+    content: "-";
+}
 
 .acao-resumo:focus-visible {
     outline: 2px solid #2563eb;
@@ -92,12 +102,22 @@
     font-size: 0.8rem;
 }
 
-.acao-conteudo { padding: 0 1.5rem 1.5rem; }
-.acao-arquivos { margin: 1rem 0; }
-.acao-label-secundario { margin-top: 1rem; }
-.acao-campo-secundario { margin: 0.75rem 0; }
+.acao-conteudo {
+    padding: 0 1.5rem 1.5rem;
+}
+.acao-arquivos {
+    margin: 1rem 0;
+}
+.acao-label-secundario {
+    margin-top: 1rem;
+}
+.acao-campo-secundario {
+    margin: 0.75rem 0;
+}
 .acao-campo-secundario .select-status,
-.campo-documento-solicitado { width: 100%; }
+.campo-documento-solicitado {
+    width: 100%;
+}
 
 .historico {
     padding: 1.35rem;
@@ -189,7 +209,9 @@
     line-height: 1.6;
 }
 
-.box-motivo .info-valor { font-weight: 400; }
+.box-motivo .info-valor {
+    font-weight: 400;
+}
 
 .card-painel hr {
     border: 0;
@@ -211,10 +233,19 @@
     list-style: none;
 }
 
-.timeline-doc-header::-webkit-details-marker { display: none; }
-.timeline-doc-chevron { margin-left: auto; transition: transform 0.15s ease; }
-.timeline-doc-dropdown[open] .timeline-doc-chevron { transform: rotate(180deg); }
-.timeline-doc-lista { margin-top: 0.35rem; }
+.timeline-doc-header::-webkit-details-marker {
+    display: none;
+}
+.timeline-doc-chevron {
+    margin-left: auto;
+    transition: transform 0.15s ease;
+}
+.timeline-doc-dropdown[open] .timeline-doc-chevron {
+    transform: rotate(180deg);
+}
+.timeline-doc-lista {
+    margin-top: 0.35rem;
+}
 
 .doc-card-item {
     display: grid;
@@ -224,7 +255,9 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.doc-card-icon { grid-row: span 2; }
+.doc-card-icon {
+    grid-row: span 2;
+}
 
 .doc-card-info {
     min-width: 0;
@@ -259,7 +292,9 @@
     text-decoration: none;
 }
 
-.btn-acao-doc:hover { text-decoration: underline; }
+.btn-acao-doc:hover {
+    text-decoration: underline;
+}
 
 /* =========================================================
    BADGES DE STATUS
@@ -276,14 +311,34 @@
     white-space: nowrap;
 }
 
-.badge svg { flex-shrink: 0; }
+.badge svg {
+    flex-shrink: 0;
+}
 
-.badge-Aberto    { background: #fef3c7; color: #b45309; }
-.badge-analise   { background: #ede9fe; color: #6d28d9; }
-.badge-concluido { background: #d1fae5; color: #047857; }
-.badge-encerrado { background: #e2e8f0; color: #334155; }
-.badge-indeferido { background: #faddd1; color: #f8350e; }
-.badge-despacho  { background: #e0f2fe; color: #0369a1; }
+.badge-Aberto {
+    background: #fef3c7;
+    color: #b45309;
+}
+.badge-analise {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+.badge-concluido {
+    background: #d1fae5;
+    color: #047857;
+}
+.badge-encerrado {
+    background: #e2e8f0;
+    color: #334155;
+}
+.badge-indeferido {
+    background: #faddd1;
+    color: #f8350e;
+}
+.badge-despacho {
+    background: #e0f2fe;
+    color: #0369a1;
+}
 
 /* =========================================================
    ACCORDION INFO ALUNO
@@ -490,7 +545,9 @@
     color: #374151;
     font-size: 0.875rem;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .select-status:focus,
@@ -506,7 +563,9 @@
     cursor: pointer;
 }
 
-.select-status:hover { border-color: #9ca3af; }
+.select-status:hover {
+    border-color: #9ca3af;
+}
 
 .form-control {
     width: 100%;
@@ -519,7 +578,9 @@
     box-sizing: border-box;
 }
 
-.form-control::placeholder { color: #9ca3af; }
+.form-control::placeholder {
+    color: #9ca3af;
+}
 
 .btn-atualizar {
     min-height: 40px;
@@ -535,11 +596,18 @@
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.15s;
+    transition:
+        background-color 0.2s,
+        transform 0.15s;
 }
 
-.btn-atualizar:hover { background: #1d4ed8; border-color: #1d4ed8; }
-.btn-atualizar:active { transform: translateY(1px); }
+.btn-atualizar:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+.btn-atualizar:active {
+    transform: translateY(1px);
+}
 
 .req-btn-imprimir {
     display: inline-flex;
@@ -551,7 +619,7 @@
     color: #ffffff;
     padding: 6px 14px;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
     transition: background-color 0.15s ease;
@@ -607,7 +675,9 @@
     margin-bottom: 1rem;
 }
 
-.timeline-item:last-child { margin-bottom: 0; }
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
 
 .timeline-badge {
     position: absolute;
@@ -627,7 +697,9 @@
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .timeline-panel:hover {
@@ -667,7 +739,9 @@
     line-height: 1.5;
 }
 
-.timeline-body p { margin: 0; }
+.timeline-body p {
+    margin: 0;
+}
 .timeline-body strong,
 .timeline-observacao strong {
     color: #374151;
@@ -687,20 +761,46 @@
 }
 
 /* Estados da Timeline */
-.status-Aberto .timeline-badge       { border-color: #f59e0b; }
-.status-Aberto .badge-status        { background: #fef3c7; color: #92400e; }
+.status-Aberto .timeline-badge {
+    border-color: #f59e0b;
+}
+.status-Aberto .badge-status {
+    background: #fef3c7;
+    color: #92400e;
+}
 
-.status-em-analise .timeline-badge   { border-color: #8b5cf6; }
-.status-em-analise .badge-status    { background: #ede9fe; color: #6d28d9; }
+.status-em-analise .timeline-badge {
+    border-color: #8b5cf6;
+}
+.status-em-analise .badge-status {
+    background: #ede9fe;
+    color: #6d28d9;
+}
 
-.status-indeferido .timeline-badge   { border-color: #ef4444; }
-.status-indeferido .badge-status    { background: #fee2e2; color: #b91c1c; }
+.status-indeferido .timeline-badge {
+    border-color: #ef4444;
+}
+.status-indeferido .badge-status {
+    background: #fee2e2;
+    color: #b91c1c;
+}
 
-.status-concluido .timeline-badge    { border-color: #10b981; background: #10b981; }
-.status-concluido .badge-status     { background: #d1fae5; color: #047857; }
+.status-concluido .timeline-badge {
+    border-color: #10b981;
+    background: #10b981;
+}
+.status-concluido .badge-status {
+    background: #d1fae5;
+    color: #047857;
+}
 
-.status-despacho .timeline-badge     { border-color: #0ea5e9; }
-.status-despacho .badge-status      { background: #e0f2fe; color: #0369a1; }
+.status-despacho .timeline-badge {
+    border-color: #0ea5e9;
+}
+.status-despacho .badge-status {
+    background: #e0f2fe;
+    color: #0369a1;
+}
 
 /* Timeline Vazia */
 .timeline > p {
@@ -721,7 +821,7 @@
 .alert-acao-necessaria {
     background: #fff;
     border: 1px solid #fef3c7;
-    }
+}
 
 .alert-header {
     display: flex;
@@ -790,13 +890,16 @@
         width: min(100% - 1.5rem, 800px);
     }
 
-    .historico { position: static; order: 2; }
-    .protocolo-info { order: 1; }
+    .historico {
+        position: static;
+        order: 2;
+    }
+    .protocolo-info {
+        order: 1;
+    }
 }
 
 @media (max-width: 650px) {
-
-
     .detalhes-container {
         width: calc(100% - 1rem);
         gap: 0.75rem;
@@ -808,10 +911,18 @@
         border-radius: 8px;
     }
 
-    .painel-acoes { padding: 0; }
-    .painel-acoes-titulo { padding: 1rem; }
-    .acao-resumo { padding: 1rem; }
-    .acao-conteudo { padding: 0 1rem 1rem; }
+    .painel-acoes {
+        padding: 0;
+    }
+    .painel-acoes-titulo {
+        padding: 1rem;
+    }
+    .acao-resumo {
+        padding: 1rem;
+    }
+    .acao-conteudo {
+        padding: 0 1rem 1rem;
+    }
 
     .grid-2,
     .form-status,
@@ -826,17 +937,27 @@
         flex-direction: column;
     }
 
-    .card-header-flex .card-titulo { font-size: 1.3rem; }
+    .card-header-flex .card-titulo {
+        font-size: 1.3rem;
+    }
 
     .select-status,
-    .btn-atualizar { width: 100%; }
+    .btn-atualizar {
+        width: 100%;
+    }
 
-    .timeline-date { white-space: normal; }
+    .timeline-date {
+        white-space: normal;
+    }
 }
 
 @media (max-width: 400px) {
-    .timeline { padding-left: 1.65rem; }
-    .timeline::before { left: 0.38rem; }
+    .timeline {
+        padding-left: 1.65rem;
+    }
+    .timeline::before {
+        left: 0.38rem;
+    }
     .timeline-badge {
         left: -1.65rem;
         width: 0.85rem;

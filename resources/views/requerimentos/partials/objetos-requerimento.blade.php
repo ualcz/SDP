@@ -2,13 +2,13 @@
 <div class="form-step" data-step="2">
 
     <div style="text-align: center; margin-bottom: 40px; font-size: 1.2rem;">
-        <h3 style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
-        <small style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
+        <h3 id="titulo-setor-etapa2" style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
+        <small id="nome-setor-etapa2" style="color: #666;">{{ $setorDestino['nome'] ?? 'Setor Responsável' }}</small>
     </div>
 
     <fieldset>
         <legend>Objeto do Requerimento</legend>
-        <div class="opcoes-objeto">
+        <div class="opcoes-objeto" id="container-objetos">
             @php
                 $assuntosMap = collect($modeloAtivo['assuntos_detalhes'] ?? [])->keyBy('descricao');
             @endphp
@@ -25,7 +25,8 @@
                                class="opcao-radio"
                                name="objetoDoRequerimento"
                                value="{{ $descricao }}"
-                               onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }}); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
+                               data-assunto-id="{{ $assuntoItem['id'] ?? '' }}"
+                               onchange="atualizarAssuntoSelecionado(this); alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }}); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
                                {{ $isChecked ? 'checked' : '' }}>
                         <span class="opcao-titulo">{{ $descricao }}</span>
                         @if(!empty($assuntoItem['link_norma']))
@@ -46,37 +47,7 @@
                     @endif
                 </label>
             @endforeach
-            {{-- <label class="opcao-objeto-card {{ old('objetoDoRequerimento') === 'outro' ? 'opcao-selecionada' : '' }}">
-                <span class="opcao-header">
-                    <input type="radio"
-                           class="opcao-radio"
-                           name="objetoDoRequerimento"
-                           value="outro"
-                           onchange="alternarObjetoOutro(true); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
-                           {{ old('objetoDoRequerimento') === 'outro' ? 'checked' : '' }}>
-                    <span class="opcao-titulo">Outro</span>
-                </span>
-            </label>
         </div>
-
-        <div class="campo" style="margin-top: 10px;">
-            <label>Outro / Detalhe adicional (opcional):</label>
-                 <small id="objeto-outro-ajuda" class="ajuda-campo-bloqueado"
-                     style="display: {{ old('objetoDoRequerimento') === 'outro' ? 'none' : 'flex' }}; align-items: center; gap: 5px; margin-bottom: 6px; color: #64748b; font-size: 12px; line-height: 1.4;">
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Selecione “Outro” para liberar este campo.
-            </small>
-            <input type="text"
-                   name="objeto_outro"
-                   value="{{ old('objeto_outro') }}"
-                   @disabled(old('objetoDoRequerimento') !== 'outro')
-                   style="background-color: {{ old('objetoDoRequerimento') === 'outro' ? '#fff' : '#f1f5f9' }}; border-color: {{ old('objetoDoRequerimento') === 'outro' ? '#ccc' : '#cbd5e1' }}; color: {{ old('objetoDoRequerimento') === 'outro' ? '#111827' : '#64748b' }}; cursor: {{ old('objetoDoRequerimento') === 'outro' ? 'text' : 'not-allowed' }};"
-                   placeholder="Especifique caso necessário"
-                   oninput="const el = document.getElementById('nome-assunto-outro-preview'); if(el) el.textContent = 'Outro: ' + this.value;">
-        </div> --}}
     </fieldset>
 
     <!-- 3. Justificativa / Motivo -->
@@ -90,8 +61,7 @@
 
     <div class="step-nav">
         <button type="button" class="btn-voltar" onclick="mudarPasso(1)">Anterior</button>
-        <button type="button" class="btn-enviar" onclick="mudarPasso(3)" style=";">Próximo</button>
-
+        <button type="button" class="btn-enviar" onclick="mudarPasso(3)">Próximo</button>
     </div>
 
 </div>

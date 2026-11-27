@@ -69,7 +69,7 @@ class ResponsavelSetorController extends Controller
 
         $requerimentos = $query
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->withQueryString();
 
         return view('setor.responsavel.dashboard', compact('setor', 'requerimentos'));
@@ -133,12 +133,13 @@ class ResponsavelSetorController extends Controller
     {
         $this->autorizarSetor($setor);
 
-        if ((int) $requerimento->setor_id !== (int) $setor->id) {
+        // Permite visualização se o setor for o detentor atual ou o setor de origem do encaminhamento
+        if ((int) $requerimento->setor_id !== (int) $setor->id && (int) $requerimento->setor_retorno_id !== (int) $setor->id) {
             abort(404);
         }
 
         // Carrega o usuário, endereço, assunto e os históricos (linha do tempo com documentos)
-        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos', 'setorRetorno']);
+        $requerimento->load(['usuario.endereco', 'assunto', 'historicos.usuario', 'historicos.documentos', 'setor', 'setorRetorno']);
         $setoresDestino = Setor::query()
             ->where('ativo', true)
             ->where('id', '!=', $setor->id)
@@ -226,8 +227,11 @@ class ResponsavelSetorController extends Controller
     {
         $this->autorizarSetor($setor);
 
+        // Se já foi encaminhado, redireciona graciosamente em vez de lançar 404
         if ((int) $requerimento->setor_id !== (int) $setor->id || $requerimento->setor_retorno_id) {
-            abort(404);
+            return redirect()
+                ->route('setor.responsavel.dashboard', $setor->id)
+                ->with('success', 'Requerimento encaminhado com sucesso.');
         }
 
         $validated = $request->validate([
@@ -249,7 +253,7 @@ class ResponsavelSetorController extends Controller
         $historico = DB::transaction(function () use ($setor, $destino, $requerimento, $validated) {
             $atual = Requerimento::query()->lockForUpdate()->findOrFail($requerimento->id);
             if ((int) $atual->setor_id !== (int) $setor->id || $atual->setor_retorno_id) {
-                abort(409, 'Este requerimento já foi encaminhado ou mudou de setor.');
+                return null;
             }
 
             $atual->update([
@@ -266,6 +270,12 @@ class ResponsavelSetorController extends Controller
             ]);
         });
 
+        if (!$historico) {
+            return redirect()
+                ->route('setor.responsavel.dashboard', $setor->id)
+                ->with('success', 'Requerimento encaminhado com sucesso.');
+        }
+
         $arquivos = $request->file('arquivos', []);
         if (!empty($arquivos)) {
             app(DocumentoRequerimentoService::class)->salvarArquivos(
@@ -277,8 +287,21 @@ class ResponsavelSetorController extends Controller
             );
         }
 
+        // Envia e-mail avisando o setor de destino sobre o requerimento encaminhado
+        try {
+            $requerimento->fresh(['usuario'])->notificarEncaminhamento(
+                setorOrigem: $setor,
+                setorDestino: $destino,
+                mensagem: $validated['observacao'],
+                tipo: 'encaminhamento',
+                arquivos: is_array($arquivos) ? $arquivos : []
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Erro ao enviar e-mail de encaminhamento do requerimento #{$requerimento->id}: " . $e->getMessage());
+        }
+
         return redirect()
-            ->route('setor.responsavel.dashboard', [$setor->id, 'todos'])
+            ->route('setor.responsavel.dashboard', $setor->id)
             ->with('success', 'Requerimento encaminhado para ' . $destino->setor_nome . '.');
     }
 
@@ -286,8 +309,11 @@ class ResponsavelSetorController extends Controller
     {
         $this->autorizarSetor($setor);
 
+        // Se já foi devolvido, redireciona graciosamente em vez de lançar 404
         if ((int) $requerimento->setor_id !== (int) $setor->id || !$requerimento->setor_retorno_id) {
-            abort(404);
+            return redirect()
+                ->route('setor.responsavel.dashboard', $setor->id)
+                ->with('success', 'Resposta registrada com sucesso.');
         }
 
         $validated = $request->validate([
@@ -299,7 +325,7 @@ class ResponsavelSetorController extends Controller
         [$setorOrigem, $historico] = DB::transaction(function () use ($setor, $requerimento, $validated) {
             $atual = Requerimento::query()->lockForUpdate()->findOrFail($requerimento->id);
             if ((int) $atual->setor_id !== (int) $setor->id || !$atual->setor_retorno_id) {
-                abort(409, 'Este requerimento já foi devolvido ou mudou de setor.');
+                return [null, null];
             }
 
             $setorOrigem = Setor::findOrFail($atual->setor_retorno_id);
@@ -318,6 +344,12 @@ class ResponsavelSetorController extends Controller
             return [$setorOrigem, $historico];
         });
 
+        if (!$historico) {
+            return redirect()
+                ->route('setor.responsavel.dashboard', $setor->id)
+                ->with('success', 'Resposta registrada com sucesso.');
+        }
+
         $arquivos = $request->file('arquivos', []);
         if (!empty($arquivos)) {
             app(DocumentoRequerimentoService::class)->salvarArquivos(
@@ -329,8 +361,21 @@ class ResponsavelSetorController extends Controller
             );
         }
 
+        // Envia e-mail avisando o setor de origem que o encaminhamento foi respondido
+        try {
+            $requerimento->fresh(['usuario'])->notificarEncaminhamento(
+                setorOrigem: $setor,
+                setorDestino: $setorOrigem,
+                mensagem: $validated['observacao'],
+                tipo: 'resposta',
+                arquivos: is_array($arquivos) ? $arquivos : []
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Erro ao enviar e-mail de resposta de encaminhamento do requerimento #{$requerimento->id}: " . $e->getMessage());
+        }
+
         return redirect()
-            ->route('setor.responsavel.dashboard', [$setor->id, 'todos'])
+            ->route('setor.responsavel.dashboard', $setor->id)
             ->with('success', 'Resposta registrada e requerimento devolvido para ' . $setorOrigem->setor_nome . '.');
     }
 }

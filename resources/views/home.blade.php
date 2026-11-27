@@ -6,7 +6,65 @@
 @section('content')
 
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<link rel="stylesheet" href="{{ asset('css/form.css') }}?v={{ filemtime(public_path('css/form.css')) }}">
 
+{{-- ===== SELEÇÃO DE SETORES (primeira coisa que o visitante vê) ===== --}}
+@if (!empty($modelos))
+<section id="inicio" class="fade-up" style="padding-bottom: 0; padding-top: 12px;">
+    <div style="width:100%; padding: 0 8px; box-sizing: border-box;">
+
+        <div class="cardapio-container" style="border: none; box-shadow: none; padding: 0;">
+            <div class="cardapio-grid">
+                @foreach($modelos as $mod)
+                    @if (!empty($mod['assuntos_detalhes']) && count($mod['assuntos_detalhes']) > 0)
+                        @php $cardId = 'acordeao-' . $mod['id']; @endphp
+                        <div class="cardapio-card home-card-acordeao" id="card-home-{{ $mod['id'] }}">
+
+                            {{-- Cabeçalho clicável (sigla + seta) --}}
+                            <button type="button"
+                                    class="home-acordeao-toggle"
+                                    onclick="toggleAcordeaoHome('{{ $cardId }}', this)"
+                                    aria-expanded="false"
+                                    aria-controls="{{ $cardId }}">
+                                <span class="cardapio-sigla">{{ $mod['setor_sigla'] ?? 'SETOR' }}</span>
+                                <svg class="home-acordeao-seta" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2.5"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+
+                            {{-- Conteúdo recolhível: lista + botão --}}
+                            <div class="home-acordeao-corpo" id="{{ $cardId }}">
+                                <div class="cardapio-lista-wrapper" style="margin-top: 10px;">
+                                    <strong class="cardapio-label">Opções disponíveis:</strong>
+                                    <ul class="cardapio-lista">
+                                        @foreach($mod['assuntos_detalhes'] as $assunto)
+                                            <li class="cardapio-item">
+                                                <span class="cardapio-bullet">•</span>
+                                                <span class="cardapio-texto-assunto">
+                                                    {{ is_array($assunto) ? ($assunto['descricao'] ?? $assunto['titulo'] ?? 'Assunto') : $assunto }}
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                <a href="{{ route('login', ['redirect' => route('requerimentos.aluno.novo', ['setor' => $mod['id']])]) }}"
+                                   class="cardapio-btn" style="margin-top: 12px;">
+                                    Acessar →
+                                </a>
+                            </div>
+
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
+    </div>
+</section>
+@else
+{{-- Fallback: hero clássico quando não há modelos --}}
 <section id="inicio" class="fade-up">
     <div class="container">
         <div class="hero-wrapper">
@@ -19,15 +77,9 @@
                     O Sistema de Requerimentos e Protocolos (SDP) foi desenvolvido para facilitar o envio, tramitação e acompanhamento de solicitações acadêmicas e administrativas, garantindo transparência e agilidade ao processo.
                 </p>
                 <div class="hero-actions">
-                    @auth
-                        <a href="{{ route('requerimentos.aluno.novo') }}" class="btn-primary">
-                            Novo Requerimento →
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn-primary">
-                            Acessar Sistema →
-                        </a>
-                    @endauth
+                    <a href="{{ route('login') }}" class="btn-primary">
+                        Acessar Sistema →
+                    </a>
                 </div>
             </div>
             <div class="hero-image">
@@ -36,7 +88,9 @@
         </div>
     </div>
 </section>
+@endif
 
+{{-- ===== SEÇÕES ORIGINAIS DA HOME ===== --}}
 <section id="funcionalidades" class="fade-up">
     <div class="container">
         <h2>Funcionalidades do SDP</h2>

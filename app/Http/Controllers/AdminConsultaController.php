@@ -32,26 +32,15 @@ class AdminConsultaController extends Controller
         // 3. Filtro por Setor
         if ($request->filled('setor')) {
             $setorFiltro = $request->input('setor');
-            $query->where(function ($q) use ($setorFiltro) {
-                $q->whereHas('assunto', function ($aq) use ($setorFiltro) {
-                    $aq->where('setor_id', $setorFiltro);
-                })
-                ->orWhereIn('objetoDoRequerimento', function ($sub) use ($setorFiltro) {
-                    $sub->select('descricao')
-                        ->from('assuntos_requerimentos')
-                        ->where('setor_id', $setorFiltro);
-                });
-            });
+            $query->where('setor_id', $setorFiltro);
         }
 
         // 4. Filtro por Status
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
-        } else {
-            $query->where(function ($statusQuery) {
-                $statusQuery->whereNull('status')
-                    ->orWhereNotIn('status', ['Concluído', 'Encerrado']);
-            });
+        } elseif (! $request->has('status')) {
+            // Primeiro acesso (parâmetro 'status' não existe na URL): filtra por 'Aberto'
+            $query->where('status', 'Aberto');
         }
 
         // 5. Filtro por Intervalo de Datas
@@ -68,7 +57,7 @@ class AdminConsultaController extends Controller
         }
 
         // Paginando para evitar lentidão e mantendo os parâmetros de busca na URL
-        $requerimentos = $query->latest()->paginate(15)->appends($request->query());
+        $requerimentos = $query->latest()->paginate(50)->appends($request->query());
         $setores = Setor::where('ativo', true)->orderBy('setor_sigla')->get();
 
         return view('admin.consultaRequerimento', [

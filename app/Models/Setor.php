@@ -45,6 +45,38 @@ class Setor extends Model
     }
 
     /**
+     * Retorna a lista de e-mails válidos para envio de notificações do setor.
+     * Prioriza o e-mail cadastrado no setor (aceitando múltiplos separados por vírgula ou ponto e vírgula).
+     * Se não houver e-mail cadastrado no setor, utiliza os e-mails dos responsáveis vinculados.
+     */
+    public function obterEmailsNotificacao(): array
+    {
+        $emails = [];
+
+        if (!empty($this->email)) {
+            $partes = preg_split('/[,;]+/', $this->email);
+            foreach ($partes as $parte) {
+                $e = trim($parte);
+                if (filter_var($e, FILTER_VALIDATE_EMAIL)) {
+                    $emails[] = $e;
+                }
+            }
+        }
+
+        if (empty($emails)) {
+            $responsaveis = $this->relationLoaded('responsaveis') ? $this->responsaveis : $this->responsaveis()->get();
+            foreach ($responsaveis as $resp) {
+                $e = trim($resp->email ?? $resp->email_pessoal ?? '');
+                if (filter_var($e, FILTER_VALIDATE_EMAIL)) {
+                    $emails[] = $e;
+                }
+            }
+        }
+
+        return array_values(array_unique($emails));
+    }
+
+    /**
      * Retorna os setores formatados para uso nos controllers e views.
      */
     public static function obterSetoresFormatados(): array
