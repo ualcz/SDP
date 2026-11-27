@@ -1,25 +1,26 @@
 <x-modal id="modal-deferir/concluir" title="Deferir/Indeferir">
 
-    <form action="">
-        @csrf
+     <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
+            @csrf
+            @method('PATCH')
         <label for="parecer" class="info-label">Resultado:</label>
         <div class="custom-select-wrapper">
             <select name="status" id="parecer" class="custom-select" required onchange="toggleMensagemIndeferido()">
                 <option value="">Selecione...</option>
                 <option value="Deferido" {{ $requerimento->status == 'Deferido' ? 'selected' : '' }}>Deferido</option>
-                <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
+                <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido</option>
             </select>
         </div>
         <br>
-        <label for="resposta" class="info-label">Resposta | Parecer:</label>
+        <label for="observacao" class="info-label">Resposta | Parecer:</label>
         <textarea
-            name="resposta"
-            id="resposta"
+            name="observacao"
+            id="observacao"
             class="form-control"
             rows="3"
             placeholder="Descreva o parecer ou a resposta ao requerimento..."
             required
-        >{{ old('resposta') }}</textarea>
+        >{{ old('observacao') }}</textarea>
         <br>
         <br>
         <div>
@@ -46,7 +47,7 @@
 
             <button
                 type="submit"
-                form="form-encaminhar"
+                form="formCorrecao"
                 class="btn-atualizar"
             >
                Enviar parecer
