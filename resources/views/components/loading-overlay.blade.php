@@ -26,7 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Fica acima de qualquer outro elemento */
+    z-index: 999999; /* Fica acima de qualquer outro elemento */
 }
 
 .loading-box {

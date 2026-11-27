@@ -44,20 +44,6 @@
     </div>
 
     <div class="protocolo-info">
-        @if(session('sucesso'))
-            <div class="alert-sucesso">
-                {{ session('sucesso') }}
-            </div>
-        @endif
-            <x-loading-overlay
-            form-id="formCorrecao"
-            :mensagens="[
-                'Atualizando status...',
-                'Enviando email para o aluno...',
-                'Atualizando sistema...',
-                'Só mais um instante...'
-            ]"
-        />
 
         <details class="card-painel info-aluno-accordion">
             <summary class="accordion-header">
@@ -221,22 +207,22 @@
                 <nav class="acoes-nav">
                     <ul class="acoes-lista">
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-deferir/concluir" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-deferir/indeferir" {{ $requerimento->status == "Em Análise" ? '' : 'disabled' }}>
                                     Deferir/Indeferir
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-pendencia" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-pendencia" {{ $requerimento->status == "Em Análise" ? '' : 'disabled' }}>
                                         Solicitar Alteração
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Em Análise" ? '' : 'disabled' }}>
                                         Encaminhar
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Deferido" or $requerimento->status == "Indeferido" ? '' : 'disabled' }}>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-concluir" {{ ($requerimento->status == "Deferido" || $requerimento->status == "Indeferido") ? '' : 'disabled' }}>
                                         Concluir
                             </button>
                         </li>
@@ -262,6 +248,9 @@
 
 {{-- Modal de encaminhamento --}}
 @include('setor.requerimentos.partials.modal-encaminhar')
+
+{{-- Modal de encaminhamento --}}
+@include('setor.requerimentos.partials.modal-concluir')
 
 <script src="{{ asset('js/show-requerimento.js') }}"></script>
 @endsection

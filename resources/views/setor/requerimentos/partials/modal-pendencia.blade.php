@@ -7,19 +7,6 @@
                     @csrf
                     @method('PATCH')
 
-                    {{-- <label for="status" class="info-label">Atualizar Status do Requerimento</label>
-                    <div class="form-status">
-                        <select name="status" id="status" class="select-status" required onchange="toggleMensagemIndeferido()">
-                            <option value="Em Análise" {{ $requerimento->status == 'Em Análise' ? 'selected' : '' }}>Em Análise</option>
-                            <option value="Indeferido" {{ $requerimento->status == 'Indeferido' ? 'selected' : '' }}>Indeferido (Devolver ao aluno)</option>
-                            <option value="Concluído" {{ $requerimento->status == 'Concluído' ? 'selected' : '' }}>Concluído</option>
-                            <option value="Encerrado" {{ $requerimento->status == 'Encerrado' ? 'selected' : '' }}>Encerrado</option>
-                        </select>
-
-
-                    </div> --}}
-
-
 
                     <div id="campo-mensagem" style="margin-top: 15px;">
                         <label for="observacao" class="info-label">Mensagem de Instruções:</label>

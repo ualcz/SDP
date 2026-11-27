@@ -1,6 +1,6 @@
-<x-modal id="modal-deferir/concluir" title="Deferir/Indeferir">
+<x-modal id="modal-deferir/indeferir" title="Deferir/Indeferir">
 
-     <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formCorrecao">
+     <form action="{{ route('setor.requerimentos.atualizarStatus', [$setor->id, $requerimento->id]) }}" method="POST" enctype="multipart/form-data" id="formResultado">
             @csrf
             @method('PATCH')
         <label for="parecer" class="info-label">Resultado:</label>
@@ -47,10 +47,27 @@
 
             <button
                 type="submit"
-                form="formCorrecao"
+                form="formResultado"
                 class="btn-atualizar"
             >
                Enviar parecer
             </button>
         </x-slot:footer>
+
+    @if(session('sucesso'))
+        <div class="alert-sucesso">
+            {{ session('sucesso') }}
+        </div>
+    @endif
+        <x-loading-overlay
+        form-id="formResultado"
+        :mensagens="[
+            'Atualizando status...',
+            'Enviando email para o aluno...',
+            'Atualizando sistema...',
+            'Só mais um instante...'
+        ]"
+    />
 </x-modal>
+
+
