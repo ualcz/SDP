@@ -1,5 +1,65 @@
-<!-- Etapa 3: Documentos Obrigatórios e Anexos Complementares -->
+<!-- Etapa 3: Documentos Obrigatórios -->
 <div class="form-step" data-step="3">
+
+    <style>
+        .custom-file-upload {
+            display: block;
+            padding: 16px;
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .custom-file-upload input[type="file"] {
+            display: none !important;
+        }
+
+        .file-upload-text {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .file-feedback-box {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .file-feedback-box ul {
+            margin: 4px 0 0;
+            padding-left: 18px;
+        }
+
+        .bloco-documentos-assunto .documento-configurado {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dbe3ed;
+            margin-bottom: 16px;
+        }
+
+        .bloco-documentos-assunto .documento-configurado.documento-obrigatorio {
+            background: #f9ebeb;
+            border-color: #ffc3c3;
+        }
+
+        .bloco-documentos-assunto .documento-configurado > label {
+            color: #1e293b;
+        }
+    </style>
 
     <div style="text-align: center; margin-bottom: 40px; font-size: 1.2rem;">
         <h3 id="titulo-setor-etapa3" style="margin: 0;">{{ $modeloAtivo['titulo'] ?? 'Requerimento Geral' }}</h3>
@@ -37,7 +97,11 @@
                                     ? '.' . str_replace(',', ',.', str_replace([' ', '.'], ['', ''], strtolower($doc['tipos_aceitos'])))
                                     : '.pdf,.doc,.docx,.png,.jpg,.jpeg';
                             @endphp
-                            <div class="campo" style="background: rgb(249, 235, 235); padding: 20px; border-radius: 6px; border: 1px solid rgb(255, 203, 203); margin-bottom: 16px;">
+                            <div @class([
+                                'campo',
+                                'documento-configurado',
+                                'documento-obrigatorio' => $doc['obrigatorio'],
+                            ])>
                                 <label style="display: block; font-weight: bold; margin-bottom: 4px; font-size: 14px;">
                                     {{ $doc['nome'] }}
                                     @if($doc['obrigatorio'])
@@ -82,7 +146,6 @@
                                     name="documentos[{{ $doc['id'] ?? $loop->index }}]"
                                     required="{{ $doc['obrigatorio'] ? 'true' : 'false' }}"
                                     label="{{ $doc['nome'] }}"
-                                    helpText=""
                                     accept="{{ $tiposAceitos }}"
                                     :multiple="false"
                                 />
@@ -107,8 +170,6 @@
             @endforeach
         </div>{{-- #container-documentos --}}
 
-        <!-- Anexos complementares para qualquer requerimento -->
-        <x-file-input />
     </fieldset>
 
     <div class="step-nav">

@@ -149,17 +149,64 @@ function selecionarSetor(setorId) {
                     const tipos = (doc.tipos_aceitos || '.pdf,.doc,.docx,.png,.jpg,.jpeg')
                         .replace(/\s/g, '').replace(/\./g, '').split(',').map(t => '.' + t).join(',');
                     const docId = doc.id ?? idx;
+                    const feedbackId = `feedback-documento-${idx}-${docId}`;
+                    const exigeDocumentoResponsavel = alunoMenor && doc.exige_documentos_responsaveis;
                     docsHtml += `
-                        <div class="campo" style="background:rgb(249,235,235);padding:20px;border-radius:6px;border:1px solid rgb(255,203,203);margin-bottom:16px;">
+                        <div class="campo documento-configurado ${doc.obrigatorio ? 'documento-obrigatorio' : ''}">
                             <label style="display:block;font-weight:bold;margin-bottom:4px;font-size:14px;">
                                 ${doc.nome} ${obrigatorioLabel}
                             </label>
                             ${descricaoBox}
-                            <input type="file" class="doc-file-input"
-                                   name="documentos[${docId}]"
-                                   accept="${tipos}"
-                                   data-obrigatorio="${doc.obrigatorio ? 'true' : 'false'}"
-                                   style="width:100%;padding:6px;border:1px solid #d1d5db;border-radius:4px;font-size:13px;background:#f9fafb;cursor:pointer;">
+                            <small style="display:block;color:#666;margin-bottom:8px;font-size:12px;">
+                                ${doc.obrigatorio ? 'Campo obrigatório.' : 'Documento opcional. Selecione um arquivo.'}
+                            </small>
+                            <label class="custom-file-upload">
+                                <input type="file" class="doc-file-input"
+                                       name="documentos[${docId}]"
+                                       accept="${tipos}"
+                                       data-obrigatorio="${doc.obrigatorio ? 'true' : 'false'}"
+                                       data-feedback-id="${feedbackId}">
+                                <div class="file-upload-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;display:block;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                    <strong>Clique aqui</strong> para selecionar os arquivos
+                                </div>
+                            </label>
+                            <div id="${feedbackId}" class="file-feedback-box">
+                                <strong>Arquivos selecionados:</strong>
+                                <ul></ul>
+                            </div>
+                            ${exigeDocumentoResponsavel ? `
+                                <label style="display:block;font-weight:bold;margin:16px 0 4px;font-size:14px;">
+                                    ${doc.nome} de um responsável legal
+                                    <span style="color:#dc2626;font-weight:normal;">(Obrigatório)</span>
+                                </label>
+                                <small style="display:block;color:#666;margin-bottom:8px;font-size:12px;">
+                                    Anexe a cópia do documento de um responsável.
+                                </small>
+                                <label class="custom-file-upload">
+                                    <input type="file" class="doc-file-input"
+                                           name="documentos_responsavel[${docId}]"
+                                           accept="${tipos}"
+                                           data-obrigatorio="true"
+                                           data-feedback-id="${feedbackId}-responsavel">
+                                    <div class="file-upload-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;display:block;">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17 8 12 3 7 8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        <strong>Clique aqui</strong> para selecionar os arquivos
+                                    </div>
+                                </label>
+                                <div id="${feedbackId}-responsavel" class="file-feedback-box">
+                                    <strong>Arquivos selecionados:</strong>
+                                    <ul></ul>
+                                </div>
+                            ` : ''}
                         </div>`;
                 });
             } else {
@@ -182,13 +229,6 @@ function selecionarSetor(setorId) {
             const observer = new MutationObserver(() => window.verificarDocumentosObrigatorios());
             containerDocs.querySelectorAll('.bloco-documentos-assunto').forEach(bloco => {
                 observer.observe(bloco, { attributes: true, attributeFilter: ['style'] });
-            });
-            // Re-escutar changes de arquivo nos novos inputs
-            containerDocs.querySelectorAll('input[type="file"]').forEach(input => {
-                input.addEventListener('change', async () => {
-                    await processarCompressaoInput(input);
-                    window.verificarDocumentosObrigatorios();
-                });
             });
             window.verificarDocumentosObrigatorios();
         }
@@ -292,7 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const todoPreenchido = Array.from(inputs).every(input => input.files && input.files.length > 0);
+        const todoPreenchido = Array.from(inputs).every(input =>
+            input.files && input.files.length > 0 && input.dataset.compressing !== 'true'
+        );
 
         habilitarBotao(todoPreenchido);
 
@@ -328,7 +370,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reage a qualquer mudança de arquivo no formulário
     form.addEventListener('change', async (e) => {
         if (e.target.matches('input[type="file"]')) {
-            await processarCompressaoInput(e.target);
+            const input = e.target;
+            const processamento = processarCompressaoInput(input);
+            verificarDocumentosObrigatorios();
+            await processamento;
+            const feedbackBox = document.getElementById(input.dataset.feedbackId);
+            if (feedbackBox) {
+                const lista = feedbackBox.querySelector('ul');
+                lista.innerHTML = '';
+                Array.from(input.files || []).forEach(file => {
+                    const item = document.createElement('li');
+                    item.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                    lista.appendChild(item);
+                });
+                feedbackBox.style.display = input.files && input.files.length > 0 ? 'block' : 'none';
+            }
             verificarDocumentosObrigatorios();
         }
     });

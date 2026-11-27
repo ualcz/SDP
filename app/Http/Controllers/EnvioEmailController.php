@@ -36,7 +36,6 @@ class EnvioEmailController extends Controller
             'cep'                  => 'nullable|string|max:10',
             'endereco'             => 'nullable|string|max:255',
             'email_adicional'      => 'nullable|email',
-            'arquivos.*'           => 'nullable|file|max:51200', // 50MB por arquivo complementar
             'documentos.*'         => 'nullable|file|max:51200', // 50MB por documento obrigatório
             'documentos_responsavel.*' => 'nullable|file|max:51200',
         ]);
@@ -166,11 +165,10 @@ class EnvioEmailController extends Controller
             }
         }
 
-        // Coleta todos os arquivos enviados (específicos de documentos + complementares)
+        // Coleta todos os arquivos enviados dos documentos configurados
         $todosArquivosInput = [
             $request->file('documentos', []),
-            $request->file('documentos_responsavel', []),
-            $request->file('arquivos', [])
+            $request->file('documentos_responsavel', [])
         ];
 
         $arquivos = [];
@@ -219,7 +217,6 @@ class EnvioEmailController extends Controller
                 requerimento: $requerimento,
                 historico: $historicoInicial,
                 documentosInput: $documentosParaSalvar,
-                arquivosComplementares: $request->file('arquivos', []),
                 usuario: $aluno
             );
         } catch (\Throwable $e) {
