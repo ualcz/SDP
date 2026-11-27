@@ -25,7 +25,8 @@
                                class="opcao-radio"
                                name="objetoDoRequerimento"
                                value="{{ $descricao }}"
-                               onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }}); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
+                               data-assunto-id="{{ $assuntoItem['id'] ?? '' }}"
+                               onchange="atualizarAssuntoSelecionado(this); alternarObjetoOutro(false); mostrarDocumentosAssunto({{ $indexAssunto }}); document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada')); this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');"
                                {{ $isChecked ? 'checked' : '' }}>
                         <span class="opcao-titulo">{{ $descricao }}</span>
                         @if(!empty($assuntoItem['link_norma']))

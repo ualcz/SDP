@@ -133,9 +133,20 @@ class EnvioEmailController extends Controller
         $assunto = null;
         if (empty($request->input('objeto_outro'))) {
             $objetoTexto = $request->input('objetoDoRequerimento') ?? $request->input('objeto');
-            $assunto = \App\Models\AssuntoRequerimento::where('setor_id', $setor->id)
-                ->where('descricao', $objetoTexto)
-                ->first();
+            $assuntoQuery = \App\Models\AssuntoRequerimento::where('setor_id', $setor->id)
+                ->where('ativo', true);
+            $assuntoId = $request->input('assunto_requerimento_id');
+            $assunto = $assuntoId
+                ? $assuntoQuery->whereKey($assuntoId)->first()
+                : $assuntoQuery->where('descricao', $objetoTexto)->first();
+
+            if ($assuntoId && !$assunto) {
+                $mensagem = 'O assunto selecionado não pertence ao setor escolhido ou não está mais ativo.';
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json(['errors' => ['assunto' => [$mensagem]]], 422);
+                }
+                return back()->withErrors(['assunto' => $mensagem])->withInput();
+            }
 
             if ($assunto) {
                 $documentosAssunto = $assunto->documentos()->get();

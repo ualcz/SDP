@@ -31,6 +31,13 @@ function alternarObjetoOutro(ativo) {
     }
 }
 
+function atualizarAssuntoSelecionado(input) {
+    const assuntoId = document.querySelector('input[name="assunto_requerimento_id"]');
+    if (assuntoId) {
+        assuntoId.value = input.dataset.assuntoId || '';
+    }
+}
+
 // =====================================================
 // TROCA DINÂMICA DE SETOR (sem reload de página)
 // =====================================================
@@ -68,6 +75,8 @@ function selecionarSetor(setorId) {
     const inputSetor   = document.querySelector('input[name="setor"]');
     if (inputSetorId) inputSetorId.value = setorId;
     if (inputSetor)   inputSetor.value   = setorId;
+    const inputAssuntoId = document.querySelector('input[name="assunto_requerimento_id"]');
+    if (inputAssuntoId) inputAssuntoId.value = '';
 
     // 3. Atualizar título e nome nas etapas 2 e 3
     const titulo = setor.titulo || 'Requerimento Geral';
@@ -110,7 +119,8 @@ function selecionarSetor(setorId) {
             label.innerHTML = `
                 <span class="opcao-header">
                     <input type="radio" class="opcao-radio" name="objetoDoRequerimento" value="${descricao}"
-                           onchange="alternarObjetoOutro(false); mostrarDocumentosAssunto(${idx});
+                           data-assunto-id="${assunto.id || ''}"
+                           onchange="atualizarAssuntoSelecionado(this); alternarObjetoOutro(false); mostrarDocumentosAssunto(${idx});
                                      document.querySelectorAll('.opcao-objeto-card').forEach(el => el.classList.remove('opcao-selecionada'));
                                      this.closest('.opcao-objeto-card').classList.add('opcao-selecionada');">
                     <span class="opcao-titulo">${descricao}</span>

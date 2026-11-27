@@ -72,6 +72,7 @@
             @csrf
         <input type="hidden" name="setor_id" value="{{ $modeloAtivo['id'] ?? '' }}">
         <input type="hidden" name="setor" value="{{ $modeloAtivo['id'] ?? '' }}">
+        <input type="hidden" name="assunto_requerimento_id" value="{{ old('assunto_requerimento_id', '') }}">
 
         {{-- Etapa 1: Escolher Setor e Identificação --}}
         @include('requerimentos.partials.dados-requerimento')

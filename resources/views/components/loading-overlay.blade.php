@@ -212,6 +212,18 @@
                 }, 2000);
 
                 try {
+                    const blocoDocumentosAtivo = Array.from(
+                        form.querySelectorAll('.bloco-documentos-assunto')
+                    ).find(bloco =>
+                        bloco.style.display !== 'none' &&
+                        window.getComputedStyle(bloco).display !== 'none'
+                    );
+                    if (blocoDocumentosAtivo) {
+                        blocoDocumentosAtivo.querySelectorAll('input[type="file"]').forEach(input => {
+                            input.disabled = false;
+                        });
+                    }
+
                     const formData = new FormData(form);
                     const response = await fetch(form.action, {
                         method: form.method || 'POST',
