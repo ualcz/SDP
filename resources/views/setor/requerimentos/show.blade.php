@@ -160,6 +160,7 @@
                             'Em Análise' => 'badge-analise',
                             'Concluído' => 'badge-concluido',
                             'Encerrado' => 'badge-encerrado',
+                            'Deferido' => 'badge-deferido',
                             'Indeferido' => 'badge-indeferido',
                             default => 'badge-analise'
                         };
@@ -220,18 +221,28 @@
                 <nav class="acoes-nav">
                     <ul class="acoes-lista">
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-deferir/concluir">
+                            <button class='acoes-btn' type="button" data-modal-target="modal-deferir/concluir" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
                                     Deferir/Indeferir
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-pendencia">
+                            <button class='acoes-btn' type="button" data-modal-target="modal-pendencia" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
                                         Solicitar Alteração
                             </button>
                         </li>
                         <li>
-                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar">
+                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Em Aberto" ? '' : 'disabled' }}>
                                         Encaminhar
+                            </button>
+                        </li>
+                        <li>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Deferido" or $requerimento->status == "Indeferido" ? '' : 'disabled' }}>
+                                        Concluir
+                            </button>
+                        </li>
+                        <li>
+                            <button class='acoes-btn' type="button" data-modal-target="modal-encaminhar" {{ $requerimento->status == "Aberto" ? '' : 'disabled' }}>
+                                        Atender
                             </button>
                         </li>
                     </ul>
