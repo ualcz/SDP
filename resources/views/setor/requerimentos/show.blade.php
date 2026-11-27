@@ -141,12 +141,14 @@
                 </div>
                 <div>
                     @php
-                        $statusClass = match($requerimento->status) {
+                        $statusClass = match($requerimento->status_aluno) {
                             'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
+                            'Pendente' => 'badge-pendente',
+                            'Deferido' => 'badge-deferido',
+                            'Encaminhado' => 'badge-encaminhado',
                             'Concluído' => 'badge-concluido',
                             'Encerrado' => 'badge-encerrado',
-                            'Deferido' => 'badge-deferido',
                             'Indeferido' => 'badge-indeferido',
                             default => 'badge-analise'
                         };

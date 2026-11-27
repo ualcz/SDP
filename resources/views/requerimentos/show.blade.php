@@ -75,7 +75,7 @@
                 $ultimoHistorico = $requerimento->historicos->sortByDesc('created_at')->first();
             @endphp
 
-            @if($requerimento->status === 'Indeferido' || ($ultimoHistorico && $ultimoHistorico->solicita_novo_documento))
+            @if($requerimento->status === 'Pendente' || ($ultimoHistorico && $ultimoHistorico->solicita_novo_documento))
                 <div class="alert-acao-necessaria card-painel">
                     <div class="alert-header">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,6 +134,9 @@
                         $statusClass = match($requerimento->status_aluno) {
                             'Aberto' => 'badge-Aberto',
                             'Em Análise' => 'badge-analise',
+                            'Pendente' => 'badge-pendente',
+                            'Deferido' => 'badge-deferido',
+                            'Encaminhado' => 'badge-encaminhado',
                             'Concluído' => 'badge-concluido',
                             'Encerrado' => 'badge-encerrado',
                             'Indeferido' => 'badge-indeferido',

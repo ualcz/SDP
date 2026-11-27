@@ -315,25 +315,45 @@
     flex-shrink: 0;
 }
 
-.badge-Aberto {
-    background: #fef3c7;
-    color: #b45309;
+.badge-aberto {
+    background: #e0f2fe;
+    color: #0369a1;
 }
+
+/* Em andamento (Roxo - mantido do seu original) */
 .badge-analise {
     background: #ede9fe;
     color: #6d28d9;
 }
-.badge-concluido {
+
+/* Aguardando ação/reenvio do aluno (Âmbar - reaproveitado do seu antigo "Aberto") */
+.badge-pendente {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+/* Movimentado para outro setor (Ciano/Teal) */
+.badge-encaminhado {
+    background: #ccfbf1;
+    color: #0f766e;
+}
+
+/* Aprovado (Verde - mantido do seu antigo "concluído") */
+.badge-deferido {
     background: #d1fae5;
     color: #047857;
 }
-.badge-encerrado {
+
+/* Negado (Vermelho com contraste mais confortável) */
+.badge-indeferido {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Finalizado/Arquivado (Cinza neutro - mantido do seu "encerrado") */
+.badge-concluido {
     background: #e2e8f0;
     color: #334155;
-}
-.badge-indeferido {
-    background: #faddd1;
-    color: #f8350e;
 }
 .badge-despacho {
     background: #e0f2fe;

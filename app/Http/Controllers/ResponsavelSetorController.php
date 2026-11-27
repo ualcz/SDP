@@ -169,7 +169,7 @@ class ResponsavelSetorController extends Controller
             'arquivos.*' => 'nullable|file|max:51200',
         ]);
 
-        $solicitaNovoDocumento = $validated['status'] === 'Indeferido'
+        $solicitaNovoDocumento = $validated['status'] === 'Pendente'
             || $request->boolean('solicita_novo_documento');
         $request->merge([
             'solicita_novo_documento' => $solicitaNovoDocumento,
