@@ -4,7 +4,20 @@
 @section('tag', 'Administração')
 
 @section('content')
+<link rel="stylesheet" href="https://cloudflare.com">
 <link rel="stylesheet" href="{{ asset('css/consultaRequerimento.css') }}?v={{ filemtime(public_path('css/consultaRequerimento.css')) }}">
+<!-- <div class="btn-requerimentoResponsavel">
+    <a href="#"
+    class="btn-requerimentoPais">
+        <h3>+ Adicionar requerimento dos pais</h3>
+    </a>
+</div> -->
+<button
+    onclick="abrirModalResponsavel()"
+   class="btn-adicionar-responsavel">
+    <span>Adicionar requerimento dos pais</span>
+</button>
+
 
 {{-- Filtro Avançado de Pesquisa --}}
 <div class="dash-filter-card">
@@ -142,4 +155,218 @@
         </div>
     @endif
 </section>
+ <!-- Modal de requerimento dos pais -->
+<div
+    id="modalRequerimentoResponsavel"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+>
+    <div class="w-full max-w-2xl overflow-hidden rounded-xl bg-white shadow-2xl">
+
+        <!-- Cabeçalho -->
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+            <h2 class="text-lg font-semibold text-gray-800">
+                Adicionar requerimento dos pais
+            </h2>
+
+            <button
+                type="button"
+                onclick="fecharModalResponsavel()"
+                class="rounded-md p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+                aria-label="Fechar modal"
+            >
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Corpo -->
+        <div class="max-h-[75vh] overflow-y-auto p-6">
+
+            <form action="#" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <!-- Dados do responsável -->
+                <div class="mb-6">
+                    <h3 class="mb-3 text-sm font-semibold text-green-700">
+                        Dados do responsável
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">
+                                Nome completo
+                            </label>
+                            <input
+                                type="text"
+                                name="nome_responsavel"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">
+                                Vínculo com o estudante
+                            </label>
+                            <select
+                                name="vinculo_responsavel"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                                required
+                            >
+                                <option value="">Selecione</option>
+                                <option value="Pai">Pai</option>
+                                <option value="Mãe">Mãe</option>
+                                <option value="Responsável legal">Responsável legal</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">
+                                E-mail
+                            </label>
+                            <input
+                                type="email"
+                                name="email_responsavel"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">
+                                Telefone
+                            </label>
+                            <input
+                                type="text"
+                                name="telefone_responsavel"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estudante -->
+                <div class="mb-6">
+                    <h3 class="mb-3 text-sm font-semibold text-green-700">
+                        Dados do estudante
+                    </h3>
+
+                    <label class="mb-1 block text-sm font-medium text-gray-700">
+                        Buscar estudante (SUAP)
+                    </label>
+
+                    <input
+                        type="search"
+                        id="buscaEstudante"
+                        placeholder="Digite o nome ou matrícula..."
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                    >
+
+                    <div id="resultadoEstudantes" class="mt-2"></div>
+
+                    <input type="hidden" name="matricula_estudante">
+                    <input type="hidden" name="nome_estudante">
+                </div>
+
+                <!-- Requerimento -->
+                <div class="mb-6">
+                    <h3 class="mb-3 text-sm font-semibold text-green-700">
+                        Dados do requerimento
+                    </h3>
+
+                    <div class="mb-4">
+                        <label class="mb-1 block text-sm font-medium text-gray-700">
+                            Data de recebimento do e-mail
+                        </label>
+                        <input
+                            type="date"
+                            name="data_recebimento_email"
+                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="mb-1 block text-sm font-medium text-gray-700">
+                            Observação
+                        </label>
+                        <textarea
+                            name="observacao"
+                            rows="3"
+                            class="w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-gray-700">
+                            E-mail do requerimento enviado pelo responsável (em formato PDF)                      </label>
+                        <input
+                            type="file"
+                            name="arquivo"
+                            accept=".pdf,application/pdf"
+                            class="block w-full rounded-lg border border-gray-300 p-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-green-50 file:px-3 file:py-2 file:font-medium file:text-green-700 hover:file:bg-green-100"
+                            required
+                        >
+                        <p class="mt-1 text-xs text-gray-500">
+                            Somente arquivos PDF.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Rodapé -->
+                <div class="flex justify-end gap-3 border-t border-gray-200 pt-4">
+                    <button
+                        type="button"
+                        onclick="fecharModalResponsavel()"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-green-800"
+                    >
+                        Registrar requerimento
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalResponsavel() {
+        const modal = document.getElementById('modalRequerimentoResponsavel');
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function fecharModalResponsavel() {
+        const modal = document.getElementById('modalRequerimentoResponsavel');
+
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    // Fechar ao clicar fora da modal
+    document.getElementById('modalRequerimentoResponsavel')
+        .addEventListener('click', function (event) {
+            if (event.target === this) {
+                fecharModalResponsavel();
+            }
+        });
+
+    // Fechar com ESC
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            fecharModalResponsavel();
+        }
+    });
+</script>
 @endsection
