@@ -63,7 +63,7 @@
                         'Em Análise' => 'badge-analise',
                         'Pendente' => 'badge-pendente',
                         'Deferido' => 'badge-deferido',
-                        'Encaminhado' => 'badge-encaminhado'
+                        'Encaminhado' => 'badge-encaminhado',
                         'Concluído' => 'badge-concluido',
                         'Encerrado' => 'badge-encerrado',
                         'Indeferido' => 'badge-indeferido',
